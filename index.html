@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="local.fr Perfs">
+<meta name="apple-mobile-web-app-title" content="LocalPerf">
 <meta name="theme-color" content="#1a1a2e">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -20,488 +20,289 @@
     });
   });
 </script>
-<title>local.fr — Résultats Journaliers</title>
+<title>LocalPerf — local.fr</title>
 <style>
-  :root {
-    --fuchsia: #EC008C;
-    --orange: #FAA61A;
-    --dark: #1a1a2e;
-    --card: #ffffff;
-    --border: #e8e8f0;
-    --text: #1a1a2e;
-    --muted: #8888aa;
-    --success: #00c48c;
-    --gradient: linear-gradient(135deg, var(--fuchsia), var(--orange));
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; overscroll-behavior: none; }
-  body {
-    font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
-    background: #f4f4f8;
-    color: var(--text);
-    padding-top: var(--safe-top);
-    padding-bottom: var(--safe-bottom);
-  }
+:root {
+  --fuchsia: #EC008C;
+  --orange: #FAA61A;
+  --dark: #1a1a2e;
+  --card: #ffffff;
+  --border: #e8e8f0;
+  --text: #1a1a2e;
+  --muted: #8888aa;
+  --success: #00c48c;
+  --gradient: linear-gradient(135deg, var(--fuchsia), var(--orange));
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --c-sud: #EC008C;
+  --c-est: #FAA61A;
+  --c-ouest: #939598;
+  --c-paris: #231f20;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overscroll-behavior: none; }
+body { font-family: -apple-system,'Segoe UI',system-ui,sans-serif; background:#f4f4f8; color:var(--text); padding-top:var(--safe-top); padding-bottom:var(--safe-bottom); }
 
-  /* ─── HEADER ─── */
-  header {
-    background: var(--dark);
-    padding: 0 20px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-  }
-  .logo {
-    font-weight: 900;
-    font-size: 20px;
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .da-badge {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: white;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .sync-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--muted);
-    transition: background 0.3s;
-    flex-shrink: 0;
-  }
-  .sync-dot.online { background: var(--success); }
-  .sync-dot.syncing { background: var(--orange); animation: pulse 1s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+/* HEADER */
+header { background:var(--dark); padding:0 16px; height:56px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.3); }
+.logo { font-weight:900; font-size:18px; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.user-badge { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); color:white; padding:5px 12px; border-radius:20px; font-size:11px; font-weight:600; cursor:pointer; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sync-dot { width:8px; height:8px; border-radius:50%; background:var(--muted); transition:background 0.3s; flex-shrink:0; }
+.sync-dot.online { background:var(--success); }
+.sync-dot.syncing { background:var(--orange); animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-  /* ─── BOTTOM NAV ─── */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0; right: 0;
-    background: white;
-    border-top: 1px solid var(--border);
-    display: flex;
-    padding-bottom: var(--safe-bottom);
-    z-index: 100;
-  }
-  .nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 0 8px;
-    cursor: pointer;
-    border: none;
-    background: none;
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 600;
-    gap: 3px;
-    font-family: inherit;
-    transition: color 0.15s;
-  }
-  .nav-item .nav-icon { font-size: 22px; line-height: 1; }
-  .nav-item.active { color: var(--fuchsia); }
+/* BOTTOM NAV */
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; background:white; border-top:1px solid var(--border); display:flex; padding-bottom:var(--safe-bottom); z-index:100; }
+.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:10px 0 8px; cursor:pointer; border:none; background:none; color:var(--muted); font-size:10px; font-weight:600; gap:3px; font-family:inherit; transition:color 0.15s; }
+.nav-item .nav-icon { font-size:22px; line-height:1; }
+.nav-item.active { color:var(--fuchsia); }
 
-  /* ─── CONTENT ─── */
-  .content {
-    padding: 16px;
-    padding-bottom: 90px;
-    max-width: 600px;
-    margin: 0 auto;
-  }
+/* CONTENT */
+.content { padding:14px; padding-bottom:90px; max-width:600px; margin:0 auto; }
 
-  /* ─── CARDS ─── */
-  .card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
-    border: 1px solid var(--border);
-    margin-bottom: 14px;
-  }
-  .card-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+/* CARD */
+.card { background:white; border-radius:16px; padding:18px; box-shadow:0 1px 8px rgba(0,0,0,0.06); border:1px solid var(--border); margin-bottom:12px; }
+.card-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
 
-  /* ─── STATS GRID ─── */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .stat-box {
-    background: white;
-    border-radius: 14px;
-    padding: 14px 10px;
-    text-align: center;
-    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
-    border: 1px solid var(--border);
-  }
-  .stat-val {
-    font-size: 26px;
-    font-weight: 900;
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .stat-lbl { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
+/* STATS GRID */
+.stats-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px; }
+.stat-box { background:white; border-radius:14px; padding:12px 8px; text-align:center; box-shadow:0 1px 8px rgba(0,0,0,0.06); border:1px solid var(--border); }
+.stat-val { font-size:24px; font-weight:900; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; margin-bottom:4px; }
+.stat-lbl { font-size:10px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.3px; }
 
-  /* ─── FORM ─── */
-  .form-group { margin-bottom: 14px; }
-  label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px; }
-  input[type=number], input[type=text], select, textarea {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-size: 16px; /* 16px prevents iOS zoom */
-    font-family: inherit;
-    color: var(--text);
-    background: #fafafa;
-    -webkit-appearance: none;
-    appearance: none;
-    transition: border-color 0.2s;
-  }
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--fuchsia);
-    background: white;
-  }
-  textarea { resize: vertical; min-height: 72px; }
+/* FORM */
+.form-group { margin-bottom:12px; }
+label { display:block; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px; }
+input[type=number],input[type=text],select,textarea { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:16px; font-family:inherit; color:var(--text); background:#fafafa; -webkit-appearance:none; appearance:none; transition:border-color 0.2s; }
+input:focus,select:focus,textarea:focus { outline:none; border-color:var(--fuchsia); background:white; }
+textarea { resize:vertical; min-height:64px; }
+.counter-row { display:flex; align-items:center; border:1.5px solid var(--border); border-radius:10px; overflow:hidden; background:#fafafa; }
+.counter-btn { width:52px; height:48px; border:none; background:transparent; font-size:22px; color:var(--fuchsia); cursor:pointer; font-weight:300; flex-shrink:0; font-family:inherit; }
+.counter-btn:active { background:rgba(236,0,140,0.06); }
+.counter-val { flex:1; text-align:center; font-size:22px; font-weight:900; color:var(--text); border:none; background:transparent; font-family:inherit; }
 
-  .counter-row {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    background: #fafafa;
-  }
-  .counter-btn {
-    width: 52px; height: 48px;
-    border: none;
-    background: transparent;
-    font-size: 22px;
-    color: var(--fuchsia);
-    cursor: pointer;
-    font-weight: 300;
-    flex-shrink: 0;
-    font-family: inherit;
-  }
-  .counter-btn:active { background: rgba(236,0,140,0.06); }
-  .counter-val {
-    flex: 1;
-    text-align: center;
-    font-size: 22px;
-    font-weight: 900;
-    color: var(--text);
-    border: none;
-    background: transparent;
-    font-family: inherit;
-  }
+/* TAGS */
+.tags-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+.tag { display:flex; align-items:center; gap:4px; background:linear-gradient(135deg,rgba(236,0,140,0.08),rgba(250,166,26,0.08)); border:1px solid rgba(236,0,140,0.25); color:var(--fuchsia); padding:5px 10px; border-radius:20px; font-size:13px; font-weight:600; }
+.tag button { background:none; border:none; color:inherit; cursor:pointer; padding:0; font-size:11px; opacity:.7; }
+.add-row { display:flex; gap:8px; }
+.add-row input { flex:1; }
 
-  /* ─── SIGNATAIRES ─── */
-  .signataires-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    margin-bottom: 10px;
-  }
-  .sig-tag {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: linear-gradient(135deg, rgba(236,0,140,0.08), rgba(250,166,26,0.08));
-    border: 1px solid rgba(236,0,140,0.25);
-    color: var(--fuchsia);
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-  }
-  .sig-tag button { background: none; border: none; color: inherit; cursor: pointer; padding: 0; font-size: 11px; opacity: 0.7; }
-  .add-sig-row { display: flex; gap: 8px; }
-  .add-sig-row input { flex: 1; }
+/* BTN */
+.btn-main { width:100%; padding:14px; background:var(--gradient); color:white; border:none; border-radius:14px; font-size:16px; font-weight:800; cursor:pointer; font-family:inherit; transition:opacity 0.2s,transform 0.1s; }
+.btn-main:active { opacity:.85; transform:scale(0.98); }
+.btn-main:disabled { opacity:.5; }
+.btn-secondary { width:100%; padding:12px; background:white; color:var(--fuchsia); border:1.5px solid var(--fuchsia); border-radius:14px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.2s; }
+.btn-secondary:active { background:rgba(236,0,140,0.05); }
 
-  /* ─── BUTTON ─── */
-  .btn-main {
-    width: 100%;
-    padding: 15px;
-    background: var(--gradient);
-    color: white;
-    border: none;
-    border-radius: 14px;
-    font-size: 16px;
-    font-weight: 800;
-    cursor: pointer;
-    font-family: inherit;
-    transition: opacity 0.2s, transform 0.1s;
-  }
-  .btn-main:active { opacity: 0.85; transform: scale(0.98); }
-  .btn-main:disabled { opacity: 0.5; }
+/* SEGMENT TABS */
+.seg-tabs { display:flex; background:#ebebf5; border-radius:10px; padding:3px; margin-bottom:14px; gap:2px; }
+.seg-tab { flex:1; padding:7px 4px; border:none; background:transparent; border-radius:8px; font-size:11px; font-weight:700; color:var(--muted); cursor:pointer; font-family:inherit; transition:all 0.15s; }
+.seg-tab.active { background:white; color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.1); }
 
-  /* ─── CLASSEMENT ─── */
-  .period-tabs {
-    display: flex;
-    background: #ebebf5;
-    border-radius: 10px;
-    padding: 3px;
-    margin-bottom: 16px;
-    gap: 2px;
-  }
-  .period-tab {
-    flex: 1;
-    padding: 7px 4px;
-    border: none;
-    background: transparent;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--muted);
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.15s;
-  }
-  .period-tab.active { background: white; color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+/* RANK */
+.rank-row { display:flex; align-items:center; padding:11px 0; border-bottom:1px solid var(--border); gap:10px; }
+.rank-row:last-child { border-bottom:none; }
+.rank-num { width:26px; font-size:15px; font-weight:900; text-align:center; flex-shrink:0; color:var(--muted); }
+.rank-1 { color:#F6B800; }
+.rank-2 { color:#A8A8B0; }
+.rank-3 { color:#CD7F32; }
+.rank-info { flex:1; min-width:0; }
+.rank-name { font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.rank-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+.rank-score { font-size:20px; font-weight:900; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; flex-shrink:0; }
 
-  .rank-row {
-    display: flex;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-    gap: 12px;
-  }
-  .rank-row:last-child { border-bottom: none; }
-  .rank-row.is-me { background: linear-gradient(135deg, rgba(236,0,140,0.04), rgba(250,166,26,0.04)); margin: 0 -20px; padding: 12px 20px; border-left: 3px solid var(--fuchsia); }
+/* REGION BADGE */
+.reg-badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:700; color:white; text-transform:uppercase; letter-spacing:.3px; }
+.reg-sud { background:var(--c-sud); }
+.reg-est { background:var(--c-est); }
+.reg-ouest { background:var(--c-ouest); }
+.reg-paris { background:var(--c-paris); }
 
-  .rank-num-big { width: 28px; font-size: 16px; font-weight: 900; text-align: center; flex-shrink: 0; color: var(--muted); }
-  .rank-1-color { color: #F6B800; }
-  .rank-2-color { color: #A8A8B0; }
-  .rank-3-color { color: #CD7F32; }
+/* PALMARES VIEW */
+.palmares-header { background:var(--dark); border-radius:16px; padding:20px; text-align:center; margin-bottom:12px; }
+.palmares-date { font-size:12px; color:rgba(255,255,255,0.5); font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+.palmares-title { font-size:22px; font-weight:900; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:4px; }
+.palmares-sub { font-size:13px; color:rgba(255,255,255,0.6); }
 
-  .rank-info { flex: 1; min-width: 0; }
-  .rank-agency { font-size: 14px; font-weight: 700; }
-  .rank-da { font-size: 11px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .rank-sigs { font-size: 20px; font-weight: 900; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; flex-shrink: 0; }
-  .rank-rdv { font-size: 12px; color: var(--muted); text-align: right; flex-shrink: 0; }
+.palmares-section { margin-bottom:8px; }
+.palmares-section-title { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
 
-  .medal { font-size: 20px; }
+.highlight-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+.highlight-item:last-child { border-bottom:none; }
+.highlight-emoji { font-size:22px; flex-shrink:0; }
+.highlight-text { flex:1; font-size:14px; font-weight:600; color:var(--text); }
+.highlight-sub { font-size:11px; color:var(--muted); margin-top:2px; }
 
-  /* ─── PODIUM ─── */
-  .podium-row {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 10px;
-    margin-bottom: 20px;
-    padding-top: 10px;
-  }
-  .pod-item { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
-  .pod-medal { font-size: 26px; }
-  .pod-name { font-size: 11px; font-weight: 700; text-align: center; color: var(--text); }
-  .pod-score { font-size: 20px; font-weight: 900; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .pod-bar { width: 100%; border-radius: 10px 10px 0 0; }
-  .pod-1 .pod-bar { height: 80px; background: linear-gradient(180deg,#FFD700,#FFA500); }
-  .pod-2 .pod-bar { height: 60px; background: linear-gradient(180deg,#C8C8C8,#A0A0A0); }
-  .pod-3 .pod-bar { height: 44px; background: linear-gradient(180deg,#CD7F32,#A0522D); }
+/* CALENDRIER */
+.cal-semaine { display:flex; align-items:center; gap:12px; padding:12px; background:linear-gradient(135deg,rgba(236,0,140,0.05),rgba(250,166,26,0.05)); border:1px solid rgba(236,0,140,0.2); border-radius:12px; margin-bottom:8px; }
+.cal-da-name { font-size:16px; font-weight:800; color:var(--text); }
+.cal-da-week { font-size:12px; color:var(--muted); }
+.cal-avatar { width:40px; height:40px; border-radius:50%; background:var(--gradient); display:flex; align-items:center; justify-content:center; color:white; font-weight:900; font-size:14px; flex-shrink:0; }
 
-  /* ─── HISTO ─── */
-  .histo-row {
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .histo-row:last-child { border-bottom: none; }
-  .histo-date { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
-  .histo-stats { display: flex; gap: 16px; }
-  .histo-stat { display: flex; flex-direction: column; gap: 1px; }
-  .histo-stat-val { font-size: 16px; font-weight: 800; color: var(--text); }
-  .histo-stat-lbl { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
-  .histo-names { font-size: 12px; color: var(--muted); margin-top: 5px; }
+/* BADGE DA DE SEMAINE */
+.da-semaine-banner { background:var(--gradient); border-radius:12px; padding:12px 16px; color:white; text-align:center; margin-bottom:12px; font-size:13px; font-weight:700; }
 
-  /* ─── LOGIN ─── */
-  .overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.65);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    display: flex;
-    align-items: flex-end;
-    z-index: 999;
-    padding-bottom: var(--safe-bottom);
-  }
-  .login-sheet {
-    background: white;
-    border-radius: 24px 24px 0 0;
-    padding: 28px 24px 32px;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  .login-handle { width: 40px; height: 4px; background: #e0e0e8; border-radius: 2px; margin: 0 auto 24px; }
-  .login-logo { font-weight: 900; font-size: 26px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 4px; }
-  .login-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+/* OVERLAY / LOGIN */
+.overlay { position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; align-items:flex-end; z-index:999; padding-bottom:var(--safe-bottom); }
+.sheet { background:white; border-radius:24px 24px 0 0; padding:24px 20px 28px; width:100%; max-width:600px; margin:0 auto; max-height:90vh; overflow-y:auto; }
+.sheet-handle { width:40px; height:4px; background:#e0e0e8; border-radius:2px; margin:0 auto 20px; }
+.sheet-title { font-weight:900; font-size:22px; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:4px; }
+.sheet-sub { color:var(--muted); font-size:13px; margin-bottom:20px; }
 
-  /* ─── TOAST ─── */
-  .toast {
-    position: fixed;
-    top: calc(56px + var(--safe-top) + 10px);
-    left: 50%; transform: translateX(-50%) translateY(-20px);
-    background: var(--dark);
-    color: white;
-    padding: 10px 18px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-    z-index: 9999;
-    opacity: 0;
-    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    white-space: nowrap;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* CHOICE BTNS */
+.choice-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.choice-btn { padding:18px 12px; border:2px solid var(--border); border-radius:14px; background:white; cursor:pointer; font-family:inherit; text-align:center; transition:all 0.15s; }
+.choice-btn:hover { border-color:var(--fuchsia); }
+.choice-btn.selected { border-color:var(--fuchsia); background:linear-gradient(135deg,rgba(236,0,140,0.05),rgba(250,166,26,0.05)); }
+.choice-icon { font-size:28px; margin-bottom:6px; }
+.choice-label { font-size:13px; font-weight:700; color:var(--text); }
+.choice-sub { font-size:11px; color:var(--muted); margin-top:2px; }
 
-  /* ─── LOADING ─── */
-  .loading-spinner {
-    text-align: center; padding: 40px;
-    color: var(--muted); font-size: 14px;
-  }
+/* TOAST */
+.toast { position:fixed; top:calc(56px + var(--safe-top) + 10px); left:50%; transform:translateX(-50%) translateY(-20px); background:var(--dark); color:white; padding:10px 18px; border-radius:20px; font-size:13px; font-weight:600; box-shadow:0 4px 20px rgba(0,0,0,0.25); z-index:9999; opacity:0; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
-  .empty .e-icon { font-size: 40px; margin-bottom: 10px; }
+.empty { text-align:center; padding:40px 20px; color:var(--muted); }
+.empty .e-icon { font-size:40px; margin-bottom:10px; }
 
-  /* ─── FIREBASE CONFIG NOTICE ─── */
-  .config-notice {
-    background: #fff8e1;
-    border: 1.5px solid #FAA61A;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 14px;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-  .config-notice strong { color: var(--orange); }
+/* WEEK RESET NOTICE */
+.week-note { font-size:11px; color:var(--muted); text-align:center; padding:8px; }
+
+/* PALMARES DA INPUT SECTION */
+.palmares-input-card { background:linear-gradient(135deg,rgba(236,0,140,0.04),rgba(250,166,26,0.04)); border:1.5px solid rgba(236,0,140,0.2); }
+
+/* NOTIF PUSH BTN */
+.btn-push { width:100%; padding:14px; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; border:none; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; }
+.btn-push:active { opacity:.85; }
+
+/* PUBLISH BTN */
+.btn-publish { width:100%; padding:16px; background:linear-gradient(135deg,#00c48c,#00a86b); color:white; border:none; border-radius:14px; font-size:16px; font-weight:800; cursor:pointer; font-family:inherit; }
+.btn-publish:active { opacity:.85; }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ══════════════════ LOGIN OVERLAY ══════════════════ -->
 <div class="overlay" id="loginOverlay">
-  <div class="login-sheet">
-    <div class="login-handle"></div>
-    <div class="login-logo">local.fr</div>
-    <div class="login-sub">Résultats Journaliers — Directeurs d'agence</div>
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">local.fr</div>
+    <div class="sheet-sub">Bienvenue sur LocalPerf</div>
 
-    <div class="form-group">
-      <label>Votre agence</label>
-      <select id="loginAgence">
-        <option value="">— Sélectionner —</option>
-        <optgroup label="── Région SUD ──">
-          <option>Aix-en-Provence</option>
-          <option>Bordeaux</option>
-          <option>Montpellier</option>
-          <option>Nice</option>
-          <option>Pau</option>
-          <option>Toulon</option>
-          <option>Toulouse</option>
-          <option>Nîmes</option>
-        </optgroup>
-        <optgroup label="── Région EST ──">
-          <option>Annecy</option>
-          <option>Clermont-Ferrand</option>
-          <option>Dijon</option>
-          <option>Grenoble</option>
-          <option>Lille</option>
-          <option>Lyon</option>
-          <option>Mulhouse</option>
-          <option>Nancy</option>
-          <option>Strasbourg</option>
-        </optgroup>
-        <optgroup label="── Région OUEST ──">
-          <option>Angoulême</option>
-          <option>Caen</option>
-          <option>Nantes</option>
-          <option>Orléans</option>
-          <option>Rennes</option>
-          <option>Rouen</option>
-          <option>Saint-Brieuc</option>
-        </optgroup>
-        <optgroup label="── Région PARIS IDF ──">
-          <option>Paris Est</option>
-          <option>Paris Ouest</option>
-          <option>Paris Centre</option>
-        </optgroup>
-      </select>
+    <div id="loginStep1">
+      <p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:14px">Qui êtes-vous ?</p>
+      <div class="choice-grid">
+        <div class="choice-btn" onclick="selectRole('da')">
+          <div class="choice-icon">🏢</div>
+          <div class="choice-label">Directeur d'agence</div>
+          <div class="choice-sub">Saisie des résultats</div>
+        </div>
+        <div class="choice-btn" onclick="selectRole('commercial')">
+          <div class="choice-icon">👤</div>
+          <div class="choice-label">Commercial</div>
+          <div class="choice-sub">Voir le palmarès</div>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Votre prénom et nom</label>
-      <input type="text" id="loginNom" placeholder="Prénom NOM" autocomplete="name" />
+
+    <!-- DA Login -->
+    <div id="loginStepDA" style="display:none">
+      <div class="form-group">
+        <label>Votre agence</label>
+        <select id="loginAgence">
+          <option value="">— Sélectionner —</option>
+          <optgroup label="── SUD ──">
+            <option>Aix en Provence</option>
+            <option>Bordeaux</option>
+            <option>La Corse</option>
+            <option>Montpellier</option>
+            <option>Nice</option>
+            <option>Toulouse</option>
+          </optgroup>
+          <optgroup label="── EST ──">
+            <option>Annecy</option>
+            <option>Clermont</option>
+            <option>Dijon</option>
+            <option>Lille</option>
+            <option>Lyon</option>
+            <option>Reims</option>
+            <option>Strasbourg</option>
+          </optgroup>
+          <optgroup label="── OUEST ──">
+            <option>Angoulême</option>
+            <option>Caen</option>
+            <option>Nantes</option>
+            <option>Orléans</option>
+            <option>St Brieuc</option>
+          </optgroup>
+          <optgroup label="── PARIS IDF ──">
+            <option>Paris Est</option>
+            <option>Paris Ouest</option>
+            <option>Paris Centre</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Votre nom</label>
+        <input type="text" id="loginNom" placeholder="Prénom NOM" autocomplete="name" />
+      </div>
+      <button class="btn-main" onclick="doLoginDA()">Accéder ›</button>
+      <button class="btn-secondary" style="margin-top:8px" onclick="backToStep1()">← Retour</button>
     </div>
-    <button class="btn-main" onclick="doLogin()">Accéder ›</button>
+
+    <!-- Commercial Login (accès libre) -->
+    <div id="loginStepCommercial" style="display:none">
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:48px;margin-bottom:12px">🏆</div>
+        <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px">Accès lecture</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:24px">Vous verrez le palmarès du jour et les classements de la semaine.</p>
+      </div>
+      <div class="form-group">
+        <label>Votre prénom (optionnel)</label>
+        <input type="text" id="loginPrenom" placeholder="Pour personnaliser l'affichage" />
+      </div>
+      <button class="btn-main" onclick="doLoginCommercial()">Voir le palmarès ›</button>
+      <button class="btn-secondary" style="margin-top:8px" onclick="backToStep1()">← Retour</button>
+    </div>
   </div>
 </div>
 
-<!-- HEADER -->
+<!-- ══════════════════ HEADER ══════════════════ -->
 <header>
   <div style="display:flex;align-items:center;gap:8px">
     <div class="sync-dot" id="syncDot"></div>
-    <div class="logo">local.fr</div>
+    <div class="logo">LocalPerf</div>
   </div>
-  <div class="da-badge" id="daBadge" onclick="askChangeAgency()">—</div>
+  <div class="user-badge" id="userBadge" onclick="askLogout()">—</div>
 </header>
 
-<!-- CONTENT PAGES -->
-<div class="content" id="page-saisie">
+<!-- ══════════════════ PAGES ══════════════════ -->
 
-  <!-- Config notice — will be hidden once Firebase is set up -->
-  <div class="config-notice" id="configNotice">
-    <strong>⚙️ Configuration Firebase requise</strong><br>
-    Ouvrez le fichier <code>index.html</code> et remplacez les valeurs dans <code>FIREBASE_CONFIG</code> par celles de votre projet Firebase. <a href="#" onclick="alert('Suivez le guide INSTALLATION.md fourni avec l\'appli.')">Voir le guide</a>
+<!-- PAGE: PALMARES (commercial + DA) -->
+<div class="content" id="page-palmares" style="display:none">
+  <div id="palmaresContent"><div class="empty"><div class="e-icon">🏆</div><p>Le palmarès du jour n'est pas encore publié.</p></div></div>
+</div>
+
+<!-- PAGE: CLASSEMENT SEMAINE -->
+<div class="content" id="page-classement" style="display:none">
+  <div class="seg-tabs">
+    <button class="seg-tab active" onclick="setClassTab('region',this)">Régions</button>
+    <button class="seg-tab" onclick="setClassTab('agence',this)">Agences</button>
+    <button class="seg-tab" onclick="setClassTab('top10',this)">Top 10</button>
   </div>
+  <div class="week-note" id="weekNote">Semaine du — au —</div>
+  <div id="classContent"><div class="empty"><div class="e-icon">📊</div><p>Chargement…</p></div></div>
+</div>
 
-  <!-- Mini stats -->
+<!-- PAGE: SAISIE (DA seulement) -->
+<div class="content" id="page-saisie" style="display:none">
+
   <div class="stats-grid">
-    <div class="stat-box">
-      <div class="stat-val" id="myDaySig">—</div>
-      <div class="stat-lbl">Sig. aujourd'hui</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val" id="myWeekSig">—</div>
-      <div class="stat-lbl">Sig. semaine</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val" id="myWeekRdv">—</div>
-      <div class="stat-lbl">RDV semaine</div>
-    </div>
+    <div class="stat-box"><div class="stat-val" id="myDaySig">—</div><div class="stat-lbl">Sig. aujourd'hui</div></div>
+    <div class="stat-box"><div class="stat-val" id="myWeekSig">—</div><div class="stat-lbl">Sig. semaine</div></div>
+    <div class="stat-box"><div class="stat-val" id="myWeekRdv">—</div><div class="stat-lbl">RDV semaine</div></div>
   </div>
 
   <div class="card">
@@ -526,973 +327,717 @@
     </div>
 
     <div class="form-group">
-      <label>Noms des signataires</label>
-      <div class="signataires-tags" id="sigTags"></div>
-      <div class="add-sig-row">
-        <input type="text" id="sigInput" placeholder="Prénom NOM client" onkeydown="if(event.key==='Enter'){event.preventDefault();addSig()}" />
+      <label>Signataires</label>
+      <div class="tags-row" id="sigTags"></div>
+      <div class="add-row">
+        <input type="text" id="sigInput" placeholder="Prénom NOM" onkeydown="if(event.key==='Enter'){event.preventDefault();addSig()}" />
         <button class="btn-main" style="width:auto;padding:12px 16px;font-size:14px" onclick="addSig()">+</button>
       </div>
     </div>
 
     <div class="form-group">
       <label>Commentaire (optionnel)</label>
-      <textarea id="commentaire" placeholder="Points marquants de la journée…"></textarea>
+      <textarea id="commentaire" placeholder="Points marquants…"></textarea>
     </div>
 
     <div id="submitStatus" style="text-align:center;font-size:12px;color:var(--success);font-weight:700;margin-bottom:10px;min-height:18px"></div>
     <button class="btn-main" id="submitBtn" onclick="submitResults()">Valider mes résultats ✓</button>
   </div>
+</div>
 
-  <!-- BLOC PALMARES — apparaît après validation -->
-  <div class="card" id="palmares-bloc" style="display:none">
-    <div class="card-title">📧 Bloc Palmarès — prêt à coller</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Copiez ce bloc dans le champ de votre agence dans le Palmarès V9.</div>
+<!-- PAGE: PALMARES DA (saisie palmarès — DA de semaine seulement) -->
+<div class="content" id="page-palmares-da" style="display:none">
+  <div class="da-semaine-banner" id="daSemaineBanner">🏆 Vous êtes DA de semaine — Rédigez le palmarès</div>
 
-    <div style="margin-bottom:12px">
-      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Compteur (champ nombre)</div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <div id="palmares-count" style="flex:1;background:#f4f4f8;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:22px;font-weight:900;text-align:center;background:linear-gradient(135deg,rgba(236,0,140,0.06),rgba(250,166,26,0.06))">—</div>
-        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:13px" onclick="copyPalmaresCount()">Copier</button>
+  <div class="card palmares-input-card">
+    <div class="card-title">🥇 Mises en avant du jour</div>
+
+    <div class="form-group">
+      <label>🆕 Premiers contrats (nouveaux commerciaux)</label>
+      <div class="tags-row" id="tags-premiers"></div>
+      <div class="add-row">
+        <input type="text" id="input-premier" placeholder="Prénom NOM — Agence" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('premiers')}" />
+        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:14px" onclick="addTag('premiers')">+</button>
       </div>
     </div>
 
-    <div style="margin-bottom:16px">
-      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Signataires (champ texte)</div>
-      <div style="display:flex;gap:8px;align-items:flex-start">
-        <div id="palmares-text" style="flex:1;background:#f4f4f8;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-weight:600;min-height:48px;word-break:break-word">—</div>
-        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:13px;flex-shrink:0" onclick="copyPalmaresText()">Copier</button>
+    <div class="form-group">
+      <label>✌️ Doublés du jour</label>
+      <div class="tags-row" id="tags-doubles"></div>
+      <div class="add-row">
+        <input type="text" id="input-double" placeholder="Prénom NOM — Agence" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('doubles')}" />
+        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:14px" onclick="addTag('doubles')">+</button>
       </div>
     </div>
 
-    <div style="background:#fff8e1;border:1.5px solid var(--orange);border-radius:10px;padding:12px;font-size:12px;color:#7a5000;line-height:1.5">
-      <strong>Champ Palmarès :</strong> <span id="palmares-field-name" style="font-family:monospace;font-size:11px"></span>
+    <div class="form-group">
+      <label>🔱 Triplés du jour</label>
+      <div class="tags-row" id="tags-triples"></div>
+      <div class="add-row">
+        <input type="text" id="input-triple" placeholder="Prénom NOM — Agence" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('triples')}" />
+        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:14px" onclick="addTag('triples')">+</button>
+      </div>
     </div>
+
+    <div class="form-group">
+      <label>🤝 Parrainages</label>
+      <div class="tags-row" id="tags-parrainages"></div>
+      <div class="add-row">
+        <input type="text" id="input-parrainage" placeholder="Prénom NOM — Agence" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('parrainages')}" />
+        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:14px" onclick="addTag('parrainages')">+</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>💬 Message du jour (optionnel)</label>
+      <textarea id="palmares-message" placeholder="Message de motivation, point fort de la journée…"></textarea>
+    </div>
+
+    <button class="btn-publish" onclick="publishPalmares()">📤 Publier le palmarès + Notifier</button>
   </div>
 </div>
 
-<div class="content" id="page-classement" style="display:none">
-  <div class="period-tabs">
-    <button class="period-tab active" onclick="setPeriod('day',this)">Aujourd'hui</button>
-    <button class="period-tab" onclick="setPeriod('week',this)">Semaine</button>
-    <button class="period-tab" onclick="setPeriod('month',this)">Mois</button>
-  </div>
-  <div id="classementContent"><div class="loading-spinner">Chargement…</div></div>
-</div>
-
-<div class="content" id="page-historique" style="display:none">
+<!-- PAGE: CALENDRIER -->
+<div class="content" id="page-calendrier" style="display:none">
   <div class="card">
-    <div class="card-title">📊 Mon historique — <span id="histoAgency">—</span></div>
-    <div id="histoContent"><div class="empty"><div class="e-icon">📋</div><p>Aucune donnée encore.</p></div></div>
+    <div class="card-title">📅 DA de semaine — <span id="anneeLabel">2026</span></div>
+    <div id="calendrierContent"></div>
   </div>
 </div>
 
-<!-- PAGE MAIL -->
-<div class="content" id="page-mail" style="display:none">
-
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-title">📨 Mail du jour</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5">
-      Générez le mail récap à partir des résultats saisis par toutes les agences.<br>
-      Copiez-le et collez-le dans Outlook.
-    </div>
-
-    <!-- Champs complémentaires -->
-    <div style="margin-bottom:12px">
-      <label>Performance collective du jour (optionnel)</label>
-      <input type="text" id="mail-perf" placeholder="ex: RÉGION SUD EXPLOSE LES CHRONOS…" />
-    </div>
-    <div style="margin-bottom:12px">
-      <label>Message de la Direction (optionnel)</label>
-      <textarea id="mail-mot" placeholder="Votre mot de conclusion…" style="min-height:60px"></textarea>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
-      <div>
-        <label>Conquêtes</label>
-        <input type="number" id="mail-conquetes" value="0" min="0" />
-      </div>
-      <div>
-        <label>Renouvellements</label>
-        <input type="number" id="mail-renouv" value="0" min="0" />
-      </div>
-      <div>
-        <label>ADS</label>
-        <input type="number" id="mail-ads" value="0" min="0" />
-      </div>
-    </div>
-
-    <button class="btn-main" onclick="generateMailPreview()">🔄 Générer l'aperçu du mail</button>
-  </div>
-
-  <!-- NOTIFICATIONS PUSH -->
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-title">🔔 Notification push</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5">
-      Envoyez une notification à toute la force commerciale (250–300 personnes).<br>
-      La notification auto part chaque soir à <strong>19h</strong>.
-    </div>
-
-    <div id="notif-subscribe-section">
-      <button class="btn-main" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);margin-bottom:10px" onclick="subscribeToNotifications()">
-        🔔 Activer les notifications sur cet appareil
-      </button>
-      <div id="notif-status" style="font-size:12px;color:var(--muted);text-align:center;min-height:16px"></div>
-    </div>
-
-    <div style="height:12px"></div>
-
-    <div style="margin-bottom:10px">
-      <label>Titre personnalisé (optionnel)</label>
-      <input type="text" id="notif-title" placeholder="ex: 🏆 Résultats du 10 juin" />
-    </div>
-    <div style="margin-bottom:14px">
-      <label>Message personnalisé (optionnel)</label>
-      <input type="text" id="notif-message" placeholder="Laissez vide pour générer automatiquement" />
-    </div>
-
-    <button class="btn-main" onclick="sendNotificationNow()">
-      📣 Envoyer la notification maintenant
-    </button>
-    <div id="notif-send-status" style="font-size:12px;color:var(--success);font-weight:700;text-align:center;margin-top:8px;min-height:16px"></div>
-  </div>
-
-  <!-- Aperçu + copie -->
-  <div class="card" id="mail-preview-card" style="display:none">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <div style="font-size:14px;font-weight:700">Aperçu du mail</div>
-      <button class="btn-main" style="width:auto;padding:10px 20px;font-size:13px" onclick="copyMailHTML()">📋 Copier pour Outlook</button>
-    </div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Cliquez "Copier", ouvrez Outlook, créez un nouveau mail, et faites Coller (Cmd+V ou Ctrl+V).</div>
-    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#0f172a">
-      <div id="mail-preview" style="transform-origin:top left"></div>
-    </div>
-  </div>
+<!-- ══════════════════ BOTTOM NAV ══════════════════ -->
+<div class="bottom-nav" id="bottomNav" style="display:none">
+  <!-- rempli dynamiquement selon le rôle -->
 </div>
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <button class="nav-item active" id="nav-saisie" onclick="showPage('saisie',this)">
-    <span class="nav-icon">📝</span>Saisie
-  </button>
-  <button class="nav-item" id="nav-classement" onclick="showPage('classement',this)">
-    <span class="nav-icon">🏆</span>Classement
-  </button>
-  <button class="nav-item" id="nav-historique" onclick="showPage('historique',this)">
-    <span class="nav-icon">📊</span>Historique
-  </button>
-  <button class="nav-item" id="nav-mail" onclick="showPage('mail',this)">
-    <span class="nav-icon">📨</span>Mail
-  </button>
-</nav>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- ══════════════════════════════════════
-     FIREBASE SDK
-     ══════════════════════════════════════ -->
+<!-- ══════════════════ FIREBASE ══════════════════ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
 
-// ╔══════════════════════════════════════════╗
-// ║  REMPLACEZ CES VALEURS PAR VOTRE FIREBASE ║
-// ╚══════════════════════════════════════════╝
 const FIREBASE_CONFIG = {
- apiKey: "AIzaSyD5SFX0jb6tv8Fr_ziSIW4lrrty8cg_flM",
+  apiKey: "AIzaSyC6TIzX9lVWZ9q5mYhUB3fB5Q_VUoK8n3k",
   authDomain: "localfr-resultats.firebaseapp.com",
   databaseURL: "https://localfr-resultats-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "localfr-resultats",
-  storageBucket: "localfr-resultats.firebasestorage.app",
+  storageBucket: "localfr-resultats.appspot.com",
   messagingSenderId: "209284782840",
-  appId: "1:209284782840:web:8fcfeac333ac4a726cb90d"
+  appId: "1:209284782840:web:b0d9e2f3a1c4d5e6f7g8h9"
 };
 
-// ══════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════
-let app, db;
-let isFirebaseReady = false;
+const app = initializeApp(FIREBASE_CONFIG);
+const db = getDatabase(app);
+const fns = getFunctions(app, "europe-west1");
 
-try {
-  app = initializeApp(FIREBASE_CONFIG);
-  db = getDatabase(app);
-  isFirebaseReady = FIREBASE_CONFIG.apiKey !== "VOTRE_API_KEY";
-} catch(e) {
-  console.warn("Firebase non configuré, mode local activé.");
+// ── DATA ────────────────────────────────────────────
+const REGIONS = {
+  SUD:   { label:"SUD",      color:"#EC008C", agencies:["Aix en Provence","Bordeaux","La Corse","Montpellier","Nice","Toulouse"] },
+  EST:   { label:"EST",      color:"#FAA61A", agencies:["Annecy","Clermont","Dijon","Lille","Lyon","Reims","Strasbourg"] },
+  OUEST: { label:"OUEST",    color:"#939598", agencies:["Angoulême","Caen","Nantes","Orléans","St Brieuc"] },
+  PARIS: { label:"PARIS IDF",color:"#231f20", agencies:["Paris Est","Paris Ouest","Paris Centre"] },
+};
+
+const AGENCY_REGION = {};
+Object.entries(REGIONS).forEach(([rk,rv]) => rv.agencies.forEach(a => AGENCY_REGION[a] = rk));
+
+function agencyKey(name) { return name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,''); }
+
+// ── CALENDRIER 2026 (DA de semaine par semaine ISO) ──────────
+// Semaine ISO : lundi = début
+const CALENDRIER_2026 = {
+  // Avril
+  "2026-W14": "D.DEMANGE",     // 30 mars
+  "2026-W15": "F.COSTANTIN",   // 6 avril
+  "2026-W16": "E.RICHARD",     // 13 avril
+  "2026-W17": "M.SAVIOT",      // 20 avril
+  "2026-W18": "L.LAVY",        // 27 avril
+  // Mai
+  "2026-W19": "L.LAVY",        // 4 mai
+  "2026-W20": "V.LEROY",       // 11 mai
+  "2026-W21": "J.CANDILIER",   // 18 mai
+  "2026-W22": "F.KADRI",       // 25 mai
+  // Juin
+  "2026-W23": "A.DEGEORGES",   // 1 juin
+  "2026-W24": "M.BOUCHIKHI",   // 8 juin
+  "2026-W25": "C.DO VALE",     // 15 juin
+  "2026-W26": "N.YAZIME",      // 22 juin
+  "2026-W27": "L.LOVERINI CONCAS", // 29 juin
+  // Juillet
+  "2026-W28": "S.KEO",         // 6 juil
+  "2026-W29": "K.AFTAT",       // 13 juil
+  "2026-W30": "G.DELEVOY",     // 20 juil
+  "2026-W31": "Y.COCHARD",     // 27 juil
+  // Août
+  "2026-W32": "I.BAHRIA",      // 3 août
+  "2026-W33": "S.COSTANTIN",   // 10 août
+  "2026-W34": "S.DASILVA",     // 17 août
+  "2026-W35": "C.LESCOUTRE",   // 24 août
+  "2026-W36": "F.LAWSON",      // 31 août
+  // Septembre
+  "2026-W37": "D.DEMANGE",     // 7 sept
+  "2026-W38": "F.COSTANTIN",   // 14 sept
+  "2026-W39": "E.RICHARD",     // 21 sept
+  "2026-W40": "M.SAVIOT",      // 28 sept
+  // Octobre
+  "2026-W41": "L.LAVY",        // 5 oct
+  "2026-W42": "V.LEROY",       // 12 oct
+  "2026-W43": "J.CANDILIER",   // 19 oct
+  "2026-W44": "F.KADRI",       // 26 oct
+  // Novembre
+  "2026-W45": "A.DEGEORGES",   // 2 nov
+  "2026-W46": "M.BOUCHIKHI",   // 9 nov
+  "2026-W47": "C.DO VALE",     // 16 nov
+  "2026-W48": "M.SIREY",       // 23 nov
+  "2026-W49": "L.LOVERINI CONCAS", // 30 nov
+  // Décembre
+  "2026-W50": "S.KEO",         // 7 déc
+  "2026-W51": "K.AFTAT",       // 14 déc
+  "2026-W52": "G.DELEVOY",     // 21 déc
+  "2026-W53": "N.CHAXEL",      // 28 déc
+};
+
+// ── STATE ────────────────────────────────────────────
+let STATE = {
+  role: null,        // 'da' | 'commercial'
+  agency: null,
+  nom: null,
+  currentPage: null,
+  currentClassTab: 'region',
+  signataires: [],
+  palmaresTags: { premiers:[], doubles:[], triples:[], parrainages:[] },
+  allData: {},
+  palmares: null,
+};
+
+// ── UTILS ─────────────────────────────────────────────
+function todayStr() { return new Date().toISOString().slice(0,10); }
+
+function getWeekKey(date = new Date()) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+  return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2,'0')}`;
 }
 
-window._db = db;
-window._ref = ref;
-window._set = set;
-window._onValue = onValue;
-window._get = get;
-window._isFirebaseReady = isFirebaseReady;
-
-if (isFirebaseReady) {
-  document.getElementById('configNotice').style.display = 'none';
-  setSyncDot('online');
-
-  // Écoute temps réel de toutes les données
-  onValue(ref(db, 'results'), (snapshot) => {
-    window._allData = snapshot.val() || {};
-    setSyncDot('online');
-    refreshCurrentPage();
-  });
-} else {
-  // Mode localStorage fallback
-  window._allData = loadLocal();
-  setSyncDot('offline');
-}
-
-// ══════════════════════════════════════════
-//  LOCAL STORAGE FALLBACK
-// ══════════════════════════════════════════
-function loadLocal() {
-  try { return JSON.parse(localStorage.getItem('localfr_v3')) || {}; }
-  catch { return {}; }
-}
-function saveLocal(data) {
-  localStorage.setItem('localfr_v3', JSON.stringify(data));
-}
-
-// ══════════════════════════════════════════
-//  STATE
-// ══════════════════════════════════════════
-let currentAgency = null;
-let currentDA = null;
-let currentPeriod = 'day';
-let signataires = [];
-
-// ══════════════════════════════════════════
-//  UTILS
-// ══════════════════════════════════════════
-function today() { return new Date().toISOString().slice(0,10); }
-function getWeekStart() {
-  const d = new Date();
+function getWeekBounds(date = new Date()) {
+  const d = new Date(date);
   const day = d.getDay() || 7;
-  d.setDate(d.getDate() - day + 1);
-  return d.toISOString().slice(0,10);
-}
-function getMonthStart() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`;
-}
-function dateFrom(period) {
-  if (period === 'day') return today();
-  if (period === 'week') return getWeekStart();
-  return getMonthStart();
-}
-function fmtDate(s) {
-  return new Date(s + 'T12:00:00').toLocaleDateString('fr-FR', {weekday:'short',day:'numeric',month:'short'});
-}
-function agencyKey(name) {
-  return name.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,'_').toLowerCase();
-}
-function setSyncDot(state) {
-  const el = document.getElementById('syncDot');
-  el.className = 'sync-dot ' + state;
-}
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2500);
+  const mon = new Date(d); mon.setDate(d.getDate() - day + 1);
+  const fri = new Date(mon); fri.setDate(mon.getDate() + 4);
+  const fmt = (x) => x.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+  return `${fmt(mon)} au ${fmt(fri)}`;
 }
 
-// ══════════════════════════════════════════
-//  AUTH
-// ══════════════════════════════════════════
-window.doLogin = function() {
-  const agence = document.getElementById('loginAgence').value;
+function toast(msg, duration=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), duration);
+}
+
+function initials(name) {
+  return name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+}
+
+// ── LOGIN ─────────────────────────────────────────────
+window.selectRole = function(role) {
+  document.getElementById('loginStep1').style.display='none';
+  if(role==='da') document.getElementById('loginStepDA').style.display='block';
+  else document.getElementById('loginStepCommercial').style.display='block';
+};
+
+window.backToStep1 = function() {
+  document.getElementById('loginStep1').style.display='block';
+  document.getElementById('loginStepDA').style.display='none';
+  document.getElementById('loginStepCommercial').style.display='none';
+};
+
+window.doLoginDA = function() {
+  const agency = document.getElementById('loginAgence').value;
   const nom = document.getElementById('loginNom').value.trim();
-  if (!agence) { toast('Sélectionnez votre agence.'); return; }
-  if (!nom) { toast('Entrez votre nom.'); return; }
-  currentAgency = agence;
-  currentDA = nom;
-  localStorage.setItem('lf_session', JSON.stringify({ agency: agence, da: nom }));
-  document.getElementById('loginOverlay').style.display = 'none';
-  document.getElementById('daBadge').textContent = `${nom.split(' ')[0]} — ${agence}`;
-  initApp();
+  if(!agency){toast('Sélectionnez votre agence');return;}
+  if(!nom){toast('Entrez votre nom');return;}
+  localStorage.setItem('lp_role','da');
+  localStorage.setItem('lp_agency',agency);
+  localStorage.setItem('lp_nom',nom);
+  startApp('da',agency,nom);
 };
 
-window.askChangeAgency = function() {
-  if (confirm('Changer d\'agence ?')) { localStorage.removeItem('lf_session'); location.reload(); }
+window.doLoginCommercial = function() {
+  const prenom = document.getElementById('loginPrenom').value.trim() || 'Commercial';
+  localStorage.setItem('lp_role','commercial');
+  localStorage.setItem('lp_nom',prenom);
+  startApp('commercial',null,prenom);
 };
 
-// ══════════════════════════════════════════
-//  COUNTER
-// ══════════════════════════════════════════
-window.incr = function(id) {
-  const el = document.getElementById(id);
-  el.value = (parseInt(el.value)||0) + 1;
-};
-window.decr = function(id) {
-  const el = document.getElementById(id);
-  el.value = Math.max(0, (parseInt(el.value)||0) - 1);
+window.askLogout = function() {
+  if(confirm('Changer de profil ?')) {
+    localStorage.removeItem('lp_role');
+    localStorage.removeItem('lp_agency');
+    localStorage.removeItem('lp_nom');
+    location.reload();
+  }
 };
 
-// ══════════════════════════════════════════
-//  SIGNATAIRES
-// ══════════════════════════════════════════
+// ── START APP ─────────────────────────────────────────
+function startApp(role, agency, nom) {
+  STATE.role = role;
+  STATE.agency = agency;
+  STATE.nom = nom;
+
+  document.getElementById('loginOverlay').style.display='none';
+  document.getElementById('bottomNav').style.display='flex';
+  document.getElementById('userBadge').textContent = agency ? `${agency}` : nom;
+
+  buildNav();
+  subscribeData();
+  if(role==='da') goTo('saisie');
+  else goTo('palmares');
+}
+
+// ── NAV ───────────────────────────────────────────────
+function buildNav() {
+  const nav = document.getElementById('bottomNav');
+  if(STATE.role==='da') {
+    nav.innerHTML = `
+      <button class="nav-item" onclick="goTo('saisie')" id="nav-saisie"><span class="nav-icon">✏️</span>Saisie</button>
+      <button class="nav-item" onclick="goTo('palmares')" id="nav-palmares"><span class="nav-icon">🏆</span>Palmarès</button>
+      <button class="nav-item" onclick="goTo('classement')" id="nav-classement"><span class="nav-icon">📊</span>Classement</button>
+      <button class="nav-item" onclick="goTo('palmares-da')" id="nav-palmares-da"><span class="nav-icon">📝</span>Rédiger</button>
+      <button class="nav-item" onclick="goTo('calendrier')" id="nav-calendrier"><span class="nav-icon">📅</span>Agenda</button>
+    `;
+  } else {
+    nav.innerHTML = `
+      <button class="nav-item" onclick="goTo('palmares')" id="nav-palmares"><span class="nav-icon">🏆</span>Palmarès</button>
+      <button class="nav-item" onclick="goTo('classement')" id="nav-classement"><span class="nav-icon">📊</span>Classement</button>
+      <button class="nav-item" onclick="goTo('calendrier')" id="nav-calendrier"><span class="nav-icon">📅</span>Agenda</button>
+    `;
+  }
+}
+
+window.goTo = function(page) {
+  const pages = ['palmares','classement','saisie','palmares-da','calendrier'];
+  pages.forEach(p => {
+    const el = document.getElementById('page-'+p);
+    if(el) el.style.display = (p===page)?'block':'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  const active = document.getElementById('nav-'+page);
+  if(active) active.classList.add('active');
+  STATE.currentPage = page;
+
+  if(page==='classement') renderClassement();
+  if(page==='palmares') renderPalmares();
+  if(page==='calendrier') renderCalendrier();
+  if(page==='saisie') renderSaisie();
+  if(page==='palmares-da') checkDASemaine();
+};
+
+// ── FIREBASE SUBSCRIBE ────────────────────────────────
+function subscribeData() {
+  const dot = document.getElementById('syncDot');
+  dot.className='sync-dot syncing';
+
+  // Résultats
+  onValue(ref(db,'results'), snap => {
+    STATE.allData = snap.val() || {};
+    dot.className='sync-dot online';
+    if(STATE.currentPage==='classement') renderClassement();
+    if(STATE.currentPage==='saisie') renderSaisie();
+  });
+
+  // Palmarès publié
+  onValue(ref(db,'palmares/'+todayStr()), snap => {
+    STATE.palmares = snap.val();
+    if(STATE.currentPage==='palmares') renderPalmares();
+  });
+}
+
+// ── SAISIE ────────────────────────────────────────────
+function renderSaisie() {
+  if(!STATE.agency) return;
+  const today = todayStr();
+  const week = getWeekKey();
+  const key = agencyKey(STATE.agency);
+  const agData = STATE.allData[key] || {};
+
+  // Stats du jour
+  const todayEntry = agData[today] || {};
+  document.getElementById('myDaySig').textContent = todayEntry.signatures ?? '—';
+
+  // Stats semaine
+  let weekSig=0, weekRdv=0;
+  Object.entries(agData).forEach(([d,v]) => {
+    if(getWeekKey(new Date(d))===week) { weekSig+=v.signatures||0; weekRdv+=v.rdv||0; }
+  });
+  document.getElementById('myWeekSig').textContent = weekSig;
+  document.getElementById('myWeekRdv').textContent = weekRdv;
+
+  document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+
+  // Pré-remplir si déjà saisi
+  if(todayEntry.signatures!==undefined) {
+    document.getElementById('signatures').value = todayEntry.signatures;
+    document.getElementById('rdv').value = todayEntry.rdv||0;
+    document.getElementById('commentaire').value = todayEntry.commentaire||'';
+    STATE.signataires = todayEntry.signataires||[];
+    renderSigTags();
+    document.getElementById('submitStatus').textContent = '✓ Résultats déjà envoyés aujourd\'hui';
+  }
+}
+
+window.incr = function(id){ document.getElementById(id).value=Math.max(0,parseInt(document.getElementById(id).value||0)+1); }
+window.decr = function(id){ document.getElementById(id).value=Math.max(0,parseInt(document.getElementById(id).value||0)-1); }
+
 window.addSig = function() {
   const inp = document.getElementById('sigInput');
   const v = inp.value.trim();
-  if (!v) return;
-  signataires.push(v);
-  inp.value = '';
-  renderTags();
+  if(!v) return;
+  STATE.signataires.push(v);
+  inp.value='';
+  renderSigTags();
 };
-window.removeSig = function(i) {
-  signataires.splice(i,1);
-  renderTags();
+
+function renderSigTags() {
+  document.getElementById('sigTags').innerHTML = STATE.signataires.map((s,i)=>
+    `<div class="tag">${s}<button onclick="removeSig(${i})">✕</button></div>`
+  ).join('');
+}
+window.removeSig = function(i){ STATE.signataires.splice(i,1); renderSigTags(); };
+
+window.submitResults = function() {
+  if(!STATE.agency){toast('Non connecté');return;}
+  const btn = document.getElementById('submitBtn');
+  btn.disabled=true;
+  const key = agencyKey(STATE.agency);
+  const today = todayStr();
+  set(ref(db,`results/${key}/${today}`), {
+    agency: STATE.agency,
+    region: AGENCY_REGION[STATE.agency] || 'SUD',
+    da: STATE.nom,
+    signatures: parseInt(document.getElementById('signatures').value)||0,
+    rdv: parseInt(document.getElementById('rdv').value)||0,
+    signataires: STATE.signataires,
+    commentaire: document.getElementById('commentaire').value.trim(),
+    ts: Date.now(),
+  }).then(()=>{
+    btn.disabled=false;
+    document.getElementById('submitStatus').textContent='✓ Résultats envoyés !';
+    toast('✅ Résultats enregistrés');
+  }).catch(e=>{
+    btn.disabled=false;
+    toast('❌ Erreur : '+e.message);
+  });
 };
-function renderTags() {
-  const c = document.getElementById('sigTags');
-  c.innerHTML = signataires.length === 0
-    ? '<span style="font-size:12px;color:var(--muted);font-style:italic">Aucun signataire</span>'
-    : signataires.map((s,i) =>
-        `<div class="sig-tag">${s}<button onclick="removeSig(${i})">✕</button></div>`
-      ).join('');
+
+// ── PALMARES DA — tags ────────────────────────────────
+window.addTag = function(type) {
+  const inp = document.getElementById('input-'+type.replace('s',''));
+  // map type → input id
+  const inputMap = { premiers:'input-premier', doubles:'input-double', triples:'input-triple', parrainages:'input-parrainage' };
+  const inputEl = document.getElementById(inputMap[type]);
+  if(!inputEl) return;
+  const v = inputEl.value.trim();
+  if(!v) return;
+  STATE.palmaresTags[type].push(v);
+  inputEl.value='';
+  renderPalmaresTags(type);
+};
+
+function renderPalmaresTags(type) {
+  const tagMap = { premiers:'tags-premiers', doubles:'tags-doubles', triples:'tags-triples', parrainages:'tags-parrainages' };
+  document.getElementById(tagMap[type]).innerHTML = STATE.palmaresTags[type].map((s,i)=>
+    `<div class="tag">${s}<button onclick="removeTag('${type}',${i})">✕</button></div>`
+  ).join('');
+}
+window.removeTag = function(type,i){ STATE.palmaresTags[type].splice(i,1); renderPalmaresTags(type); };
+
+function checkDASemaine() {
+  const week = getWeekKey();
+  const daSemaine = CALENDRIER_2026[week] || '—';
+  const banner = document.getElementById('daSemaineBanner');
+  banner.textContent = `🏆 DA de semaine : ${daSemaine}`;
+
+  // Pré-remplir depuis Firebase si déjà saisi
+  get(ref(db,'palmares/'+todayStr())).then(snap=>{
+    if(snap.exists()) {
+      const d = snap.val();
+      STATE.palmaresTags = {
+        premiers: d.premiers||[],
+        doubles: d.doubles||[],
+        triples: d.triples||[],
+        parrainages: d.parrainages||[],
+      };
+      ['premiers','doubles','triples','parrainages'].forEach(renderPalmaresTags);
+      if(d.message) document.getElementById('palmares-message').value=d.message;
+    }
+  });
 }
 
-// ══════════════════════════════════════════
-//  INIT APP
-// ══════════════════════════════════════════
-function initApp() {
-  const d = new Date();
-  document.getElementById('todayLabel').textContent = d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('histoAgency').textContent = currentAgency;
+window.publishPalmares = function() {
+  const today = todayStr();
+  const week = getWeekKey();
 
-  // Load today's entry if exists
-  const key = agencyKey(currentAgency);
-  const entry = window._allData?.[key]?.[today()];
-  if (entry) {
-    document.getElementById('signatures').value = entry.signatures || 0;
-    document.getElementById('rdv').value = entry.rdv || 0;
-    document.getElementById('commentaire').value = entry.commentaire || '';
-    signataires = entry.signataires || [];
-    renderTags();
-    document.getElementById('submitStatus').textContent = '✓ Déjà soumis aujourd\'hui';
-  } else {
-    renderTags();
-  }
-  updateMyStats();
-}
+  // Construire classement agences du jour depuis allData
+  const ranking = [];
+  Object.entries(STATE.allData).forEach(([key,days])=>{
+    const entry = days[today];
+    if(!entry) return;
+    ranking.push({ agency:entry.agency||key, region:entry.region||'SUD', da:entry.da||'', signatures:entry.signatures||0, signataires:entry.signataires||[] });
+  });
+  ranking.sort((a,b)=>b.signatures-a.signatures);
 
-// ══════════════════════════════════════════
-//  SUBMIT
-// ══════════════════════════════════════════
-window.submitResults = async function() {
-  const sigs = parseInt(document.getElementById('signatures').value) || 0;
-  const rdv = parseInt(document.getElementById('rdv').value) || 0;
-  const commentaire = document.getElementById('commentaire').value.trim();
-  const key = agencyKey(currentAgency);
-
-  const entry = {
-    da: currentDA,
-    agency: currentAgency,
-    signatures: sigs,
-    rdv,
-    signataires: [...signataires],
-    commentaire,
-    ts: Date.now()
+  const data = {
+    date: today,
+    week,
+    daSemaine: CALENDRIER_2026[week]||'',
+    ranking,
+    premiers: STATE.palmaresTags.premiers,
+    doubles: STATE.palmaresTags.doubles,
+    triples: STATE.palmaresTags.triples,
+    parrainages: STATE.palmaresTags.parrainages,
+    message: document.getElementById('palmares-message').value.trim(),
+    publishedAt: Date.now(),
+    publishedBy: STATE.nom,
   };
 
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Enregistrement…';
-
-  if (isFirebaseReady) {
-    setSyncDot('syncing');
-    try {
-      await set(ref(db, `results/${key}/${today()}`), entry);
-      setSyncDot('online');
-    } catch(e) {
-      console.error(e);
-      setSyncDot('offline');
-      toast('Erreur réseau — sauvegardé localement.');
-      // fallback local
-      const local = loadLocal();
-      if (!local[key]) local[key] = {};
-      local[key][today()] = entry;
-      saveLocal(local);
-      window._allData = local;
-    }
-  } else {
-    const local = loadLocal();
-    if (!local[key]) local[key] = {};
-    local[key][today()] = entry;
-    saveLocal(local);
-    window._allData = local;
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Valider mes résultats ✓';
-  document.getElementById('submitStatus').textContent = `✓ Enregistré à ${new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`;
-  toast(`${sigs} signature(s) — ${rdv} RDV perso enregistrés !`);
-  updateMyStats();
-  renderHistorique();
-  renderPalmaresBloc(sigs, [...signataires], rdv);
+  set(ref(db,'palmares/'+today), data).then(()=>{
+    toast('✅ Palmarès publié !');
+    // Envoyer notification push
+    const envoyerNotif = httpsCallable(fns,'envoyerNotificationMaintenant');
+    const total = ranking.reduce((s,r)=>s+r.signatures,0);
+    const top = ranking[0];
+    envoyerNotif({
+      title: `🏆 Palmarès du ${new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}`,
+      message: `${total} contrat${total>1?'s':''} signés${top ? ' · 🥇 '+top.agency+' ('+top.signatures+')' : ''} · Voir le palmarès !`,
+    }).catch(e=>console.warn('Notif error',e));
+  }).catch(e=>toast('❌ '+e.message));
 };
 
-// ══════════════════════════════════════════
-//  MAPPING AGENCES → PALMARÈS V9
-// ══════════════════════════════════════════
-const PALMARES_MAP = {
-  // RÉGION SUD
-  'Aix-en-Provence':    { field: 'sud_aix',         region: 'SUD' },
-  'Bordeaux':           { field: 'sud_bordeaux',     region: 'SUD' },
-  'Corse':              { field: 'sud_corse',        region: 'SUD' },
-  'Montpellier':        { field: 'sud_montpellier',  region: 'SUD' },
-  'Nice':               { field: 'sud_nice',         region: 'SUD' },
-  'Toulouse':           { field: 'sud_toulouse',     region: 'SUD' },
-  // RÉGION EST
-  'Annecy':             { field: 'est_annecy',       region: 'EST' },
-  'Clermont-Ferrand':   { field: 'est_clermont',     region: 'EST' },
-  'Dijon':              { field: 'est_dijon',        region: 'EST' },
-  'Lille':              { field: 'est_lille',        region: 'EST' },
-  'Lyon':               { field: 'est_lyon',         region: 'EST' },
-  'Reims':              { field: 'est_reims',        region: 'EST' },
-  'Strasbourg':         { field: 'est_strasbourg',   region: 'EST' },
-  // RÉGION OUEST
-  'Angoulême':          { field: 'ouest_angouleme',  region: 'OUEST' },
-  'Caen':               { field: 'ouest_caen',       region: 'OUEST' },
-  'Nantes':             { field: 'ouest_nantes',     region: 'OUEST' },
-  'Orléans':            { field: 'ouest_orleans',    region: 'OUEST' },
-  'Saint-Brieuc':       { field: 'ouest_stbrieuc',   region: 'OUEST' },
-  // RÉGION PARIS IDF
-  'Paris Est':          { field: 'paris_est',        region: 'PARIS' },
-  'Paris Ouest':        { field: 'paris_ouest',      region: 'PARIS' },
-  'Paris Centre':       { field: 'paris_centre',     region: 'PARIS' },
-  // Correspondances avec la liste de l'appli
-  'Paris Nord':         { field: 'paris_est',        region: 'PARIS' },
-  'Paris Sud':          { field: 'paris_ouest',      region: 'PARIS' },
-  'Grenoble':           { field: 'est_annecy',       region: 'EST' },
-  'Rouen':              { field: 'ouest_caen',       region: 'OUEST' },
-  'Toulon':             { field: 'sud_nice',         region: 'SUD' },
-  'Nancy':              { field: 'est_strasbourg',   region: 'EST' },
-  'Nîmes':              { field: 'sud_montpellier',  region: 'SUD' },
-  'Pau':                { field: 'sud_bordeaux',     region: 'SUD' },
-  'Mulhouse':           { field: 'est_strasbourg',   region: 'EST' },
-  'Rennes':             { field: 'ouest_stbrieuc',   region: 'OUEST' },
-};
+// ── PALMARES VIEW ──────────────────────────────────────
+function renderPalmares() {
+  const el = document.getElementById('palmaresContent');
+  const p = STATE.palmares;
 
-function renderPalmaresBloc(sigs, sigNames, rdv) {
-  const bloc = document.getElementById('palmares-bloc');
-  const mapping = PALMARES_MAP[currentAgency];
-
-  if (!mapping) {
-    bloc.style.display = 'none';
+  if(!p || !p.ranking) {
+    el.innerHTML=`<div class="empty"><div class="e-icon">🏆</div><p>Le palmarès du jour n'est pas encore publié.</p></div>`;
     return;
   }
 
-  // Construire le texte signataires
-  let texte = sigNames.join(', ');
-  if (rdv > 0) texte += texte ? `, Persos ${rdv}` : `Persos ${rdv}`;
-  if (!texte) texte = 'Partie remise';
+  const today = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const total = p.ranking.reduce((s,r)=>s+r.signatures,0);
+  const top = p.ranking[0];
 
-  document.getElementById('palmares-count').textContent = sigs;
-  document.getElementById('palmares-text').textContent = texte;
-  document.getElementById('palmares-field-name').textContent =
-    `count_${mapping.field} (nombre) + ${mapping.field} (texte) — Région ${mapping.region}`;
+  let html = `
+    <div class="palmares-header">
+      <div class="palmares-date">${today}</div>
+      <div class="palmares-title">🏆 Palmarès local.fr</div>
+      <div class="palmares-sub">${total} contrat${total>1?'s':''} signés · ${p.ranking.length} agence${p.ranking.length>1?'s':''}</div>
+    </div>
+  `;
 
-  bloc.style.display = '';
-  bloc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-window.copyPalmaresCount = function() {
-  const val = document.getElementById('palmares-count').textContent;
-  navigator.clipboard.writeText(val).then(() => toast('Compteur copié ✓')).catch(() => {
-    // Fallback iOS
-    const el = document.getElementById('palmares-count');
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    toast('Compteur copié ✓');
-  });
-};
-
-window.copyPalmaresText = function() {
-  const val = document.getElementById('palmares-text').textContent;
-  navigator.clipboard.writeText(val).then(() => toast('Signataires copiés ✓')).catch(() => {
-    const el = document.getElementById('palmares-text');
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    toast('Signataires copiés ✓');
-  });
-};
-
-// ══════════════════════════════════════════
-//  MY STATS
-// ══════════════════════════════════════════
-function updateMyStats() {
-  const key = agencyKey(currentAgency);
-  const days = window._allData?.[key] || {};
-  const ws = getWeekStart();
-
-  const todayE = days[today()];
-  document.getElementById('myDaySig').textContent = todayE ? todayE.signatures : '—';
-
-  let wSig = 0, wRdv = 0;
-  Object.entries(days).forEach(([d, e]) => {
-    if (d >= ws) { wSig += e.signatures||0; wRdv += e.rdv||0; }
-  });
-  document.getElementById('myWeekSig').textContent = wSig;
-  document.getElementById('myWeekRdv').textContent = wRdv;
-}
-
-// ══════════════════════════════════════════
-//  CLASSEMENT
-// ══════════════════════════════════════════
-function buildRanking(period) {
-  const from = dateFrom(period);
-  const data = window._allData || {};
-  const rows = [];
-
-  Object.entries(data).forEach(([key, days]) => {
-    let sig = 0, rdv = 0, da = '', agency = '', sigs = [];
-    Object.entries(days).forEach(([d, e]) => {
-      if (d >= from) {
-        sig += e.signatures||0;
-        rdv += e.rdv||0;
-        sigs = sigs.concat(e.signataires||[]);
-        da = e.da || da;
-        agency = e.agency || agency;
-      }
-    });
-    if (agency) rows.push({ key, agency, da, sig, rdv, sigs });
-  });
-  rows.sort((a,b) => b.sig - a.sig || b.rdv - a.rdv);
-  return rows;
-}
-
-window.renderClassement = function() {
-  const rows = buildRanking(currentPeriod);
-  const myKey = currentAgency ? agencyKey(currentAgency) : null;
-  const el = document.getElementById('classementContent');
-
-  if (rows.length === 0) {
-    el.innerHTML = '<div class="empty"><div class="e-icon">🏆</div><p>Aucune agence n\'a encore soumis ses résultats.</p></div>';
-    return;
-  }
-
-  // Podium top 3
-  const medals = ['🥇','🥈','🥉'];
-  const order = [1,0,2];
-  const podiumHTML = `<div class="podium-row">${
-    order.map(i => {
-      const r = rows[i];
-      if (!r) return '<div class="pod-item"></div>';
-      return `<div class="pod-item pod-${i+1}">
-        <div class="pod-medal">${medals[i]}</div>
-        <div class="pod-name">${r.agency}</div>
-        <div class="pod-score">${r.sig}</div>
-        <div class="pod-bar"></div>
+  // Classement agences
+  html += `<div class="card"><div class="card-title">📊 Classement des agences</div>`;
+  p.ranking.forEach((r,i)=>{
+    const reg = REGIONS[r.region] || REGIONS.SUD;
+    const medals = ['🥇','🥈','🥉'];
+    const numDisp = i<3 ? medals[i] : `${i+1}`;
+    html += `
+      <div class="rank-row">
+        <div class="rank-num ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':''}">${numDisp}</div>
+        <div class="rank-info">
+          <div class="rank-name">${r.agency}</div>
+          <div class="rank-sub"><span class="reg-badge" style="background:${reg.color}">${reg.label}</span> ${r.da ? '· '+r.da : ''}</div>
+          ${r.signataires&&r.signataires.length ? `<div class="rank-sub" style="margin-top:3px">${r.signataires.join(', ')}</div>` : ''}
+        </div>
+        <div class="rank-score">${r.signatures}</div>
       </div>`;
-    }).join('')
-  }</div>`;
+  });
+  html += `</div>`;
 
-  const listHTML = rows.map((r,i) => {
-    const isMe = r.key === myKey;
-    const rc = i === 0 ? 'rank-1-color' : i === 1 ? 'rank-2-color' : i === 2 ? 'rank-3-color' : '';
-    return `<div class="rank-row ${isMe ? 'is-me' : ''}">
-      <div class="rank-num-big ${rc}">${medals[i] || (i+1)}</div>
-      <div class="rank-info">
-        <div class="rank-agency">${r.agency}${isMe ? ' <span style="font-size:10px;color:var(--fuchsia)">← vous</span>' : ''}</div>
-        <div class="rank-da">${r.da} · ${r.rdv} RDV perso</div>
-        ${r.sigs.length ? `<div class="rank-da" style="margin-top:2px">${r.sigs.slice(0,4).join(', ')}${r.sigs.length>4?'…':''}</div>` : ''}
-      </div>
-      <div class="rank-sigs">${r.sig}</div>
-    </div>`;
-  }).join('');
+  // Mises en avant
+  const hasMises = p.premiers.length||p.doubles.length||p.triples.length||p.parrainages.length;
+  if(hasMises) {
+    html += `<div class="card">`;
+    if(p.premiers.length) {
+      html += `<div class="card-title">🆕 Premiers contrats</div>`;
+      p.premiers.forEach(n=>{ html+=`<div class="highlight-item"><div class="highlight-emoji">⭐</div><div class="highlight-text">${n}</div></div>`; });
+    }
+    if(p.doubles.length) {
+      html += `<div class="card-title" style="margin-top:${p.premiers.length?'16px':'0'}">✌️ Doublés</div>`;
+      p.doubles.forEach(n=>{ html+=`<div class="highlight-item"><div class="highlight-emoji">🔥</div><div class="highlight-text">${n}</div></div>`; });
+    }
+    if(p.triples.length) {
+      html += `<div class="card-title" style="margin-top:16px">🔱 Triplés</div>`;
+      p.triples.forEach(n=>{ html+=`<div class="highlight-item"><div class="highlight-emoji">💥</div><div class="highlight-text">${n}</div></div>`; });
+    }
+    if(p.parrainages.length) {
+      html += `<div class="card-title" style="margin-top:16px">🤝 Parrainages</div>`;
+      p.parrainages.forEach(n=>{ html+=`<div class="highlight-item"><div class="highlight-emoji">🤝</div><div class="highlight-text">${n}</div></div>`; });
+    }
+    html += `</div>`;
+  }
 
-  el.innerHTML = `<div class="card">${podiumHTML}${listHTML}</div>`;
-};
+  if(p.message) {
+    html += `<div class="card" style="background:var(--dark);border:none"><p style="color:rgba(255,255,255,0.85);font-size:14px;line-height:1.6;font-style:italic">"${p.message}"</p><p style="color:var(--orange);font-size:12px;font-weight:700;margin-top:10px">${p.daSemaine||p.publishedBy||''}</p></div>`;
+  }
 
-window.setPeriod = function(period, btn) {
-  currentPeriod = period;
-  document.querySelectorAll('.period-tab').forEach(b => b.classList.remove('active'));
+  el.innerHTML = html;
+}
+
+// ── CLASSEMENT SEMAINE ────────────────────────────────
+window.setClassTab = function(tab, btn) {
+  STATE.currentClassTab = tab;
+  document.querySelectorAll('.seg-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderClassement();
 };
 
-// ══════════════════════════════════════════
-//  HISTORIQUE
-// ══════════════════════════════════════════
-function renderHistorique() {
-  const key = agencyKey(currentAgency);
-  const days = window._allData?.[key] || {};
-  const dates = Object.keys(days).sort().reverse();
-  const el = document.getElementById('histoContent');
+function renderClassement() {
+  const today = todayStr();
+  const week = getWeekKey();
+  document.getElementById('weekNote').textContent = `Semaine du ${getWeekBounds()}`;
 
-  if (dates.length === 0) {
-    el.innerHTML = '<div class="empty"><div class="e-icon">📋</div><p>Aucune donnée encore.</p></div>';
-    return;
-  }
-  el.innerHTML = dates.map(d => {
-    const e = days[d];
-    const isToday = d === today();
-    return `<div class="histo-row">
-      <div class="histo-date">${fmtDate(d)}${isToday ? ' <span style="color:var(--fuchsia)">● aujourd\'hui</span>' : ''}</div>
-      <div class="histo-stats">
-        <div class="histo-stat"><div class="histo-stat-val">${e.signatures||0}</div><div class="histo-stat-lbl">Signatures</div></div>
-        <div class="histo-stat"><div class="histo-stat-val">${e.rdv||0}</div><div class="histo-stat-lbl">RDV perso</div></div>
-      </div>
-      ${(e.signataires||[]).length ? `<div class="histo-names">${e.signataires.join(', ')}</div>` : ''}
-      ${e.commentaire ? `<div class="histo-names" style="font-style:italic;margin-top:3px">${e.commentaire}</div>` : ''}
-    </div>`;
-  }).join('');
-}
-
-// ══════════════════════════════════════════
-//  PAGE NAV
-// ══════════════════════════════════════════
-window.showPage = function(name, btn) {
-  ['saisie','classement','historique','mail'].forEach(p => {
-    document.getElementById(`page-${p}`).style.display = p === name ? '' : 'none';
-    document.getElementById(`nav-${p}`).classList.toggle('active', p === name);
-  });
-  if (name === 'classement') renderClassement();
-  if (name === 'historique') renderHistorique();
-};
-
-function refreshCurrentPage() {
-  const active = document.querySelector('.nav-item.active')?.id?.replace('nav-','');
-  if (!active || !currentAgency) return;
-  updateMyStats();
-  if (active === 'classement') renderClassement();
-  if (active === 'historique') renderHistorique();
-}
-
-// ══════════════════════════════════════════
-//  GÉNÉRATION MAIL STYLE PALMARÈS V9
-// ══════════════════════════════════════════
-
-// Mapping Firebase key → Palmarès region + display name
-const REGION_MAP = {
-  SUD: {
-    color: '#ec008c',
-    label: 'RÉGION SUD',
-    agencies: [
-      { key: 'aix_en_provence',  name: 'Aix en Provence' },
-      { key: 'bordeaux',         name: 'Bordeaux' },
-      { key: 'pau',              name: 'Pau' },
-      { key: 'toulon',           name: 'Toulon' },
-      { key: 'toulouse',         name: 'Toulouse' },
-      { key: 'montpellier',      name: 'Montpellier' },
-      { key: 'nimes',            name: 'Nîmes' },
-      { key: 'nice',             name: 'Nice' },
-    ]
-  },
-  EST: {
-    color: '#faa61a',
-    label: 'RÉGION EST',
-    agencies: [
-      { key: 'annecy',           name: 'Annecy' },
-      { key: 'clermont_ferrand', name: 'Clermont' },
-      { key: 'dijon',            name: 'Dijon' },
-      { key: 'grenoble',         name: 'Grenoble' },
-      { key: 'lille',            name: 'Lille' },
-      { key: 'lyon',             name: 'Lyon' },
-      { key: 'mulhouse',         name: 'Mulhouse' },
-      { key: 'nancy',            name: 'Nancy' },
-      { key: 'strasbourg',       name: 'Strasbourg' },
-    ]
-  },
-  OUEST: {
-    color: '#939598',
-    label: 'RÉGION OUEST',
-    agencies: [
-      { key: 'angoul_me',        name: 'Angoulême' },
-      { key: 'caen',             name: 'Caen' },
-      { key: 'nantes',           name: 'Nantes' },
-      { key: 'orl_ans',          name: 'Orléans' },
-      { key: 'rennes',           name: 'Rennes' },
-      { key: 'rouen',            name: 'Rouen' },
-      { key: 'saint_brieuc',     name: 'Saint-Brieuc' },
-    ]
-  },
-  PARIS: {
-    color: '#231f20',
-    label: 'RÉGION PARIS IDF',
-    agencies: [
-      { key: 'paris_est',        name: 'Paris Est' },
-      { key: 'paris_ouest',      name: 'Paris Ouest' },
-      { key: 'paris_centre',     name: 'Paris Centre' },
-      { key: 'paris_nord',       name: 'Paris Nord' },
-      { key: 'paris_sud',        name: 'Paris Sud' },
-    ]
-  }
-};
-
-function buildRegionHTML(regionKey, color, data) {
-  const region = REGION_MAP[regionKey];
-  let rows = '';
-  let regionTotal = 0;
-
-  region.agencies.forEach(ag => {
-    const entry = data[ag.key]?.[today()];
-    if (!entry) return;
-    const sigs = entry.signatures || 0;
-    const names = (entry.signataires || []).join(', ');
-    const rdv = entry.rdv || 0;
-    let texte = names;
-    if (rdv > 0) texte += (texte ? ', ' : '') + `Persos ${rdv}`;
-    if (!texte) texte = 'Partie remise';
-    regionTotal += sigs;
-
-    rows += `
-      <tr>
-        <td style="width:44px;padding:6px 4px 6px 0;vertical-align:stretch;text-align:left;">
-          <div style="display:flex;align-items:center;justify-content:center;width:36px;min-height:42px;height:100%;background-color:${color};color:#fff;font-weight:900;font-size:18px;text-align:center;border-radius:4px;">
-            ${sigs}
-          </div>
-        </td>
-        <td style="padding:6px 0;vertical-align:middle;">
-          <div style="padding:10px 12px;background-color:#fff;border-radius:0 6px 6px 0;border-left:4px solid ${color};box-shadow:0 1px 2px rgba(0,0,0,0.04);font-size:13.5px;color:#1e293b;">
-            <span style="font-weight:800;color:#0f172a;">${ag.name}</span>
-            <span style="font-weight:800;color:${color};margin:0 6px;">(${sigs})</span>
-            <span style="color:#475569;">: </span>${texte}
-          </div>
-        </td>
-      </tr>`;
-  });
-
-  if (!rows) return { html: '', total: 0 };
-
-  const html = `
-    <tr>
-      <td colspan="2" style="padding:12px 0 6px;">
-        <div style="background:${color};color:#fff;padding:8px 14px;border-radius:6px;font-weight:900;font-size:13px;letter-spacing:1px;text-transform:uppercase;">
-          ${region.label} — ${regionTotal} contrat${regionTotal > 1 ? 's' : ''}
-        </div>
-      </td>
-    </tr>
-    ${rows}
-    <tr><td colspan="2" style="height:12px;"></td></tr>`;
-
-  return { html, total: regionTotal };
-}
-
-window.generateMailPreview = function() {
-  const data = window._allData || {};
-  const conquetes = parseInt(document.getElementById('mail-conquetes').value) || 0;
-  const renouv   = parseInt(document.getElementById('mail-renouv').value) || 0;
-  const ads      = parseInt(document.getElementById('mail-ads').value) || 0;
-  const total    = conquetes + renouv + ads;
-  const perf     = document.getElementById('mail-perf').value.trim();
-  const mot      = document.getElementById('mail-mot').value.trim().replace(/\n/g, '<br>');
-
-  const d = new Date();
-  const dateStr = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-
-  let allRegionHTML = '';
-  let grandTotal = 0;
-  ['SUD','EST','OUEST','PARIS'].forEach(rk => {
-    const { html, total: rt } = buildRegionHTML(rk, REGION_MAP[rk].color, data);
-    allRegionHTML += html;
-    grandTotal += rt;
-  });
-
-  // Agences silencieuses
-  let silentList = '';
-  ['SUD','EST','OUEST','PARIS'].forEach(rk => {
-    REGION_MAP[rk].agencies.forEach(ag => {
-      if (!data[ag.key]?.[today()]) {
-        silentList += `<span style="display:inline-block;background:#334155;color:#94a3b8;padding:2px 8px;border-radius:4px;font-size:11px;margin:2px;">${ag.name}</span> `;
-      }
+  // Agréger données semaine
+  const agencySums = {}; // key → {agency, region, signatures, rdv, commerciaux:{nom→sigs}}
+  Object.entries(STATE.allData).forEach(([key,days])=>{
+    Object.entries(days).forEach(([d,v])=>{
+      if(getWeekKey(new Date(d))!==week) return;
+      if(!agencySums[key]) agencySums[key]={agency:v.agency||key, region:v.region||'SUD', signatures:0, rdv:0, commerciaux:{}};
+      agencySums[key].signatures += v.signatures||0;
+      agencySums[key].rdv += v.rdv||0;
+      // Commerciaux = signataires
+      (v.signataires||[]).forEach(n=>{ agencySums[key].commerciaux[n]=(agencySums[key].commerciaux[n]||0)+1; });
     });
   });
 
-  const mailHTML = `
-<div style="font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#0f172a;padding:20px;max-width:680px;margin:0 auto;">
+  const agencies = Object.values(agencySums).sort((a,b)=>b.signatures-a.signatures);
 
-  <!-- HEADER LOGO -->
-  <div style="text-align:center;margin-bottom:16px;">
-    <div style="display:inline-block;background:linear-gradient(135deg,#ec008c,#faa61a);padding:3px;border-radius:10px;">
-      <div style="background:#0f172a;border-radius:8px;padding:12px 24px;">
-        <span style="font-size:28px;font-weight:900;background:linear-gradient(135deg,#ec008c,#faa61a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px;">local.fr</span>
-      </div>
-    </div>
-  </div>
+  let html = '';
+  const tab = STATE.currentClassTab;
 
-  <!-- TITRE -->
-  <div style="text-align:center;margin-bottom:20px;">
-    <div style="color:#f8fafc;font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:2px;">Résultats du jour</div>
-    <div style="color:#94a3b8;font-size:13px;margin-top:4px;">${dateStr}</div>
-  </div>
-
-  <!-- TOTAUX -->
-  <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
-    <tr>
-      <td style="width:25%;padding:4px;">
-        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px;text-align:center;">
-          <div style="font-size:28px;font-weight:900;color:#ec008c;">${grandTotal || total}</div>
-          <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Total</div>
+  if(tab==='region') {
+    const regSums = {};
+    agencies.forEach(a=>{
+      const rk = a.region || 'SUD';
+      if(!regSums[rk]) regSums[rk]={signatures:0,agences:0};
+      regSums[rk].signatures+=a.signatures;
+      regSums[rk].agences++;
+    });
+    const regArr = Object.entries(regSums).sort((a,b)=>b[1].signatures-a[1].signatures);
+    html += `<div class="card">`;
+    if(!regArr.length) { html+=`<div class="empty"><div class="e-icon">📊</div><p>Pas encore de données cette semaine.</p></div>`; }
+    regArr.forEach(([rk,rv],i)=>{
+      const reg = REGIONS[rk]||{label:rk,color:'#888'};
+      const medals=['🥇','🥈','🥉'];
+      html+=`<div class="rank-row">
+        <div class="rank-num ${i<3?'rank-'+(i+1):''}">${i<3?medals[i]:i+1}</div>
+        <div class="rank-info">
+          <div class="rank-name"><span class="reg-badge" style="background:${reg.color}">${reg.label}</span></div>
+          <div class="rank-sub">${rv.agences} agence${rv.agences>1?'s':''}</div>
         </div>
-      </td>
-      <td style="width:25%;padding:4px;">
-        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px;text-align:center;">
-          <div style="font-size:28px;font-weight:900;color:#faa61a;">${conquetes}</div>
-          <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Conquêtes</div>
-        </div>
-      </td>
-      <td style="width:25%;padding:4px;">
-        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px;text-align:center;">
-          <div style="font-size:28px;font-weight:900;color:#939598;">${renouv}</div>
-          <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Renouvellements</div>
-        </div>
-      </td>
-      <td style="width:25%;padding:4px;">
-        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px;text-align:center;">
-          <div style="font-size:28px;font-weight:900;color:#64748b;">${ads}</div>
-          <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">ADS</div>
-        </div>
-      </td>
-    </tr>
-  </table>
-
-  ${perf ? `
-  <!-- PERF COLLECTIVE -->
-  <div style="background:linear-gradient(135deg,rgba(236,0,140,0.15),rgba(250,166,26,0.15));border:1px solid rgba(236,0,140,0.3);border-radius:8px;padding:12px 16px;margin-bottom:16px;text-align:center;">
-    <div style="color:#f8fafc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">⚡ ${perf}</div>
-  </div>` : ''}
-
-  <!-- RÉSULTATS PAR RÉGION -->
-  <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:16px;">
-    <table style="width:100%;border-collapse:collapse;">
-      ${allRegionHTML || '<tr><td style="color:#94a3b8;text-align:center;padding:20px;font-size:13px;">Aucune agence n\'a encore soumis ses résultats.</td></tr>'}
-    </table>
-  </div>
-
-  ${silentList ? `
-  <!-- AGENCES SILENCIEUSES -->
-  <div style="background:#1e293b;border:1px solid #475569;border-radius:8px;padding:12px 14px;margin-bottom:16px;">
-    <div style="color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">⏳ Résultats non saisis</div>
-    <div>${silentList}</div>
-  </div>` : ''}
-
-  ${mot ? `
-  <!-- MOT DU JOUR -->
-  <div style="background:linear-gradient(135deg,#1e293b,#0f172a);border-left:4px solid #ec008c;border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:16px;">
-    <div style="color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Direction</div>
-    <div style="color:#f8fafc;font-size:13px;line-height:1.6;">${mot}</div>
-  </div>` : ''}
-
-  <!-- FOOTER -->
-  <div style="text-align:center;padding-top:12px;border-top:1px solid #1e293b;">
-    <div style="color:#475569;font-size:11px;">local.fr — Résultats journaliers générés automatiquement</div>
-  </div>
-
-</div>`;
-
-  document.getElementById('mail-preview').innerHTML = mailHTML;
-  document.getElementById('mail-preview-card').style.display = '';
-  document.getElementById('mail-preview-card').scrollIntoView({ behavior: 'smooth' });
-
-  // Store for copy
-  window._mailHTMLToSend = mailHTML;
-};
-
-window.copyMailHTML = function() {
-  if (!window._mailHTMLToSend) { toast('Générez d\'abord le mail.'); return; }
-
-  // Copy the rendered HTML node for Outlook paste
-  const el = document.getElementById('mail-preview');
-  try {
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-    document.execCommand('copy');
-    sel.removeAllRanges();
-    toast('Mail copié ! Collez dans Outlook (Cmd+V) ✓');
-  } catch(e) {
-    // Fallback: copy as plain HTML string
-    navigator.clipboard.writeText(window._mailHTMLToSend)
-      .then(() => toast('HTML copié ✓ — Collez dans un éditeur mail HTML'))
-      .catch(() => toast('Copiez manuellement depuis l\'aperçu'));
-  }
-};
-
-// ══════════════════════════════════════════
-//  NOTIFICATIONS PUSH — ONESIGNAL
-// ══════════════════════════════════════════
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
-
-const firebaseFunctions = isFirebaseReady ? getFunctions(app, 'europe-west1') : null;
-
-window.subscribeToNotifications = async function() {
-  const statusEl = document.getElementById('notif-status');
-  statusEl.textContent = 'Activation en cours…';
-  try {
-    await window.OneSignalDeferred[0];
-    const OneSignal = window.OneSignal;
-    if (OneSignal) {
-      await OneSignal.Notifications.requestPermission();
-      const isSubscribed = await OneSignal.User.PushSubscription.optedIn;
-      if (isSubscribed) {
-        statusEl.textContent = '✓ Notifications activées sur cet appareil';
-        statusEl.style.color = 'var(--success)';
-      } else {
-        statusEl.textContent = 'Notifications refusées — vérifiez les réglages Safari';
-        statusEl.style.color = 'var(--fuchsia)';
-      }
-    }
-  } catch(e) {
-    statusEl.textContent = 'Erreur : ' + e.message;
-  }
-};
-
-window.sendNotificationNow = async function() {
-  const sendStatusEl = document.getElementById('notif-send-status');
-  const title = document.getElementById('notif-title').value.trim();
-  const message = document.getElementById('notif-message').value.trim();
-
-  if (!firebaseFunctions) {
-    sendStatusEl.textContent = 'Firebase non configuré.';
-    return;
+        <div class="rank-score">${rv.signatures}</div>
+      </div>`;
+    });
+    html+=`</div>`;
   }
 
-  sendStatusEl.textContent = 'Envoi en cours…';
-  sendStatusEl.style.color = 'var(--muted)';
-
-  try {
-    const sendNotif = httpsCallable(firebaseFunctions, 'envoyerNotificationMaintenant');
-    const result = await sendNotif({ title: title || null, message: message || null });
-    if (result.data.success) {
-      sendStatusEl.textContent = '✓ Notification envoyée à toute la force commerciale !';
-      sendStatusEl.style.color = 'var(--success)';
-      toast('Notification envoyée ✓');
-    }
-  } catch(e) {
-    sendStatusEl.textContent = 'Erreur envoi : ' + e.message;
-    sendStatusEl.style.color = 'var(--fuchsia)';
+  else if(tab==='agence') {
+    html += `<div class="card">`;
+    if(!agencies.length) { html+=`<div class="empty"><div class="e-icon">📊</div><p>Pas encore de données.</p></div>`; }
+    agencies.forEach((a,i)=>{
+      const reg = REGIONS[a.region]||{label:a.region,color:'#888'};
+      const medals=['🥇','🥈','🥉'];
+      html+=`<div class="rank-row">
+        <div class="rank-num ${i<3?'rank-'+(i+1):''}">${i<3?medals[i]:i+1}</div>
+        <div class="rank-info">
+          <div class="rank-name">${a.agency}</div>
+          <div class="rank-sub"><span class="reg-badge" style="background:${reg.color}">${reg.label}</span></div>
+        </div>
+        <div class="rank-score">${a.signatures}</div>
+      </div>`;
+    });
+    html+=`</div>`;
   }
-};
 
-// ══════════════════════════════════════════
-//  STARTUP
-// ══════════════════════════════════════════
-const savedSession = localStorage.getItem('lf_session');
-if (savedSession) {
-  try {
-    const { agency, da } = JSON.parse(savedSession);
-    currentAgency = agency;
-    currentDA = da;
-    document.getElementById('loginOverlay').style.display = 'none';
-    document.getElementById('daBadge').textContent = `${da.split(' ')[0]} — ${agency}`;
-    // Give Firebase time to push _allData via onValue, then init
-    setTimeout(initApp, isFirebaseReady ? 600 : 0);
-  } catch { /* show login */ }
+  else if(tab==='top10') {
+    // Tous les commerciaux (signataires)
+    const allCommerciaux = {};
+    agencies.forEach(a=>{
+      Object.entries(a.commerciaux).forEach(([nom,count])=>{
+        allCommerciaux[nom]=(allCommerciaux[nom]||0)+count;
+      });
+    });
+    const top10 = Object.entries(allCommerciaux).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    html+=`<div class="card">`;
+    if(!top10.length) { html+=`<div class="empty"><div class="e-icon">👤</div><p>Pas encore de signataires cette semaine.</p></div>`; }
+    top10.forEach(([nom,count],i)=>{
+      const medals=['🥇','🥈','🥉'];
+      html+=`<div class="rank-row">
+        <div class="rank-num ${i<3?'rank-'+(i+1):''}">${i<3?medals[i]:i+1}</div>
+        <div class="rank-info"><div class="rank-name">${nom}</div></div>
+        <div class="rank-score">${count}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+
+  document.getElementById('classContent').innerHTML = html;
 }
-</script>
 
+// ── CALENDRIER ────────────────────────────────────────
+function renderCalendrier() {
+  const currentWeek = getWeekKey();
+  const entries = Object.entries(CALENDRIER_2026);
+  let html = '';
+
+  entries.forEach(([wk,da])=>{
+    const isCurrent = wk===currentWeek;
+    const year = parseInt(wk.split('-W')[0]);
+    const week = parseInt(wk.split('-W')[1]);
+    // Calculer lundi de la semaine ISO
+    const jan4 = new Date(year,0,4);
+    const mon = new Date(jan4);
+    mon.setDate(jan4.getDate() - ((jan4.getDay()||7)-1) + (week-1)*7);
+    const fri = new Date(mon); fri.setDate(mon.getDate()+4);
+    const fmt = (x)=>x.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+    const weekLabel = `${fmt(mon)} – ${fmt(fri)}`;
+
+    html+=`<div class="cal-semaine" ${isCurrent?'style="border-color:var(--fuchsia);background:linear-gradient(135deg,rgba(236,0,140,0.08),rgba(250,166,26,0.08))"':''}>
+      <div class="cal-avatar">${initials(da)}</div>
+      <div>
+        <div class="cal-da-name">${da}${isCurrent?' 👈':''}</div>
+        <div class="cal-da-week">${weekLabel}</div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('calendrierContent').innerHTML = html || '<div class="empty">Aucune entrée.</div>';
+}
+
+// ── NOTIFICATIONS ──────────────────────────────────────
+window.subscribeToNotifications = function() {
+  if(window.OneSignal) {
+    window.OneSignal.Notifications.requestPermission().then(granted=>{
+      toast(granted ? '🔔 Notifications activées !' : 'Notifications refusées');
+    });
+  } else { toast('OneSignal non chargé'); }
+};
+
+// ── INIT ─────────────────────────────────────────────
+(function init() {
+  const role = localStorage.getItem('lp_role');
+  const agency = localStorage.getItem('lp_agency');
+  const nom = localStorage.getItem('lp_nom');
+  if(role) startApp(role, agency, nom||'');
+})();
+
+</script>
 </body>
 </html>
