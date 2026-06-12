@@ -598,8 +598,8 @@ window.doLoginDA = function() {
       btn.disabled=false; btn.textContent='Accéder ›';
       status.textContent = (err.code==='auth/invalid-credential'||err.code==='auth/wrong-password'||err.code==='auth/invalid-email')
         ? '❌ Code d\'accès incorrect'
-        : '❌ Erreur de connexion — réessayez';
-      console.warn('Login DA error', err.code);
+        : '❌ Erreur : '+(err.code||err.message||'inconnue');
+      console.warn('Login DA error', err.code, err.message);
     });
 };
 
