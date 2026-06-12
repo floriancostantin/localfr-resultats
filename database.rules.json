@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "results": {
+      ".read": "auth != null",
+      ".write": "auth != null && auth.token.email == 'da@localperf.app'"
+    },
+    "palmares": {
+      ".read": "auth != null",
+      ".write": "auth != null && auth.token.email == 'da@localperf.app'"
+    },
+    ".read": false,
+    ".write": false
+  }
+}

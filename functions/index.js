@@ -20,8 +20,8 @@ async function sendPushNotification(title, message) {
       included_segments: ["All"],
       headings: { fr: title, en: title },
       contents: { fr: message, en: message },
-      url: "https://floriancostantin.github.io/localfr-resultats/",
-      web_url: "https://floriancostantin.github.io/localfr-resultats/",
+      url: "https://localperf.netlify.app",
+      web_url: "https://localperf.netlify.app",
     });
 
     const options = {

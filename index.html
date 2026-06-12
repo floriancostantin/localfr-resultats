@@ -185,7 +185,7 @@ textarea { resize:vertical; min-height:64px; }
 <body>
 
 <!-- ══════════════════ LOGIN OVERLAY ══════════════════ -->
-<div class="overlay" id="loginOverlay">
+<div class="overlay" id="loginOverlay" style="display:none">
   <div class="sheet">
     <div class="sheet-handle"></div>
     <div class="sheet-title">local.fr</div>
@@ -248,7 +248,12 @@ textarea { resize:vertical; min-height:64px; }
         <label>Votre nom</label>
         <input type="text" id="loginNom" placeholder="Prénom NOM" autocomplete="name" />
       </div>
-      <button class="btn-main" onclick="doLoginDA()">Accéder ›</button>
+      <div class="form-group">
+        <label>🔒 Code d'accès directeur</label>
+        <input type="password" id="loginCode" placeholder="Code confidentiel" autocomplete="current-password" onkeydown="if(event.key==='Enter'){event.preventDefault();doLoginDA()}" />
+      </div>
+      <div id="loginDAStatus" style="text-align:center;font-size:12px;color:#ff5c7a;font-weight:700;margin-bottom:10px;min-height:16px"></div>
+      <button class="btn-main" id="loginDABtn" onclick="doLoginDA()">Accéder ›</button>
       <button class="btn-secondary" style="margin-top:8px" onclick="backToStep1()">← Retour</button>
     </div>
 
@@ -418,6 +423,7 @@ textarea { resize:vertical; min-height:64px; }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, push, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
+import { getAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyC6TIzX9lVWZ9q5mYhUB3fB5Q_VUoK8n3k",
@@ -432,6 +438,14 @@ const FIREBASE_CONFIG = {
 const app = initializeApp(FIREBASE_CONFIG);
 const db = getDatabase(app);
 const fns = getFunctions(app, "europe-west1");
+const auth = getAuth(app);
+
+// Compte directeur unique — le "code DA global" est le mot de passe de ce compte Firebase.
+// Pour changer le code : Firebase Console → Authentication → Users → ce compte → modifier le mot de passe.
+const DA_EMAIL = "da@localperf.app";
+
+// Garde la session active après fermeture de l'appli (utile pour les DA en PWA iPhone)
+setPersistence(auth, browserLocalPersistence).catch(()=>{});
 
 // ── DATA ────────────────────────────────────────────
 const REGIONS = {
@@ -561,19 +575,47 @@ window.backToStep1 = function() {
 window.doLoginDA = function() {
   const agency = document.getElementById('loginAgence').value;
   const nom = document.getElementById('loginNom').value.trim();
-  if(!agency){toast('Sélectionnez votre agence');return;}
-  if(!nom){toast('Entrez votre nom');return;}
-  localStorage.setItem('lp_role','da');
-  localStorage.setItem('lp_agency',agency);
-  localStorage.setItem('lp_nom',nom);
-  startApp('da',agency,nom);
+  const code = document.getElementById('loginCode').value;
+  const status = document.getElementById('loginDAStatus');
+  const btn = document.getElementById('loginDABtn');
+  status.textContent='';
+  if(!agency){status.textContent='Sélectionnez votre agence';return;}
+  if(!nom){status.textContent='Entrez votre nom';return;}
+  if(!code){status.textContent='Entrez le code d\'accès';return;}
+
+  btn.disabled=true; btn.textContent='Vérification…';
+  // Le code est validé par Firebase (mot de passe du compte directeur) — pas seulement à l'écran.
+  signInWithEmailAndPassword(auth, DA_EMAIL, code)
+    .then(()=>{
+      localStorage.setItem('lp_role','da');
+      localStorage.setItem('lp_agency',agency);
+      localStorage.setItem('lp_nom',nom);
+      btn.disabled=false; btn.textContent='Accéder ›';
+      document.getElementById('loginCode').value='';
+      startApp('da',agency,nom);
+    })
+    .catch(err=>{
+      btn.disabled=false; btn.textContent='Accéder ›';
+      status.textContent = (err.code==='auth/invalid-credential'||err.code==='auth/wrong-password'||err.code==='auth/invalid-email')
+        ? '❌ Code d\'accès incorrect'
+        : '❌ Erreur de connexion — réessayez';
+      console.warn('Login DA error', err.code);
+    });
 };
 
 window.doLoginCommercial = function() {
   const prenom = document.getElementById('loginPrenom').value.trim() || 'Commercial';
-  localStorage.setItem('lp_role','commercial');
-  localStorage.setItem('lp_nom',prenom);
-  startApp('commercial',null,prenom);
+  // Connexion anonyme : accès lecture seule, aucun droit d'écriture côté base.
+  signInAnonymously(auth)
+    .then(()=>{
+      localStorage.setItem('lp_role','commercial');
+      localStorage.setItem('lp_nom',prenom);
+      startApp('commercial',null,prenom);
+    })
+    .catch(err=>{
+      toast('❌ Connexion impossible');
+      console.warn('Login commercial error', err.code);
+    });
 };
 
 window.askLogout = function() {
@@ -581,7 +623,7 @@ window.askLogout = function() {
     localStorage.removeItem('lp_role');
     localStorage.removeItem('lp_agency');
     localStorage.removeItem('lp_nom');
-    location.reload();
+    signOut(auth).finally(()=>location.reload());
   }
 };
 
@@ -622,6 +664,12 @@ function buildNav() {
 }
 
 window.goTo = function(page) {
+  // Pages réservées aux directeurs — blocage même si un commercial force la navigation
+  const DA_ONLY = ['saisie','palmares-da'];
+  if(DA_ONLY.includes(page) && STATE.role!=='da') {
+    toast('🔒 Accès réservé aux directeurs');
+    page = 'palmares';
+  }
   const pages = ['palmares','classement','saisie','palmares-da','calendrier'];
   pages.forEach(p => {
     const el = document.getElementById('page-'+p);
@@ -1031,11 +1079,24 @@ window.subscribeToNotifications = function() {
 };
 
 // ── INIT ─────────────────────────────────────────────
+function showLogin() {
+  document.getElementById('loginOverlay').style.display='flex';
+  document.getElementById('bottomNav').style.display='none';
+}
+
 (function init() {
-  const role = localStorage.getItem('lp_role');
-  const agency = localStorage.getItem('lp_agency');
-  const nom = localStorage.getItem('lp_nom');
-  if(role) startApp(role, agency, nom||'');
+  // On attend l'état d'authentification Firebase (session persistée entre les ouvertures).
+  onAuthStateChanged(auth, (user) => {
+    const role = localStorage.getItem('lp_role');
+    const agency = localStorage.getItem('lp_agency');
+    const nom = localStorage.getItem('lp_nom');
+    // Cohérence : pas de session valide, ou un commercial (anonyme) qui prétend être DA → on redemande le login
+    if(!user || !role || (role==='da' && user.isAnonymous)) {
+      showLogin();
+      return;
+    }
+    startApp(role, agency, nom||'');
+  });
 })();
 
 </script>
