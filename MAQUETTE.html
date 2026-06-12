@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>LocalPerf — Maquette V2</title>
+<style>
+:root {
+  --fuchsia:#EC008C; --orange:#FAA61A; --dark:#16162a; --darker:#0f0f1f;
+  --card:#1e1e38; --border:rgba(255,255,255,0.08); --text:#ffffff; --muted:#8888aa;
+  --success:#00c48c; --gold:#F6B800; --silver:#B8B8C4; --bronze:#CD7F32;
+  --gradient:linear-gradient(135deg,var(--fuchsia),var(--orange));
+  --c-sud:#EC008C; --c-est:#FAA61A; --c-ouest:#939598; --c-paris:#5b5b7a;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--darker);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* SCAFFOLD */
+.phone{max-width:460px;margin:0 auto;min-height:100vh;background:radial-gradient(120% 60% at 50% 0%,#241a3a 0%,var(--darker) 55%);position:relative;padding-bottom:80px}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;position:sticky;top:0;z-index:50;background:rgba(15,15,31,0.7);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.logo{font-weight:900;font-size:19px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.demo-badge{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--orange);border:1px solid rgba(250,166,26,0.4);padding:3px 8px;border-radius:20px}
+
+/* DEMO TABS */
+.demo-tabs{display:flex;gap:6px;padding:14px 16px 4px;overflow-x:auto}
+.demo-tab{flex:1;white-space:nowrap;padding:10px 12px;border:1px solid var(--border);background:var(--card);border-radius:12px;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+.demo-tab.active{background:var(--gradient);color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(236,0,140,0.35)}
+
+.screen{display:none;padding:8px 16px 20px;animation:fade .4s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 8px 30px rgba(0,0,0,0.25)}
+.card-title{font-size:13px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;letter-spacing:.2px}
+.section-label{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:18px 4px 10px}
+
+/* ═══ PALMARÈS SEXY ═══ */
+.hero{position:relative;border-radius:22px;padding:22px 20px 20px;text-align:center;margin-bottom:14px;overflow:hidden;background:linear-gradient(135deg,#2a1140,#3a1530)}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 80% at 50% -10%,rgba(236,0,140,0.45),transparent 70%)}
+.hero>*{position:relative;z-index:1}
+.hero-date{font-size:11px;color:rgba(255,255,255,0.55);font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.hero-total{font-size:64px;font-weight:900;line-height:1;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 20px rgba(236,0,140,0.4))}
+.hero-label{font-size:13px;color:rgba(255,255,255,0.7);font-weight:600;margin-top:4px}
+.hero-sub{font-size:12px;color:var(--orange);font-weight:700;margin-top:10px;display:inline-flex;gap:6px;align-items:center;background:rgba(250,166,26,0.12);padding:6px 12px;border-radius:20px}
+
+/* PODIUM */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:8px 0 4px}
+.pod{flex:1;display:flex;flex-direction:column;align-items:center;animation:rise .6s cubic-bezier(.2,1.2,.3,1) both}
+.pod:nth-child(1){animation-delay:.15s}.pod:nth-child(2){animation-delay:0s}.pod:nth-child(3){animation-delay:.3s}
+@keyframes rise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.pod-ava{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;color:#fff;border:3px solid;margin-bottom:6px;position:relative}
+.pod-medal{position:absolute;bottom:-6px;right:-6px;font-size:20px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+.pod-name{font-size:12px;font-weight:800;text-align:center;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod-score{font-size:13px;font-weight:900;color:var(--orange)}
+.pod-bar{width:100%;border-radius:12px 12px 0 0;margin-top:8px;display:flex;align-items:flex-start;justify-content:center;padding-top:8px;font-size:22px;font-weight:900;color:rgba(255,255,255,.25)}
+.pod-1 .pod-bar{height:80px;background:linear-gradient(180deg,rgba(246,184,0,.35),rgba(246,184,0,.05))}
+.pod-1 .pod-ava{border-color:var(--gold);box-shadow:0 0 24px rgba(246,184,0,.5)}
+.pod-2 .pod-bar{height:58px;background:linear-gradient(180deg,rgba(184,184,196,.3),rgba(184,184,196,.05))}
+.pod-2 .pod-ava{border-color:var(--silver)}
+.pod-3 .pod-bar{height:42px;background:linear-gradient(180deg,rgba(205,127,50,.3),rgba(205,127,50,.05))}
+.pod-3 .pod-ava{border-color:var(--bronze)}
+
+/* RANK ROWS */
+.rank-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.rank-row:last-child{border-bottom:none}
+.rank-num{width:24px;text-align:center;font-weight:900;color:var(--muted);font-size:14px}
+.rank-name{font-size:14px;font-weight:700}
+.rank-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.reg-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.3px}
+.rank-score{margin-left:auto;font-size:20px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* REACTIONS */
+.reactions{display:flex;gap:8px;margin-top:6px}
+.react{flex:1;border:1px solid var(--border);background:var(--darker);border-radius:14px;padding:10px;text-align:center;cursor:pointer;font-size:18px;transition:.15s}
+.react:active{transform:scale(.92)}
+.react.on{border-color:var(--fuchsia);background:rgba(236,0,140,.12)}
+.react small{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
+
+/* HIGHLIGHT */
+.hl{display:flex;align-items:center;gap:10px;padding:9px 0}
+.hl-emoji{font-size:22px}
+.hl-text{font-size:14px;font-weight:600}
+.export-btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,#25D366,#1aa851);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* ═══ GAMIFICATION ═══ */
+.gauge-wrap{text-align:center;padding:6px 0}
+.gauge{position:relative;width:170px;height:170px;margin:0 auto}
+.gauge svg{transform:rotate(-90deg)}
+.gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge-pct{font-size:34px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.gauge-lbl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.gauge-meta{font-size:13px;color:var(--muted);margin-top:8px}
+.gauge-meta b{color:var(--text)}
+
+.streak{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(250,166,26,.14),rgba(236,0,140,.1));border:1px solid rgba(250,166,26,.3);border-radius:18px;padding:16px}
+.streak-flame{font-size:44px;animation:flick 1.5s ease-in-out infinite}
+@keyframes flick{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.12) rotate(2deg)}}
+.streak-n{font-size:30px;font-weight:900;line-height:1}
+.streak-t{font-size:13px;color:var(--muted);font-weight:600;margin-top:2px}
+
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.badge{aspect-ratio:1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid var(--border);background:var(--darker);position:relative}
+.badge.unlocked{background:linear-gradient(135deg,rgba(236,0,140,.18),rgba(250,166,26,.12));border-color:rgba(236,0,140,.35)}
+.badge.locked{opacity:.4;filter:grayscale(1)}
+.badge-ico{font-size:28px}
+.badge-name{font-size:9px;font-weight:800;text-align:center;color:var(--muted);line-height:1.1}
+.badge.unlocked .badge-name{color:var(--text)}
+
+.lvl-bar{height:12px;border-radius:8px;background:var(--darker);overflow:hidden;margin:8px 0 6px}
+.lvl-fill{height:100%;border-radius:8px;background:var(--gradient);width:68%;box-shadow:0 0 12px rgba(236,0,140,.5)}
+
+/* ═══ ANALYTICS ═══ */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px}
+.kpi-val{font-size:30px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.kpi-lbl{font-size:11px;color:var(--muted);font-weight:700;margin-top:6px;text-transform:uppercase;letter-spacing:.3px}
+.kpi-trend{font-size:11px;font-weight:800;margin-top:6px}
+.up{color:var(--success)}.down{color:#ff5c7a}
+
+.bars{display:flex;align-items:flex-end;gap:8px;height:140px;padding-top:10px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:8px 8px 0 0;background:var(--gradient);position:relative;animation:grow .8s cubic-bezier(.2,1,.3,1) both}
+@keyframes grow{from{height:0!important}}
+.bar-v{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:11px;font-weight:800}
+.bar-x{font-size:10px;color:var(--muted);font-weight:700}
+
+.spark{width:100%;height:60px}
+.record{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.record:last-child{border-bottom:none}
+.record-ico{font-size:26px}
+.record-v{margin-left:auto;font-size:20px;font-weight:900;color:var(--orange)}
+
+.note{font-size:11px;color:var(--muted);text-align:center;padding:14px;line-height:1.6}
+
+/* CONFETTI */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:999}
+.cf{position:absolute;width:9px;height:14px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+<div id="confetti"></div>
+<div class="phone">
+  <header>
+    <div class="logo">LocalPerf</div>
+    <div class="demo-badge">Maquette V2</div>
+  </header>
+
+  <div class="demo-tabs">
+    <button class="demo-tab active" onclick="showScreen('palmares',this)">🏆 Palmarès</button>
+    <button class="demo-tab" onclick="showScreen('gami',this)">🏅 Gamif</button>
+    <button class="demo-tab" onclick="showScreen('analytics',this)">📈 Analytics</button>
+  </div>
+
+  <!-- ═══════ PALMARÈS ═══════ -->
+  <div class="screen active" id="screen-palmares">
+    <div class="hero">
+      <div class="hero-date">Jeudi 12 juin 2026</div>
+      <div class="hero-total" id="counter">0</div>
+      <div class="hero-label">contrats signés aujourd'hui</div>
+      <div class="hero-sub">🔥 +18% vs hier · record du mois battu</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🥇 Le podium des agences</div>
+      <div class="podium">
+        <div class="pod pod-2">
+          <div class="pod-ava" style="background:var(--c-est)">LY<span class="pod-medal">🥈</span></div>
+          <div class="pod-name">Lyon</div><div class="pod-score">9</div>
+          <div class="pod-bar">2</div>
+        </div>
+        <div class="pod pod-1">
+          <div class="pod-ava" style="background:var(--c-sud)">TO<span class="pod-medal">🥇</span></div>
+          <div class="pod-name">Toulouse</div><div class="pod-score">12</div>
+          <div class="pod-bar">1</div>
+        </div>
+        <div class="pod pod-3">
+          <div class="pod-ava" style="background:var(--c-ouest)">NA<span class="pod-medal">🥉</span></div>
+          <div class="pod-name">Nantes</div><div class="pod-score">7</div>
+          <div class="pod-bar">3</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 Suite du classement</div>
+      <div class="rank-row"><div class="rank-num">4</div><div><div class="rank-name">Bordeaux</div><div class="rank-sub"><span class="reg-badge" style="background:var(--c-sud)">Sud</span> · M.Saviot</div></div><div class="rank-score">6</div></div>
+      <div class="rank-row"><div class="rank-num">5</div><div><div class="rank-name">Lille</div><div class="rank-sub"><span class="reg-badge" style="background:var(--c-est)">Est</span> · L.Lavy</div></div><div class="rank-score">5</div></div>
+      <div class="rank-row"><div class="rank-num">6</div><div><div class="rank-name">Paris Ouest</div><div class="rank-sub"><span class="reg-badge" style="background:var(--c-paris)">Paris</span> · V.Leroy</div></div><div class="rank-score">4</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🆕 Les moments forts du jour</div>
+      <div class="hl"><div class="hl-emoji">⭐</div><div class="hl-text">Julie M. — <b>1er contrat</b> à Montpellier !</div></div>
+      <div class="hl"><div class="hl-emoji">🔥</div><div class="hl-text">Karim A. — doublé à Lyon</div></div>
+      <div class="hl"><div class="hl-emoji">💥</div><div class="hl-text">Sophie D. — <b>triplé</b> à Toulouse</div></div>
+      <div class="reactions">
+        <div class="react on" onclick="toggleReact(this)">🔥<small id="r1">24</small></div>
+        <div class="react" onclick="toggleReact(this)">👏<small id="r2">17</small></div>
+        <div class="react" onclick="toggleReact(this)">💪<small id="r3">9</small></div>
+        <div class="react" onclick="toggleReact(this)">🚀<small id="r4">12</small></div>
+      </div>
+    </div>
+
+    <button class="export-btn" onclick="fireConfetti()">📸 Partager le palmarès sur WhatsApp</button>
+    <div class="note">↑ Génère une belle image prête à poster dans les groupes commerciaux</div>
+  </div>
+
+  <!-- ═══════ GAMIFICATION ═══════ -->
+  <div class="screen" id="screen-gami">
+    <div class="section-label">Objectif de la semaine — Toulouse</div>
+    <div class="card">
+      <div class="gauge-wrap">
+        <div class="gauge">
+          <svg width="170" height="170">
+            <circle cx="85" cy="85" r="72" stroke="rgba(255,255,255,.07)" stroke-width="16" fill="none"/>
+            <circle cx="85" cy="85" r="72" stroke="url(#g)" stroke-width="16" fill="none" stroke-linecap="round"
+              stroke-dasharray="452" stroke-dashoffset="140" id="gaugeArc"/>
+            <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EC008C"/><stop offset="1" stop-color="#FAA61A"/></linearGradient></defs>
+          </svg>
+          <div class="gauge-center"><div class="gauge-pct">69%</div><div class="gauge-lbl">de l'objectif</div></div>
+        </div>
+        <div class="gauge-meta"><b>31</b> / 45 signatures · il reste <b>2 jours</b></div>
+      </div>
+    </div>
+
+    <div class="section-label">Ta série en cours</div>
+    <div class="streak">
+      <div class="streak-flame">🔥</div>
+      <div><div class="streak-n">8 jours</div><div class="streak-t">consécutifs avec au moins 1 signature</div></div>
+      <div style="margin-left:auto;text-align:right"><div style="font-size:12px;color:var(--muted)">Record</div><div style="font-weight:900;font-size:18px;color:var(--orange)">14</div></div>
+    </div>
+
+    <div class="section-label">Niveau de l'agence</div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+        <div style="font-size:32px">🏆</div>
+        <div><div style="font-weight:900;font-size:16px">Niveau 7 — Élite</div><div style="font-size:12px;color:var(--muted)">Plus que 140 pts pour le niveau 8</div></div>
+      </div>
+      <div class="lvl-bar"><div class="lvl-fill"></div></div>
+      <div style="font-size:11px;color:var(--muted);text-align:right">3 160 / 3 300 pts</div>
+    </div>
+
+    <div class="section-label">Trophées débloqués</div>
+    <div class="card">
+      <div class="badges">
+        <div class="badge unlocked"><div class="badge-ico">🥇</div><div class="badge-name">1er du jour</div></div>
+        <div class="badge unlocked"><div class="badge-ico">🔥</div><div class="badge-name">Série x7</div></div>
+        <div class="badge unlocked"><div class="badge-ico">💥</div><div class="badge-name">Triplé</div></div>
+        <div class="badge unlocked"><div class="badge-ico">📈</div><div class="badge-name">Record battu</div></div>
+        <div class="badge unlocked"><div class="badge-ico">🤝</div><div class="badge-name">Parrain</div></div>
+        <div class="badge locked"><div class="badge-ico">👑</div><div class="badge-name">N°1 région</div></div>
+        <div class="badge locked"><div class="badge-ico">💯</div><div class="badge-name">100 sigs</div></div>
+        <div class="badge locked"><div class="badge-ico">⚡</div><div class="badge-name">Série x15</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ ANALYTICS ═══════ -->
+  <div class="screen" id="screen-analytics">
+    <div class="section-label">Cumul — Juin 2026</div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-val">847</div><div class="kpi-lbl">Contrats ce mois</div><div class="kpi-trend up">▲ +14% vs mai</div></div>
+      <div class="kpi"><div class="kpi-val">4 312</div><div class="kpi-lbl">Cumul 2026</div><div class="kpi-trend up">▲ Objectif annuel 61%</div></div>
+      <div class="kpi"><div class="kpi-val">40</div><div class="kpi-lbl">Moy. / jour</div><div class="kpi-trend up">▲ +3 vs mois dernier</div></div>
+      <div class="kpi"><div class="kpi-val">Toulouse</div><div class="kpi-lbl">Agence du mois</div><div class="kpi-trend down">— 112 contrats</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 Signatures par semaine — Juin</div>
+      <div class="bars">
+        <div class="bar-col"><div class="bar" style="height:55%"><div class="bar-v">182</div></div><div class="bar-x">S23</div></div>
+        <div class="bar-col"><div class="bar" style="height:72%"><div class="bar-v">241</div></div><div class="bar-x">S24</div></div>
+        <div class="bar-col"><div class="bar" style="height:90%"><div class="bar-v">298</div></div><div class="bar-x">S25</div></div>
+        <div class="bar-col"><div class="bar" style="height:38%"><div class="bar-v">126</div></div><div class="bar-x">S26</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📈 Tendance 30 jours</div>
+      <svg class="spark" viewBox="0 0 300 60" preserveAspectRatio="none">
+        <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(236,0,140,.4)"/><stop offset="1" stop-color="rgba(236,0,140,0)"/></linearGradient></defs>
+        <polyline fill="none" stroke="url(#g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+          points="0,45 25,40 50,42 75,30 100,33 125,22 150,25 175,15 200,20 225,10 250,14 275,6 300,9"/>
+        <polygon fill="url(#sg)" points="0,45 25,40 50,42 75,30 100,33 125,22 150,25 175,15 200,20 225,10 250,14 275,6 300,9 300,60 0,60"/>
+      </svg>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏅 Records historiques</div>
+      <div class="record"><div class="record-ico">📅</div><div><div style="font-weight:700;font-size:14px">Meilleure journée</div><div class="rank-sub">14 mars 2026</div></div><div class="record-v">68</div></div>
+      <div class="record"><div class="record-ico">🗓️</div><div><div style="font-weight:700;font-size:14px">Meilleure semaine</div><div class="rank-sub">S11 · mars</div></div><div class="record-v">312</div></div>
+      <div class="record"><div class="record-ico">🏢</div><div><div style="font-weight:700;font-size:14px">Record agence / jour</div><div class="rank-sub">Toulouse · 14 mars</div></div><div class="record-v">15</div></div>
+      <div class="record"><div class="record-ico">👤</div><div><div style="font-weight:700;font-size:14px">Record commercial / jour</div><div class="rank-sub">Sophie D. · 14 mars</div></div><div class="record-v">5</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showScreen(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.querySelectorAll('.demo-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  if(id==='palmares') countUp();
+}
+function countUp(){
+  const el=document.getElementById('counter');const target=87;let n=0;
+  const step=()=>{n+=Math.ceil((target-n)/6);if(n>=target)n=target;el.textContent=n;if(n<target)requestAnimationFrame(step)};
+  el.textContent=0;requestAnimationFrame(step);
+}
+function toggleReact(el){
+  const s=el.querySelector('small');let v=parseInt(s.textContent);
+  if(el.classList.toggle('on'))v++;else v--;s.textContent=v;
+}
+function fireConfetti(){
+  const c=document.getElementById('confetti');const cols=['#EC008C','#FAA61A','#00c48c','#F6B800','#fff'];
+  for(let i=0;i<70;i++){
+    const p=document.createElement('div');p.className='cf';
+    p.style.left=Math.random()*100+'vw';p.style.background=cols[i%cols.length];
+    p.style.animationDuration=(2+Math.random()*1.5)+'s';p.style.animationDelay=Math.random()*0.3+'s';
+    p.style.top='-20px';c.appendChild(p);setTimeout(()=>p.remove(),4000);
+  }
+}
+countUp();
+</script>
+</body>
+</html>
