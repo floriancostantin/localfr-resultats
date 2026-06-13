@@ -3,3 +3,10 @@
 node_modules/
 functions/node_modules/
 *.backup-*
+.claude/
+# maquettes de travail (gardées en local, non déployées)
+ACCUEIL-FINAL.html
+ACCUEIL-JOURS.html
+ACCUEIL-PHOTOS.html
+ACCUEIL-IMMERSIF.html
+VISUELS-ACCUEIL.html
