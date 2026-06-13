@@ -214,10 +214,12 @@ textarea { resize:vertical; min-height:64px; }
 .hh-quote::before{content:"\201C";color:var(--orange);font-weight:800;font-style:normal;margin-right:2px}
 .hh-h1{font-size:74px;line-height:.98;font-weight:800;letter-spacing:-2.2px;color:#fff;margin-bottom:26px;text-shadow:0 6px 30px rgba(0,0,0,.4)}
 .hh-h1 .g{background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.hh-cta{display:flex;gap:13px;flex-wrap:wrap;margin-bottom:34px}
+.hh-cta{display:flex;gap:13px;flex-wrap:wrap;margin-bottom:16px}
 .hh-enter{padding:16px 28px;background:var(--gradient);color:#fff;border:none;border-radius:15px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 14px 40px rgba(236,0,140,.5);transition:transform .15s}
 .hh-enter:active{transform:scale(.98)}
 .hh-enter-2{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);box-shadow:none;backdrop-filter:blur(6px)}
+.hh-da-link{display:inline-block;margin:0 0 30px;padding:5px 0;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.62);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:color .15s}
+.hh-da-link:hover{color:#fff}
 .hh-stats{display:flex;gap:40px}
 .hh-stats .s b{display:block;font-size:34px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
 .hh-stats .s span{font-size:11.5px;color:#b3acc0;font-weight:600;letter-spacing:.5px}
@@ -253,9 +255,10 @@ textarea { resize:vertical; min-height:64px; }
       <div class="hh-quote" id="hhQuote"></div>
       <h1 class="hh-h1">Chaque signature <span class="g">fait vibrer</span> le réseau.</h1>
       <div class="hh-cta">
-        <button class="hh-enter" onclick="doLoginCommercial()">🏆 Voir le palmarès</button>
-        <button class="hh-enter hh-enter-2" onclick="openDA()">🏢 Espace directeur</button>
+        <button class="hh-enter" onclick="openPalmares('palmares')">🏆 Palmarès du jour</button>
+        <button class="hh-enter hh-enter-2" onclick="openPalmares('classement')">📊 Palmarès semaine</button>
       </div>
+      <button class="hh-da-link" onclick="openDA()">🔒 Espace directeur</button>
       <div class="hh-stats">
         <div class="s"><b>21</b><span>AGENCES</span></div>
         <div class="s"><b>87</b><span>CONTRATS · AUJOURD'HUI</span></div>
@@ -723,7 +726,7 @@ function startApp(role, agency, nom) {
   buildNav();
   subscribeData();
   if(role==='da') goTo('saisie');
-  else goTo('palmares');
+  else goTo(STATE.entryPage || 'palmares');
 }
 
 // ── NAV ───────────────────────────────────────────────
@@ -1187,6 +1190,11 @@ window.backToHome = function() {
   document.getElementById('loginOverlay').style.display = 'none';
   document.getElementById('loginStepDA').style.display = 'none';
   document.getElementById('homeHero').style.display = 'flex';
+};
+window.openPalmares = function(page) {
+  // Entrée commercial (lecture) vers la page choisie : 'palmares' (jour) ou 'classement' (semaine).
+  STATE.entryPage = page;
+  doLoginCommercial();
 };
 
 // ── INIT ─────────────────────────────────────────────
