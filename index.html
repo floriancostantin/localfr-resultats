@@ -184,6 +184,35 @@ textarea { resize:vertical; min-height:64px; }
 .btn-publish { width:100%; padding:16px; background:linear-gradient(135deg,#00c48c,#00a86b); color:white; border:none; border-radius:14px; font-size:16px; font-weight:800; cursor:pointer; font-family:inherit; }
 .btn-publish:active { opacity:.85; }
 
+/* ══════════ SAISIE PAR COMMERCIAL ══════════ */
+.sc-com{border:1.5px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px;background:#fafafe}
+.sc-top{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.sc-name{flex:1;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;background:#fff;color:var(--text)}
+.sc-name:focus{outline:none;border-color:var(--fuchsia)}
+.sc-del{width:36px;height:36px;border:1px solid var(--border);background:#fff;border-radius:9px;color:#d4456a;font-size:15px;cursor:pointer;flex-shrink:0}
+.sc-counters{display:flex;gap:7px;margin-bottom:10px}
+.sc-ct{flex:1}
+.sc-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:var(--muted);margin-bottom:4px;text-align:center}
+.sc-lbl.cq{color:var(--fuchsia)}.sc-lbl.rn{color:var(--orange)}.sc-lbl.ad{color:#999}
+.sc-step{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:#fff}
+.sc-step button{width:30px;height:40px;border:none;background:transparent;font-size:18px;color:var(--fuchsia);cursor:pointer;font-family:inherit;flex-shrink:0}
+.sc-step span{flex:1;text-align:center;font-size:17px;font-weight:800}
+.sc-flags{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.sc-flag{border:1.5px solid var(--border);background:#fff;border-radius:20px;padding:6px 10px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;font-family:inherit}
+.sc-flag.on{border-color:var(--fuchsia);background:linear-gradient(135deg,rgba(236,0,140,.08),rgba(250,166,26,.08));color:var(--fuchsia)}
+.sc-res{margin-left:auto;font-size:13px;font-weight:800;color:var(--fuchsia)}
+.sc-res .muted{color:#999;font-weight:700}
+.sc-empty{text-align:center;color:var(--muted);font-size:13px;padding:14px 0}
+.sc-add{width:100%;padding:12px;background:#fff;color:var(--fuchsia);border:1.5px dashed var(--fuchsia);border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit}
+.sc-add:active{background:rgba(236,0,140,.04)}
+.sc-recap-card{background:var(--dark);border-radius:16px;padding:14px;margin-bottom:12px}
+.sc-kpis{display:flex;gap:8px;margin-bottom:10px}
+.sc-kpi{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 4px;text-align:center}
+.sc-kpi b{display:block;font-size:21px;font-weight:900;color:#fff}
+.sc-kpi.tot b{background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sc-kpi span{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:rgba(255,255,255,.55)}
+.sc-recap{font-size:12px;color:rgba(255,255,255,.85);line-height:1.7;min-height:14px}
+
 /* ══════════ ACCUEIL IMMERSIF (welcome + login background) ══════════ */
 .wm{display:inline-flex;align-items:center;gap:11px}
 .wm .logo-dots{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5px}
@@ -389,49 +418,49 @@ textarea { resize:vertical; min-height:64px; }
 <div class="content" id="page-saisie" style="display:none">
 
   <div class="stats-grid">
-    <div class="stat-box"><div class="stat-val" id="myDaySig">—</div><div class="stat-lbl">Sig. aujourd'hui</div></div>
-    <div class="stat-box"><div class="stat-val" id="myWeekSig">—</div><div class="stat-lbl">Sig. semaine</div></div>
+    <div class="stat-box"><div class="stat-val" id="myDaySig">—</div><div class="stat-lbl">Contrats jour</div></div>
+    <div class="stat-box"><div class="stat-val" id="myWeekSig">—</div><div class="stat-lbl">Contrats semaine</div></div>
     <div class="stat-box"><div class="stat-val" id="myWeekRdv">—</div><div class="stat-lbl">RDV semaine</div></div>
   </div>
 
   <div class="card">
-    <div class="card-title">📝 Saisie du <span id="todayLabel">—</span></div>
+    <div class="card-title">👥 Mes commerciaux du <span id="todayLabel">—</span></div>
+    <div id="saiComs"></div>
+    <button class="sc-add" onclick="addCom()">+ Ajouter un commercial</button>
+  </div>
 
-    <div class="form-group">
-      <label>Signatures du jour</label>
-      <div class="counter-row">
-        <button class="counter-btn" onclick="decr('signatures')">−</button>
-        <input class="counter-val" type="number" id="signatures" value="0" min="0" readonly />
-        <button class="counter-btn" onclick="incr('signatures')">+</button>
+  <div class="card">
+    <div class="form-group" style="margin-bottom:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <label style="margin:0">📞 RDV perso (Persos)</label>
+        <div class="counter-row" style="width:130px">
+          <button class="counter-btn" onclick="saiPersoStep(-1)">−</button>
+          <input class="counter-val" type="number" id="saiPerso" value="0" min="0" readonly />
+          <button class="counter-btn" onclick="saiPersoStep(1)">+</button>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="form-group">
-      <label>RDV perso pris</label>
-      <div class="counter-row">
-        <button class="counter-btn" onclick="decr('rdv')">−</button>
-        <input class="counter-val" type="number" id="rdv" value="0" min="0" readonly />
-        <button class="counter-btn" onclick="incr('rdv')">+</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>Signataires</label>
-      <div class="tags-row" id="sigTags"></div>
-      <div class="add-row">
-        <input type="text" id="sigInput" placeholder="Prénom NOM" onkeydown="if(event.key==='Enter'){event.preventDefault();addSig()}" />
-        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:14px" onclick="addSig()">+</button>
-      </div>
-    </div>
-
-    <div class="form-group">
+  <div class="card">
+    <div class="form-group" style="margin-bottom:0">
       <label>Commentaire (optionnel)</label>
       <textarea id="commentaire" placeholder="Points marquants…"></textarea>
     </div>
-
-    <div id="submitStatus" style="text-align:center;font-size:12px;color:var(--success);font-weight:700;margin-bottom:10px;min-height:18px"></div>
-    <button class="btn-main" id="submitBtn" onclick="submitResults()">Valider mes résultats ✓</button>
   </div>
+
+  <div class="sc-recap-card">
+    <div class="sc-kpis">
+      <div class="sc-kpi tot"><b id="saiTot">0</b><span>Total</span></div>
+      <div class="sc-kpi"><b id="saiCq" style="color:var(--fuchsia)">0</b><span>Conquêtes</span></div>
+      <div class="sc-kpi"><b id="saiRn" style="color:var(--orange)">0</b><span>Renouv</span></div>
+      <div class="sc-kpi"><b id="saiAd" style="color:#888">0</b><span>ADS</span></div>
+    </div>
+    <div class="sc-recap" id="saiRecap"></div>
+  </div>
+
+  <div id="submitStatus" style="text-align:center;font-size:12px;color:var(--success);font-weight:700;margin-bottom:10px;min-height:18px"></div>
+  <button class="btn-main" id="submitBtn" onclick="submitResults()">Valider ma saisie ✓</button>
 </div>
 
 <!-- PAGE: PALMARES DA (saisie palmarès — DA de semaine seulement) -->
@@ -606,6 +635,10 @@ let STATE = {
   currentPage: null,
   currentClassTab: 'region',
   signataires: [],
+  coms: [],          // saisie par commercial : {id,name,cq,rn,ad,first,parr,up}
+  comUid: 0,
+  persos: 0,         // RDV perso de l'agence
+  comsLoaded: false, // évite d'écraser une saisie en cours quand les données arrivent
   palmaresTags: { premiers:[], doubles:[], triples:[], parrainages:[] },
   allData: {},
   palmares: null,
@@ -794,80 +827,122 @@ function subscribeData() {
 }
 
 // ── SAISIE ────────────────────────────────────────────
+function tierLabel(n){ return n>=5?(n+'× 🔥'):n===4?'4× Quadruplé':n===3?'🔱 Triplé':n===2?'✌️ Doublé':n===1?'1 contrat':''; }
+
 function renderSaisie() {
   if(!STATE.agency) return;
   const today = todayStr();
   const week = getWeekKey();
   const key = agencyKey(STATE.agency);
   const agData = STATE.allData[key] || {};
-
-  // Stats du jour
   const todayEntry = agData[today] || {};
-  document.getElementById('myDaySig').textContent = todayEntry.signatures ?? '—';
-
-  // Stats semaine
-  let weekSig=0, weekRdv=0;
-  Object.entries(agData).forEach(([d,v]) => {
-    if(getWeekKey(new Date(d))===week) { weekSig+=v.signatures||0; weekRdv+=v.rdv||0; }
-  });
-  document.getElementById('myWeekSig').textContent = weekSig;
-  document.getElementById('myWeekRdv').textContent = weekRdv;
 
   document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
 
-  // Pré-remplir si déjà saisi
-  if(todayEntry.signatures!==undefined) {
-    document.getElementById('signatures').value = todayEntry.signatures;
-    document.getElementById('rdv').value = todayEntry.rdv||0;
-    document.getElementById('commentaire').value = todayEntry.commentaire||'';
-    STATE.signataires = todayEntry.signataires||[];
-    renderSigTags();
-    document.getElementById('submitStatus').textContent = '✓ Résultats déjà envoyés aujourd\'hui';
+  // Charger la saisie existante du jour (une seule fois, sans écraser une saisie en cours)
+  if(!STATE.comsLoaded){
+    if(Array.isArray(todayEntry.commerciaux) && todayEntry.commerciaux.length){
+      STATE.coms = todayEntry.commerciaux.map(c=>({id:++STATE.comUid,name:c.name||'',cq:c.cq||0,rn:c.rn||0,ad:c.ad||0,first:!!c.first,parr:!!c.parr,up:!!c.up}));
+      STATE.persos = todayEntry.persos!=null?todayEntry.persos:(todayEntry.rdv||0);
+      STATE.comsLoaded = true;
+      document.getElementById('submitStatus').textContent = '✓ Saisie déjà envoyée — modifiable';
+    } else if(Array.isArray(todayEntry.signataires) && todayEntry.signataires.length){
+      // compat ancienne saisie : 1 contrat par signataire
+      STATE.coms = todayEntry.signataires.map(n=>({id:++STATE.comUid,name:n,cq:1,rn:0,ad:0,first:false,parr:false,up:false}));
+      STATE.persos = todayEntry.rdv||0;
+      STATE.comsLoaded = true;
+    }
+    if(todayEntry.commentaire && !document.getElementById('commentaire').value) document.getElementById('commentaire').value = todayEntry.commentaire;
   }
+  document.getElementById('saiPerso').value = STATE.persos||0;
+
+  // Stats jour / semaine (en contrats)
+  let weekC=0, weekR=0;
+  Object.entries(agData).forEach(([d,v]) => {
+    if(getWeekKey(new Date(d))===week){ weekC += (v.contrats!=null?v.contrats:(v.signatures||0)); weekR += (v.persos!=null?v.persos:(v.rdv||0)); }
+  });
+  document.getElementById('myWeekSig').textContent = weekC;
+  document.getElementById('myWeekRdv').textContent = weekR;
+
+  renderComs();
 }
 
-window.incr = function(id){ document.getElementById(id).value=Math.max(0,parseInt(document.getElementById(id).value||0)+1); }
-window.decr = function(id){ document.getElementById(id).value=Math.max(0,parseInt(document.getElementById(id).value||0)-1); }
+window.addCom = function(){ STATE.comsLoaded=true; STATE.coms.push({id:++STATE.comUid,name:'',cq:0,rn:0,ad:0,first:false,parr:false,up:false}); renderComs(); };
+window.delCom = function(id){ STATE.comsLoaded=true; STATE.coms=STATE.coms.filter(c=>c.id!==id); renderComs(); };
+window.stepCom = function(id,f,d){ STATE.comsLoaded=true; const c=STATE.coms.find(x=>x.id===id); if(!c)return; c[f]=Math.max(0,c[f]+d); renderComs(); };
+window.nameCom = function(id,v){ STATE.comsLoaded=true; const c=STATE.coms.find(x=>x.id===id); if(c)c.name=v; updateRecap(); };
+window.toggleCom = function(id,f){ STATE.comsLoaded=true; const c=STATE.coms.find(x=>x.id===id); if(!c)return; c[f]=!c[f]; renderComs(); };
+window.saiPersoStep = function(d){ STATE.comsLoaded=true; STATE.persos=Math.max(0,(STATE.persos||0)+d); document.getElementById('saiPerso').value=STATE.persos; };
 
-window.addSig = function() {
-  const inp = document.getElementById('sigInput');
-  const v = inp.value.trim();
-  if(!v) return;
-  STATE.signataires.push(v);
-  inp.value='';
-  renderSigTags();
-};
-
-function renderSigTags() {
-  document.getElementById('sigTags').innerHTML = STATE.signataires.map((s,i)=>
-    `<div class="tag">${s}<button onclick="removeSig(${i})">✕</button></div>`
-  ).join('');
+function renderComs(){
+  document.getElementById('saiComs').innerHTML = STATE.coms.map(c=>{
+    const k=c.cq+c.rn; const tier=tierLabel(k);
+    return `<div class="sc-com">
+      <div class="sc-top">
+        <input class="sc-name" placeholder="Prénom NOM" value="${(c.name||'').replace(/"/g,'&quot;')}" oninput="nameCom(${c.id},this.value)">
+        <button class="sc-del" onclick="delCom(${c.id})">🗑</button>
+      </div>
+      <div class="sc-counters">
+        <div class="sc-ct"><div class="sc-lbl cq">Conquêtes</div><div class="sc-step"><button onclick="stepCom(${c.id},'cq',-1)">−</button><span>${c.cq}</span><button onclick="stepCom(${c.id},'cq',1)">+</button></div></div>
+        <div class="sc-ct"><div class="sc-lbl rn">Renouv.</div><div class="sc-step"><button onclick="stepCom(${c.id},'rn',-1)">−</button><span>${c.rn}</span><button onclick="stepCom(${c.id},'rn',1)">+</button></div></div>
+        <div class="sc-ct"><div class="sc-lbl ad">ADS</div><div class="sc-step"><button onclick="stepCom(${c.id},'ad',-1)">−</button><span>${c.ad}</span><button onclick="stepCom(${c.id},'ad',1)">+</button></div></div>
+      </div>
+      <div class="sc-flags">
+        <button class="sc-flag ${c.first?'on':''}" onclick="toggleCom(${c.id},'first')">🥇 1er</button>
+        <button class="sc-flag ${c.parr?'on':''}" onclick="toggleCom(${c.id},'parr')">💎 Parrainage</button>
+        <button class="sc-flag ${c.up?'on':''}" onclick="toggleCom(${c.id},'up')">⬆️ Upsell</button>
+        <span class="sc-res">${tier?`${tier}`:''}${c.ad?` <span class="muted">+${c.ad} ADS</span>`:''}</span>
+      </div>
+    </div>`;
+  }).join('') || '<div class="sc-empty">Aucun commercial. Ajoute la première vente du jour 👇</div>';
+  updateRecap();
 }
-window.removeSig = function(i){ STATE.signataires.splice(i,1); renderSigTags(); };
+
+function updateRecap(){
+  let cq=0,rn=0,ad=0; const doubles=[],triples=[],quad=[],firsts=[],parr=[];
+  STATE.coms.forEach(c=>{ cq+=c.cq;rn+=c.rn;ad+=c.ad; const k=c.cq+c.rn; const nm=(c.name||'').trim()||'(sans nom)';
+    if(k===2)doubles.push(nm); else if(k===3)triples.push(nm); else if(k>=4)quad.push(nm+` (${k})`);
+    if(c.first)firsts.push(nm); if(c.parr)parr.push(nm); });
+  const contrats=cq+rn;
+  document.getElementById('saiTot').textContent = ad?`${contrats}+${ad}`:contrats;
+  document.getElementById('saiCq').textContent=cq;
+  document.getElementById('saiRn').textContent=rn;
+  document.getElementById('saiAd').textContent=ad;
+  document.getElementById('myDaySig').textContent = contrats;
+  const parts=[];
+  if(doubles.length)parts.push('✌️ '+doubles.join(', '));
+  if(triples.length)parts.push('🔱 '+triples.join(', '));
+  if(quad.length)parts.push('🔥 '+quad.join(', '));
+  if(firsts.length)parts.push('🥇 '+firsts.join(', '));
+  if(parr.length)parts.push('💎 '+parr.join(', '));
+  document.getElementById('saiRecap').innerHTML = parts.join(' &nbsp;·&nbsp; ');
+}
 
 window.submitResults = function() {
   if(!STATE.agency){toast('Non connecté');return;}
-  const btn = document.getElementById('submitBtn');
-  btn.disabled=true;
-  const key = agencyKey(STATE.agency);
-  const today = todayStr();
-  set(ref(db,`results/${key}/${today}`), {
-    agency: STATE.agency,
-    region: AGENCY_REGION[STATE.agency] || 'SUD',
-    da: STATE.nom,
-    signatures: parseInt(document.getElementById('signatures').value)||0,
-    rdv: parseInt(document.getElementById('rdv').value)||0,
-    signataires: STATE.signataires,
-    commentaire: document.getElementById('commentaire').value.trim(),
-    ts: Date.now(),
+  const coms = STATE.coms
+    .filter(c=>(c.name||'').trim()!=='' && (c.cq+c.rn+c.ad)>0)
+    .map(c=>({name:c.name.trim(),cq:c.cq,rn:c.rn,ad:c.ad,first:c.first,parr:c.parr,up:c.up}));
+  const conquetes=coms.reduce((s,c)=>s+c.cq,0);
+  const renouv=coms.reduce((s,c)=>s+c.rn,0);
+  const ads=coms.reduce((s,c)=>s+c.ad,0);
+  const contrats=conquetes+renouv;
+  const btn=document.getElementById('submitBtn'); btn.disabled=true;
+  const key=agencyKey(STATE.agency); const today=todayStr();
+  set(ref(db,`results/${key}/${today}`),{
+    agency:STATE.agency, region:AGENCY_REGION[STATE.agency]||'SUD', da:STATE.nom,
+    commerciaux:coms, persos:STATE.persos||0,
+    conquetes, renouv, ads, contrats,
+    signatures:contrats,                                        // compat ancien code
+    signataires:coms.filter(c=>(c.cq+c.rn)>0).map(c=>c.name),   // compat ancien code
+    rdv:STATE.persos||0,                                        // compat ancien code
+    commentaire:document.getElementById('commentaire').value.trim(),
+    ts:Date.now(),
   }).then(()=>{
     btn.disabled=false;
-    document.getElementById('submitStatus').textContent='✓ Résultats envoyés !';
-    toast('✅ Résultats enregistrés');
-  }).catch(e=>{
-    btn.disabled=false;
-    toast('❌ Erreur : '+e.message);
-  });
+    document.getElementById('submitStatus').textContent='✓ Saisie envoyée !';
+    toast('✅ Saisie enregistrée');
+  }).catch(e=>{ btn.disabled=false; toast('❌ '+e.message); });
 };
 
 // ── PALMARES DA — tags ────────────────────────────────
