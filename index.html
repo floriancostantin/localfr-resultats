@@ -213,6 +213,21 @@ textarea { resize:vertical; min-height:64px; }
 .sc-kpi span{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:rgba(255,255,255,.55)}
 .sc-recap{font-size:12px;color:rgba(255,255,255,.85);line-height:1.7;min-height:14px}
 
+/* ══════════ AFFICHAGE PALMARÈS ══════════ */
+.pal-kpis{display:flex;gap:7px;margin-bottom:12px}
+.pal-kpi{flex:1;background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px 4px;text-align:center;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+.pal-kpi b{display:block;font-size:21px;font-weight:900}
+.pal-kpi.tot b{background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.pal-kpi span{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:var(--muted)}
+.perf-banner{background:var(--dark);border-radius:14px;padding:13px 16px;margin-bottom:12px}
+.perf-banner .t{font-size:12px;font-weight:900;color:var(--orange);letter-spacing:.5px;margin-bottom:3px}
+.perf-banner .s{font-size:13px;color:#fff;font-weight:600;line-height:1.4}
+.reg-head{font-size:13px;font-weight:900;color:var(--text);padding:8px 0 8px 12px;margin:8px 0;letter-spacing:.3px}
+.reg-ag{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border)}
+.reg-ag:last-child{border-bottom:none}
+.reg-ag-n{flex-shrink:0;min-width:30px;height:26px;padding:0 6px;border-radius:7px;color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center}
+.reg-ag-d{font-size:13px;line-height:1.55;color:var(--text)}
+
 /* ══════════ ACCUEIL IMMERSIF (welcome + login background) ══════════ */
 .wm{display:inline-flex;align-items:center;gap:11px}
 .wm .logo-dots{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5px}
@@ -468,43 +483,10 @@ textarea { resize:vertical; min-height:64px; }
   <div class="da-semaine-banner" id="daSemaineBanner">🏆 Vous êtes DA de semaine — Rédigez le palmarès</div>
 
   <div class="card palmares-input-card">
-    <div class="card-title">🥇 Mises en avant du jour</div>
+    <div class="card-title">✨ Palmarès automatique</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px">Tout se génère à partir des saisies des agences : totaux, doublés / triplés, 1ers contrats, parrainages, performance collective et détail par région. Tu n'as qu'à ajouter un message (optionnel) et publier.</p>
 
-    <div class="form-group">
-      <label>🆕 Premiers contrats (nouveaux commerciaux)</label>
-      <div class="tags-row" id="tags-premiers"></div>
-      <div class="add-row">
-        <input type="text" id="input-premier" placeholder="Prénom NOM — Agence" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('premiers')}" />
-        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:14px" onclick="addTag('premiers')">+</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>✌️ Doublés du jour</label>
-      <div class="tags-row" id="tags-doubles"></div>
-      <div class="add-row">
-        <input type="text" id="input-double" placeholder="Prénom NOM — Agence" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('doubles')}" />
-        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:14px" onclick="addTag('doubles')">+</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>🔱 Triplés du jour</label>
-      <div class="tags-row" id="tags-triples"></div>
-      <div class="add-row">
-        <input type="text" id="input-triple" placeholder="Prénom NOM — Agence" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('triples')}" />
-        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:14px" onclick="addTag('triples')">+</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>🤝 Parrainages</label>
-      <div class="tags-row" id="tags-parrainages"></div>
-      <div class="add-row">
-        <input type="text" id="input-parrainage" placeholder="Prénom NOM — Agence" onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('parrainages')}" />
-        <button class="btn-main" style="width:auto;padding:12px 16px;font-size:14px" onclick="addTag('parrainages')">+</button>
-      </div>
-    </div>
+    <div id="palmaresPreview" style="margin-bottom:14px"></div>
 
     <div class="form-group">
       <label>💬 Message du jour (optionnel)</label>
@@ -512,6 +494,7 @@ textarea { resize:vertical; min-height:64px; }
     </div>
 
     <button class="btn-publish" onclick="publishPalmares()">📤 Publier le palmarès + Notifier</button>
+    <button class="btn-secondary" style="margin-top:8px" onclick="goTo('palmares')">👁️ Voir l'aperçu complet</button>
   </div>
 </div>
 
@@ -946,155 +929,154 @@ window.submitResults = function() {
 };
 
 // ── PALMARES DA — tags ────────────────────────────────
-window.addTag = function(type) {
-  const inp = document.getElementById('input-'+type.replace('s',''));
-  // map type → input id
-  const inputMap = { premiers:'input-premier', doubles:'input-double', triples:'input-triple', parrainages:'input-parrainage' };
-  const inputEl = document.getElementById(inputMap[type]);
-  if(!inputEl) return;
-  const v = inputEl.value.trim();
-  if(!v) return;
-  STATE.palmaresTags[type].push(v);
-  inputEl.value='';
-  renderPalmaresTags(type);
-};
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function renderPalmaresTags(type) {
-  const tagMap = { premiers:'tags-premiers', doubles:'tags-doubles', triples:'tags-triples', parrainages:'tags-parrainages' };
-  document.getElementById(tagMap[type]).innerHTML = STATE.palmaresTags[type].map((s,i)=>
-    `<div class="tag">${s}<button onclick="removeTag('${type}',${i})">✕</button></div>`
-  ).join('');
+// Agrège toutes les saisies du jour → structure complète du palmarès
+function aggregatePalmares() {
+  const today = todayStr();
+  let conquetes=0, renouv=0, ads=0;
+  const doubles=[], triples=[], quad=[], premiers=[], parrainages=[];
+  const regMap = {};
+  Object.entries(STATE.allData).forEach(([key,days])=>{
+    const e = days[today]; if(!e) return;
+    const rk = e.region || AGENCY_REGION[e.agency] || 'SUD';
+    if(!regMap[rk]) regMap[rk] = { contrats:0, ads:0, agencies:{} };
+    const coms = Array.isArray(e.commerciaux) ? e.commerciaux
+      : (Array.isArray(e.signataires) ? e.signataires.map(n=>({name:n,cq:1,rn:0,ad:0})) : []);
+    const ag = { agency:e.agency||key, contrats:0, ads:0, persos:(e.persos!=null?e.persos:(e.rdv||0)), lines:[] };
+    coms.forEach(c=>{
+      const cq=c.cq||0, rn=c.rn||0, ad=c.ad||0, k=cq+rn, nm=(c.name||'').trim()||'(sans nom)';
+      conquetes+=cq; renouv+=rn; ads+=ad; ag.contrats+=k; ag.ads+=ad;
+      if(k===2)doubles.push(nm); else if(k===3)triples.push(nm); else if(k>=4)quad.push(nm+' ('+k+')');
+      if(c.first)premiers.push(nm); if(c.parr)parrainages.push(nm);
+      ag.lines.push({name:nm,cq,rn,ad,first:!!c.first,parr:!!c.parr,up:!!c.up,k});
+    });
+    regMap[rk].contrats+=ag.contrats; regMap[rk].ads+=ag.ads; regMap[rk].agencies[key]=ag;
+  });
+  const regions = Object.keys(REGIONS).filter(rk=>regMap[rk]).map(rk=>{
+    const rv=REGIONS[rk], rm=regMap[rk];
+    const agencies = rv.agencies.map(a=>rm.agencies[agencyKey(a)]).filter(Boolean);
+    return { key:rk, label:rv.label, color:rv.color, contrats:rm.contrats, ads:rm.ads, agencies };
+  });
+  const allAg=[]; regions.forEach(r=>r.agencies.forEach(a=>allAg.push(a)));
+  allAg.sort((a,b)=>b.contrats-a.contrats);
+  const perf = allAg.filter(a=>a.contrats>0).slice(0,4).map(a=>a.agency);
+  return { date:today, totals:{contrats:conquetes+renouv, conquetes, renouv, ads},
+    doubles, triples, quad, premiers, parrainages, perf, regions };
 }
-window.removeTag = function(type,i){ STATE.palmaresTags[type].splice(i,1); renderPalmaresTags(type); };
 
 function checkDASemaine() {
   const week = getWeekKey();
-  const daSemaine = CALENDRIER_2026[week] || '—';
-  const banner = document.getElementById('daSemaineBanner');
-  banner.textContent = `🏆 DA de semaine : ${daSemaine}`;
-
-  // Pré-remplir depuis Firebase si déjà saisi
+  document.getElementById('daSemaineBanner').textContent = `🏆 DA de semaine : ${CALENDRIER_2026[week] || '—'}`;
+  // Aperçu de ce qui sera publié
+  const a = aggregatePalmares(); const t=a.totals;
+  const prev = document.getElementById('palmaresPreview');
+  if(prev){
+    const nbAg = a.regions.reduce((s,r)=>s+r.agencies.length,0);
+    prev.innerHTML = `<div class="pal-kpis">
+        <div class="pal-kpi tot"><b>${t.ads?t.contrats+'+'+t.ads:t.contrats}</b><span>Total</span></div>
+        <div class="pal-kpi"><b style="color:var(--fuchsia)">${t.conquetes}</b><span>Conquêtes</span></div>
+        <div class="pal-kpi"><b style="color:var(--orange)">${t.renouv}</b><span>Renouv</span></div>
+        <div class="pal-kpi"><b style="color:#888">${t.ads}</b><span>ADS</span></div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${nbAg} agence(s) · ✌️ ${a.doubles.length} doublé(s) · 🔱 ${a.triples.length} triplé(s) · 🥇 ${a.premiers.length} · 💎 ${a.parrainages.length}</div>`;
+  }
+  // Pré-remplir le message si déjà publié
   get(ref(db,'palmares/'+todayStr())).then(snap=>{
-    if(snap.exists()) {
-      const d = snap.val();
-      STATE.palmaresTags = {
-        premiers: d.premiers||[],
-        doubles: d.doubles||[],
-        triples: d.triples||[],
-        parrainages: d.parrainages||[],
-      };
-      ['premiers','doubles','triples','parrainages'].forEach(renderPalmaresTags);
-      if(d.message) document.getElementById('palmares-message').value=d.message;
-    }
+    if(snap.exists() && snap.val().message && !document.getElementById('palmares-message').value)
+      document.getElementById('palmares-message').value = snap.val().message;
   });
 }
 
 window.publishPalmares = function() {
-  const today = todayStr();
-  const week = getWeekKey();
-
-  // Construire classement agences du jour depuis allData
-  const ranking = [];
-  Object.entries(STATE.allData).forEach(([key,days])=>{
-    const entry = days[today];
-    if(!entry) return;
-    ranking.push({ agency:entry.agency||key, region:entry.region||'SUD', da:entry.da||'', signatures:entry.signatures||0, signataires:entry.signataires||[] });
-  });
-  ranking.sort((a,b)=>b.signatures-a.signatures);
-
-  const data = {
-    date: today,
-    week,
-    daSemaine: CALENDRIER_2026[week]||'',
-    ranking,
-    premiers: STATE.palmaresTags.premiers,
-    doubles: STATE.palmaresTags.doubles,
-    triples: STATE.palmaresTags.triples,
-    parrainages: STATE.palmaresTags.parrainages,
-    message: document.getElementById('palmares-message').value.trim(),
-    publishedAt: Date.now(),
-    publishedBy: STATE.nom,
-  };
-
-  set(ref(db,'palmares/'+today), data).then(()=>{
+  const data = aggregatePalmares();
+  data.week = getWeekKey();
+  data.daSemaine = CALENDRIER_2026[data.week] || '';
+  data.message = document.getElementById('palmares-message').value.trim();
+  data.publishedAt = Date.now();
+  data.publishedBy = STATE.nom;
+  set(ref(db,'palmares/'+data.date), data).then(()=>{
     toast('✅ Palmarès publié !');
-    // Envoyer notification push
     const envoyerNotif = httpsCallable(fns,'envoyerNotificationMaintenant');
-    const total = ranking.reduce((s,r)=>s+r.signatures,0);
-    const top = ranking[0];
+    const t = data.totals, top = data.perf[0];
     envoyerNotif({
       title: `🏆 Palmarès du ${new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}`,
-      message: `${total} contrat${total>1?'s':''} signés${top ? ' · 🥇 '+top.agency+' ('+top.signatures+')' : ''} · Voir le palmarès !`,
+      message: `${t.contrats} contrat${t.contrats>1?'s':''}${t.ads?` + ${t.ads} ADS`:''}${top?` · 🥇 ${top}`:''} · Voir le palmarès !`,
     }).catch(e=>console.warn('Notif error',e));
   }).catch(e=>toast('❌ '+e.message));
 };
 
 // ── PALMARES VIEW ──────────────────────────────────────
+function comLine(c){
+  let s = esc(c.name);
+  if(c.k>=2){ const w = c.k===2?'doublé':c.k===3?'triplé':c.k===4?'quadruplé':(c.k+'×'); s += ` <b>${w}</b>`; }
+  else if(c.k===1 && c.rn===1 && c.cq===0){ s += ' <span style="color:var(--muted)">(renouv)</span>'; }
+  if(c.first) s += ' 🥇';
+  if(c.parr) s += ' 💎';
+  if(c.up) s += ' <span style="color:var(--muted)">+Upsell</span>';
+  if(c.ad) s += ` <span style="color:#999">+${c.ad} ADS</span>`;
+  return s;
+}
+
 function renderPalmares() {
   const el = document.getElementById('palmaresContent');
   const p = STATE.palmares;
-
-  if(!p || !p.ranking) {
-    el.innerHTML=`<div class="empty"><div class="e-icon">🏆</div><p>Le palmarès du jour n'est pas encore publié.</p></div>`;
+  if(!p || !p.totals) {
+    el.innerHTML = `<div class="empty"><div class="e-icon">🏆</div><p>Le palmarès du jour n'est pas encore publié.</p></div>`;
     return;
   }
+  const t = p.totals;
+  const dateStr = new Date((p.date||todayStr())+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const nbAg = (p.regions||[]).reduce((s,r)=>s+r.agencies.length,0);
 
-  const today = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  const total = p.ranking.reduce((s,r)=>s+r.signatures,0);
-  const top = p.ranking[0];
-
-  let html = `
-    <div class="palmares-header">
-      <div class="palmares-date">${today}</div>
+  let html = `<div class="palmares-header">
+      <div class="palmares-date">${dateStr}</div>
       <div class="palmares-title">🏆 Palmarès local.fr</div>
-      <div class="palmares-sub">${total} contrat${total>1?'s':''} signés · ${p.ranking.length} agence${p.ranking.length>1?'s':''}</div>
-    </div>
-  `;
+      <div class="palmares-sub">${t.contrats} contrat${t.contrats>1?'s':''}${t.ads?` + ${t.ads} ADS`:''} · ${nbAg} agence${nbAg>1?'s':''}</div>
+    </div>`;
 
-  // Classement agences
-  html += `<div class="card"><div class="card-title">📊 Classement des agences</div>`;
-  p.ranking.forEach((r,i)=>{
-    const reg = REGIONS[r.region] || REGIONS.SUD;
-    const medals = ['🥇','🥈','🥉'];
-    const numDisp = i<3 ? medals[i] : `${i+1}`;
-    html += `
-      <div class="rank-row">
-        <div class="rank-num ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':''}">${numDisp}</div>
-        <div class="rank-info">
-          <div class="rank-name">${r.agency}</div>
-          <div class="rank-sub"><span class="reg-badge" style="background:${reg.color}">${reg.label}</span> ${r.da ? '· '+r.da : ''}</div>
-          ${r.signataires&&r.signataires.length ? `<div class="rank-sub" style="margin-top:3px">${r.signataires.join(', ')}</div>` : ''}
-        </div>
-        <div class="rank-score">${r.signatures}</div>
-      </div>`;
-  });
-  html += `</div>`;
+  // KPIs
+  html += `<div class="pal-kpis">
+      <div class="pal-kpi tot"><b>${t.ads?t.contrats+'+'+t.ads:t.contrats}</b><span>Total</span></div>
+      <div class="pal-kpi"><b style="color:var(--fuchsia)">${t.conquetes}</b><span>Conquêtes</span></div>
+      <div class="pal-kpi"><b style="color:var(--orange)">${t.renouv}</b><span>Renouv</span></div>
+      <div class="pal-kpi"><b style="color:#888">${t.ads}</b><span>ADS</span></div>
+    </div>`;
+
+  // Performance collective
+  if(p.perf && p.perf.length){
+    const names = p.perf.map(esc);
+    const last = names.length>1 ? names.slice(0,-1).join(', ')+' et '+names[names.length-1] : names[0];
+    html += `<div class="perf-banner"><div class="t">⚡ PERFORMANCE COLLECTIVE</div><div class="s">${last} signe${names.length>1?'nt':''} les performances du jour !</div></div>`;
+  }
 
   // Mises en avant
-  const hasMises = p.premiers.length||p.doubles.length||p.triples.length||p.parrainages.length;
-  if(hasMises) {
-    html += `<div class="card">`;
-    if(p.premiers.length) {
-      html += `<div class="card-title">🆕 Premiers contrats</div>`;
-      p.premiers.forEach(n=>{ html+=`<div class="highlight-item"><div class="highlight-emoji">⭐</div><div class="highlight-text">${n}</div></div>`; });
-    }
-    if(p.doubles.length) {
-      html += `<div class="card-title" style="margin-top:${p.premiers.length?'16px':'0'}">✌️ Doublés</div>`;
-      p.doubles.forEach(n=>{ html+=`<div class="highlight-item"><div class="highlight-emoji">🔥</div><div class="highlight-text">${n}</div></div>`; });
-    }
-    if(p.triples.length) {
-      html += `<div class="card-title" style="margin-top:16px">🔱 Triplés</div>`;
-      p.triples.forEach(n=>{ html+=`<div class="highlight-item"><div class="highlight-emoji">💥</div><div class="highlight-text">${n}</div></div>`; });
-    }
-    if(p.parrainages.length) {
-      html += `<div class="card-title" style="margin-top:16px">🤝 Parrainages</div>`;
-      p.parrainages.forEach(n=>{ html+=`<div class="highlight-item"><div class="highlight-emoji">🤝</div><div class="highlight-text">${n}</div></div>`; });
-    }
+  const sect = (title,arr)=> arr&&arr.length ? `<div class="card-title" style="margin-top:14px">${title}</div>`+arr.map(n=>`<div class="highlight-item"><div class="highlight-text">${esc(n)}</div></div>`).join('') : '';
+  if((p.premiers&&p.premiers.length)||(p.parrainages&&p.parrainages.length)||(p.doubles&&p.doubles.length)||(p.triples&&p.triples.length)||(p.quad&&p.quad.length)){
+    html += `<div class="card" style="padding-top:4px">`;
+    html += sect('🥇 Premiers contrats', p.premiers).replace('margin-top:14px','margin-top:8px');
+    html += sect('💎 Parrainages', p.parrainages);
+    html += sect('✌️ Doublés', p.doubles);
+    html += sect('🔱 Triplés', p.triples);
+    html += sect('🔥 Quadruplés et +', p.quad);
     html += `</div>`;
   }
 
-  if(p.message) {
-    html += `<div class="card" style="background:var(--dark);border:none"><p style="color:rgba(255,255,255,0.85);font-size:14px;line-height:1.6;font-style:italic">"${p.message}"</p><p style="color:var(--orange);font-size:12px;font-weight:700;margin-top:10px">${p.daSemaine||p.publishedBy||''}</p></div>`;
+  // Détail par région
+  (p.regions||[]).forEach(r=>{
+    html += `<div class="reg-head" style="border-left:4px solid ${r.color}">RÉGION ${esc(r.label)} <span style="color:${r.color}">⇨ ${r.contrats}${r.ads?'+'+r.ads:''} CONTRAT${r.contrats>1?'S':''}</span></div>`;
+    html += `<div class="card" style="padding:6px 14px">`;
+    r.agencies.forEach(a=>{
+      html += `<div class="reg-ag">
+        <div class="reg-ag-n" style="background:${r.color}">${a.contrats}${a.ads?'+'+a.ads:''}</div>
+        <div class="reg-ag-d"><b>${esc(a.agency)}</b> : ${a.lines.map(comLine).join(', ')}${a.persos?`, <span style="color:var(--muted)">Persos ${a.persos}</span>`:''}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  if(p.message){
+    html += `<div class="card" style="background:var(--dark);border:none"><p style="color:rgba(255,255,255,.88);font-size:14px;line-height:1.6;font-style:italic">"${esc(p.message)}"</p><p style="color:var(--orange);font-size:12px;font-weight:700;margin-top:10px">${esc(p.daSemaine||p.publishedBy||'')}</p></div>`;
   }
 
   el.innerHTML = html;
