@@ -270,6 +270,132 @@ textarea { resize:vertical; min-height:64px; }
 @media(max-width:820px){.hh-topbar{left:24px;right:24px}.hh-wrap{padding:0 24px calc(var(--safe-bottom) + 44px)}.hh-h1{font-size:46px}.hh-chip{right:24px;top:calc(var(--safe-top) + 90px)}.hh-stats{gap:24px}}
 /* login posé sur le visuel du jour */
 #loginOverlay{background:linear-gradient(180deg,transparent 28%,rgba(8,6,11,.55));backdrop-filter:none}
+
+/* ══════════ PALMARÈS PREMIUM (vue commercial) ══════════ */
+#page-palmares.pp-page{font-family:'Poppins',-apple-system,system-ui,sans-serif;color:#fff;min-height:100vh;
+  background:#0a080d;
+  background-image:
+    radial-gradient(620px 420px at 82% -4%,rgba(236,0,140,.22),transparent 60%),
+    radial-gradient(560px 460px at 6% 6%,rgba(250,166,26,.15),transparent 60%),
+    radial-gradient(900px 700px at 50% 118%,rgba(236,0,140,.10),transparent 60%);
+  background-attachment:fixed}
+.pp-appear{opacity:0;transform:translateY(14px);animation:pp-rise .6s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes pp-rise{to{opacity:1;transform:none}}
+
+/* HERO */
+.pp-hero{position:relative;border-radius:24px;padding:24px 20px 22px;margin-bottom:14px;overflow:hidden;
+  background:linear-gradient(165deg,rgba(40,16,40,.9),rgba(14,10,18,.94));border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 26px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06)}
+.pp-hero::after{content:"";position:absolute;top:-60px;right:-40px;width:230px;height:230px;border-radius:50%;
+  background:radial-gradient(circle,rgba(236,0,140,.45),transparent 65%);filter:blur(6px)}
+.pp-hero-top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:2}
+.pp-hero .wm-text{font-size:18px}
+.pp-daytag{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+  color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);padding:7px 12px;border-radius:30px;white-space:nowrap}
+.pp-daytag .gd{width:7px;height:7px;border-radius:50%;background:var(--gradient);box-shadow:0 0 10px var(--fuchsia)}
+.pp-hero-mid{position:relative;z-index:2;text-align:center;padding:14px 0 4px}
+.pp-hero-label{font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange);margin-bottom:2px}
+.pp-hero-total{font-size:84px;line-height:.9;font-weight:900;letter-spacing:-3px;
+  background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 8px 30px rgba(236,0,140,.35))}
+.pp-hero-total .ads{font-size:30px;font-weight:800;letter-spacing:-1px;-webkit-text-fill-color:#fff;color:#fff;opacity:.85}
+.pp-hero-sub{font-size:13px;color:#cfc8da;font-weight:600;margin-top:8px}
+.pp-hero-date{font-size:11px;color:var(--muted);font-weight:600;text-transform:capitalize;margin-top:2px}
+
+/* KPIs */
+.pp-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:4px}
+.pp-kpi{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:14px 6px;text-align:center;
+  backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.pp-kpi b{display:block;font-size:30px;font-weight:900;line-height:1}
+.pp-kpi.cq b{color:#ff4fb0}.pp-kpi.rn b{color:var(--orange)}.pp-kpi.ad b{color:#cfd3e6}
+.pp-kpi span{display:block;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-top:6px}
+
+/* SECTION */
+.pp-sec{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#cabfe0;
+  margin:22px 4px 12px;display:flex;align-items:center;gap:8px}
+.pp-sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.18),transparent)}
+
+/* PODIUM */
+.pp-podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:6px 2px 4px}
+.pp-pod{flex:1;max-width:150px;display:flex;flex-direction:column;align-items:center}
+.pp-pod .ava{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:900;color:#fff;margin-bottom:8px;border:2px solid rgba(255,255,255,.2);
+  background:var(--gradient);box-shadow:0 8px 24px rgba(236,0,140,.4)}
+.pp-pod .nm{font-size:13px;font-weight:800;text-align:center;line-height:1.15;margin-bottom:1px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pp-pod .ct{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:7px}
+.pp-pod .bar{width:100%;border-radius:12px 12px 0 0;display:flex;align-items:flex-start;justify-content:center;
+  padding-top:9px;font-size:24px;position:relative;overflow:hidden;height:0;animation:pp-grow .9s cubic-bezier(.22,1,.36,1) forwards}
+.pp-pod .bar::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 40%)}
+.pp-pod .medal{position:relative;z-index:2;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4))}
+.pp-pod1 .bar{--bh:118px;background:linear-gradient(180deg,#FFD75E,#F6A700)}
+.pp-pod1 .ava{background:linear-gradient(135deg,#FFD75E,#F6A700);box-shadow:0 10px 30px rgba(246,167,0,.55);border-color:rgba(255,231,138,.7)}
+.pp-pod2 .bar{--bh:90px;background:linear-gradient(180deg,#cfd3e6,#9aa0bd)}
+.pp-pod2 .ava{background:linear-gradient(135deg,#cfd3e6,#9aa0bd);box-shadow:0 8px 22px rgba(154,160,189,.4)}
+.pp-pod3 .bar{--bh:70px;background:linear-gradient(180deg,#E59A6A,#C2703E)}
+.pp-pod3 .ava{background:linear-gradient(135deg,#E59A6A,#C2703E);box-shadow:0 8px 22px rgba(194,112,62,.4)}
+@keyframes pp-grow{to{height:var(--bh,90px)}}
+
+/* PERF COLLECTIVE */
+.pp-perf{position:relative;border-radius:18px;padding:16px 18px;margin:16px 0 4px;overflow:hidden;
+  background:linear-gradient(120deg,rgba(236,0,140,.16),rgba(250,166,26,.13));border:1px solid rgba(250,166,26,.3)}
+.pp-perf .t{font-size:11px;font-weight:900;letter-spacing:1px;color:var(--orange);margin-bottom:5px}
+.pp-perf .s{font-size:15px;font-weight:700;line-height:1.4;color:#fff}
+
+/* HIGHLIGHTS */
+.pp-eclat{display:flex;gap:14px;align-items:center;padding:14px 15px;border-radius:20px;margin-bottom:11px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);backdrop-filter:blur(8px);position:relative;overflow:hidden}
+.pp-eclat .ic{width:62px;height:62px;border-radius:19px;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;
+  border:1px solid rgba(255,255,255,.22);position:relative}
+.pp-eclat .ic .cnt{position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;padding:0 5px;border-radius:11px;background:#0a080d;
+  border:1.5px solid rgba(255,255,255,.4);color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.pp-eclat.gold .ic{background:linear-gradient(135deg,#FFD75E,#F6A700);box-shadow:0 8px 24px rgba(246,167,0,.5)}
+.pp-eclat.dia .ic{background:linear-gradient(135deg,#7CC8FF,#B478FF);box-shadow:0 8px 24px rgba(150,120,255,.5)}
+.pp-eclat.fire .ic{background:linear-gradient(135deg,#EC008C,#FAA61A);box-shadow:0 8px 24px rgba(236,0,140,.5)}
+.pp-eclat .bd{flex:1;min-width:0}
+.pp-eclat .cat{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#cabfe0;margin-bottom:6px}
+.pp-eclat .ppl{display:flex;flex-wrap:wrap;gap:5px 16px}
+.pp-eclat .who{display:flex;flex-direction:column;line-height:1.12}
+.pp-eclat .who b{font-size:16px;font-weight:800;color:#fff}
+.pp-eclat .who i{font-size:9.5px;font-weight:700;font-style:normal;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-top:1px}
+
+/* RDV PERSOS NATIONAL */
+.pp-persos{display:flex;align-items:center;gap:14px;border-radius:16px;padding:14px 18px;margin:12px 0 4px;
+  background:linear-gradient(120deg,rgba(99,102,241,.20),rgba(139,92,246,.12));border:1px solid rgba(139,92,246,.34)}
+.pp-persos .ic{font-size:30px;filter:drop-shadow(0 4px 12px rgba(139,92,246,.55))}
+.pp-persos .pt{font-size:15px;font-weight:700;color:#fff}
+.pp-persos .pt b{font-size:28px;font-weight:900;color:#fff;margin-right:5px}
+.pp-persos .pt span{display:block;font-size:11px;font-weight:600;color:#c9c4d9;margin-top:1px}
+
+/* RÉGIONS */
+.pp-sec-reg{margin-top:36px}
+.pp-reg{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:20px;padding:18px 19px;margin-bottom:13px;
+  backdrop-filter:blur(8px);position:relative;overflow:hidden}
+.pp-reg::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--rc,#fff)}
+.pp-reg-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.pp-reg-name{font-size:17px;font-weight:900;letter-spacing:.5px;text-transform:uppercase}
+.pp-reg-score{font-size:19px;font-weight:900;color:var(--rc)}
+.pp-reg-track{height:8px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:14px}
+.pp-reg-fill{height:100%;border-radius:8px;background:var(--rc);width:0;transition:width 1s cubic-bezier(.22,1,.36,1)}
+.pp-ag{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid rgba(255,255,255,.07)}
+.pp-ag:first-of-type{border-top:none}
+.pp-ag-n{flex-shrink:0;min-width:42px;height:33px;padding:0 8px;border-radius:10px;color:#0a080d;font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center;background:var(--rc)}
+.pp-ag-d{font-size:15px;line-height:1.6;color:#ece8f4}
+.pp-ag-d b{color:#fff;font-weight:800;font-size:15.5px}.pp-ag-d .mut{color:var(--muted)}
+
+/* MESSAGE DA */
+.pp-msg{border-radius:18px;padding:18px;margin-top:14px;background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.09)}
+.pp-msg p{font-size:14px;line-height:1.6;color:#efeaf6;font-style:italic}
+.pp-msg .sig{margin-top:11px;font-size:12px;font-weight:800;color:var(--orange);font-style:normal;letter-spacing:.3px}
+
+/* ACTIONS */
+.pp-actions{display:flex;gap:10px;margin-top:18px}
+.pp-act{flex:1;padding:14px;border-radius:14px;border:none;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;color:#fff}
+.pp-act.share{background:var(--gradient);box-shadow:0 12px 34px rgba(236,0,140,.45)}
+.pp-act.ghost{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09)}
+
+/* CONFETTIS */
+#ppConfetti{position:fixed;inset:0;pointer-events:none;z-index:400}
+@media(max-width:380px){.pp-hero-total{font-size:68px}.pp-kpi b{font-size:25px}}
 </style>
 </head>
 <body>
@@ -789,7 +915,7 @@ window.goTo = function(page) {
   STATE.currentPage = page;
 
   if(page==='classement') renderClassement();
-  if(page==='palmares') renderPalmares();
+  if(page==='palmares') renderPalmares(true);
   if(page==='calendrier') renderCalendrier();
   if(page==='saisie') renderSaisie();
   if(page==='palmares-da') checkDASemaine();
@@ -811,7 +937,7 @@ function subscribeData() {
   // Palmarès publié
   onValue(ref(db,'palmares/'+todayStr()), snap => {
     STATE.palmares = snap.val();
-    if(STATE.currentPage==='palmares') renderPalmares();
+    if(STATE.currentPage==='palmares') renderPalmares(false);
   });
 }
 
@@ -1034,70 +1160,167 @@ function comLine(c){
   return s;
 }
 
-function renderPalmares() {
+// helpers visuels premium
+function ppInitials(s){ s=(s||'').trim(); if(!s) return '?'; const w=s.split(/\s+/); return (w.length>1 ? (w[0][0]+w[1][0]) : s.slice(0,2)).toUpperCase(); }
+function ppCountUp(el,to,dur){ if(!el) return; const st=performance.now(); function step(now){ const p=Math.min(1,(now-st)/dur); el.textContent=Math.round(to*(1-Math.pow(1-p,3))); if(p<1)requestAnimationFrame(step); else el.textContent=to; } requestAnimationFrame(step); }
+function ppConfetti(){
+  const old=document.getElementById('ppConfetti'); if(old) old.remove();
+  const c=document.createElement('canvas'); c.id='ppConfetti'; document.body.appendChild(c);
+  const x=c.getContext('2d'); let W,H; const size=()=>{W=c.width=innerWidth;H=c.height=innerHeight;}; size();
+  const cols=['#EC008C','#FAA61A','#FFD75E','#C57BE8','#fff']; const parts=[];
+  for(let i=0;i<90;i++)parts.push({x:Math.random()*W,y:Math.random()*-H,w:6+Math.random()*7,h:9+Math.random()*9,c:cols[i%cols.length],vy:2+Math.random()*3,vx:-1+Math.random()*2,rot:Math.random()*6,vr:-.15+Math.random()*.3});
+  let f=0;
+  (function loop(){ x.clearRect(0,0,W,H); f++; parts.forEach(p=>{ p.y+=p.vy;p.x+=p.vx;p.rot+=p.vr; if(p.y>H+20){p.y=-20;p.x=Math.random()*W;} x.save();x.translate(p.x,p.y);x.rotate(p.rot);x.globalAlpha=Math.max(0,1-f/240);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore(); }); if(f<260)requestAnimationFrame(loop); else c.remove(); })();
+}
+
+function renderPalmares(animate) {
   const el = document.getElementById('palmaresContent');
+  const page = document.getElementById('page-palmares');
   const p = STATE.palmares;
   if(!p || !p.totals) {
+    if(page) page.classList.remove('pp-page');
     el.innerHTML = `<div class="empty"><div class="e-icon">🏆</div><p>Le palmarès du jour n'est pas encore publié.</p></div>`;
     return;
   }
+  if(page) page.classList.add('pp-page');
+  const A = animate !== false;
   const t = p.totals;
   const dateStr = new Date((p.date||todayStr())+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  const nbAg = (p.regions||[]).reduce((s,r)=>s+r.agencies.length,0);
+  const regions = p.regions||[];
+  const nbAg = regions.reduce((s,r)=>s+r.agencies.length,0);
+  // couleurs lisibles sur fond sombre (Paris/Ouest éclaircis)
+  const RC = {SUD:'#EC008C',EST:'#FAA61A',OUEST:'#8E97C0',PARIS:'#C57BE8'};
+  const rcOf = k => RC[k] || '#EC008C';
 
-  let html = `<div class="palmares-header">
-      <div class="palmares-date">${dateStr}</div>
-      <div class="palmares-title">🏆 Palmarès local.fr</div>
-      <div class="palmares-sub">${t.contrats} contrat${t.contrats>1?'s':''}${t.ads?` + ${t.ads} ADS`:''} · ${nbAg} agence${nbAg>1?'s':''}</div>
-    </div>`;
+  const ap = A ? ' pp-appear' : '';
+  let d = 0; const dl = () => A ? ` style="animation-delay:${(d+=0.04).toFixed(2)}s"` : '';
+
+  // HERO
+  let html = `<div class="pp-hero${ap}">
+    <div class="pp-hero-top">
+      <div class="wm"><div class="logo-dots"><i class="f"></i><i class="f"></i><i></i><i class="f"></i><i class="o"></i><i></i><i></i><i></i><i></i></div><div class="wm-text">local<span class="p">perf</span></div></div>
+      <div class="pp-daytag"><span class="gd"></span> Palmarès du jour</div>
+    </div>
+    <div class="pp-hero-mid">
+      <div class="pp-hero-label">Total contrats</div>
+      <div class="pp-hero-total"><span id="ppTotal">${A?0:t.contrats}</span>${t.ads?`<span class="ads"> +${t.ads}</span>`:''}</div>
+      <div class="pp-hero-sub">${nbAg} agence${nbAg>1?'s':''} ${nbAg>1?'ont':'a'} signé aujourd'hui</div>
+      <div class="pp-hero-date">${dateStr}</div>
+    </div>
+  </div>`;
 
   // KPIs
-  html += `<div class="pal-kpis">
-      <div class="pal-kpi tot"><b>${t.ads?t.contrats+'+'+t.ads:t.contrats}</b><span>Total</span></div>
-      <div class="pal-kpi"><b style="color:var(--fuchsia)">${t.conquetes}</b><span>Conquêtes</span></div>
-      <div class="pal-kpi"><b style="color:var(--orange)">${t.renouv}</b><span>Renouv</span></div>
-      <div class="pal-kpi"><b style="color:#888">${t.ads}</b><span>ADS</span></div>
+  html += `<div class="pp-kpis${ap}"${dl()}>
+      <div class="pp-kpi cq"><b data-c="${t.conquetes}">${A?0:t.conquetes}</b><span>Conquêtes</span></div>
+      <div class="pp-kpi rn"><b data-c="${t.renouv}">${A?0:t.renouv}</b><span>Renouv.</span></div>
+      <div class="pp-kpi ad"><b data-c="${t.ads}">${A?0:t.ads}</b><span>ADS</span></div>
     </div>`;
 
-  // Performance collective (texte rédigé par le DA ; sinon repli sur les agences en tête)
-  if(p.perfText){
-    html += `<div class="perf-banner"><div class="t">⚡ PERFORMANCE COLLECTIVE</div><div class="s">${esc(p.perfText)}</div></div>`;
-  } else if(p.perf && p.perf.length){
-    const names = p.perf.map(esc);
-    const last = names.length>1 ? names.slice(0,-1).join(', ')+' et '+names[names.length-1] : names[0];
-    html += `<div class="perf-banner"><div class="t">⚡ PERFORMANCE COLLECTIVE</div><div class="s">${last} signe${names.length>1?'nt':''} les performances du jour !</div></div>`;
+  // RDV PERSOS national
+  let persosTot = 0;
+  regions.forEach(r=>r.agencies.forEach(a=>persosTot += (a.persos||0)));
+  if(persosTot > 0){
+    html += `<div class="pp-persos${ap}"${dl()}>
+        <div class="ic">📅</div>
+        <div class="pt"><b id="ppPersos">${A?0:persosTot}</b>RDV perso<span>pris aujourd'hui dans le réseau</span></div>
+      </div>`;
   }
 
-  // Mises en avant
-  const sect = (title,arr)=> arr&&arr.length ? `<div class="card-title" style="margin-top:14px">${title}</div>`+arr.map(n=>`<div class="highlight-item"><div class="highlight-text">${esc(n)}</div></div>`).join('') : '';
-  if((p.premiers&&p.premiers.length)||(p.parrainages&&p.parrainages.length)||(p.doubles&&p.doubles.length)||(p.triples&&p.triples.length)||(p.quad&&p.quad.length)){
-    html += `<div class="card" style="padding-top:4px">`;
-    html += sect('🥇 Premiers contrats', p.premiers).replace('margin-top:14px','margin-top:8px');
-    html += sect('💎 Parrainages', p.parrainages);
-    html += sect('✌️ Doublés', p.doubles);
-    html += sect('🔱 Triplés', p.triples);
-    html += sect('🔥 Quadruplés et +', p.quad);
-    html += `</div>`;
-  }
-
-  // Détail par région
-  (p.regions||[]).forEach(r=>{
-    html += `<div class="reg-head" style="border-left:4px solid ${r.color}">RÉGION ${esc(r.label)} <span style="color:${r.color}">⇨ ${r.contrats}${r.ads?'+'+r.ads:''} CONTRAT${r.contrats>1?'S':''}</span></div>`;
-    html += `<div class="card" style="padding:6px 14px">`;
-    r.agencies.forEach(a=>{
-      html += `<div class="reg-ag">
-        <div class="reg-ag-n" style="background:${r.color}">${a.contrats}${a.ads?'+'+a.ads:''}</div>
-        <div class="reg-ag-d"><b>${esc(a.agency)}</b> : ${a.lines.map(comLine).join(', ')}${a.persos?`, <span style="color:var(--muted)">Persos ${a.persos}</span>`:''}</div>
+  // PODIUM top agences
+  const allAg = [];
+  regions.forEach(r=>r.agencies.forEach(a=>{ if(a.contrats>0) allAg.push(a); }));
+  allAg.sort((x,y)=> (y.contrats-x.contrats) || ((y.ads||0)-(x.ads||0)));
+  if(allAg.length>=2){
+    const top = allAg.slice(0,3);
+    const order = top.length>=3 ? [top[1],top[0],top[2]] : [top[1],top[0]];
+    const cls = top.length>=3 ? ['pp-pod2','pp-pod1','pp-pod3'] : ['pp-pod2','pp-pod1'];
+    const med = {'pp-pod1':'🥇','pp-pod2':'🥈','pp-pod3':'🥉'};
+    html += `<div class="pp-sec${ap}"${dl()}>🏆 Top agences du jour</div>`;
+    html += `<div class="pp-podium${ap}"${dl()}>`;
+    order.forEach((a,i)=>{
+      html += `<div class="pp-pod ${cls[i]}">
+        <div class="ava">${ppInitials(a.agency)}</div>
+        <div class="nm">${esc(a.agency)}</div>
+        <div class="ct">${a.contrats}${a.ads?` +${a.ads} ADS`:''}</div>
+        <div class="bar"><span class="medal">${med[cls[i]]}</span></div>
       </div>`;
     });
     html += `</div>`;
-  });
-
-  if(p.message){
-    html += `<div class="card" style="background:var(--dark);border:none"><p style="color:rgba(255,255,255,.88);font-size:14px;line-height:1.6;font-style:italic">"${esc(p.message)}"</p><p style="color:var(--orange);font-size:12px;font-weight:700;margin-top:10px">${esc(p.daSemaine||p.publishedBy||'')}</p></div>`;
   }
 
+  // PERFORMANCE COLLECTIVE
+  let perfTxt = p.perfText;
+  if(!perfTxt && p.perf && p.perf.length){
+    const n = p.perf;
+    perfTxt = (n.length>1 ? n.slice(0,-1).join(', ')+' et '+n[n.length-1] : n[0]) + ` signe${n.length>1?'nt':''} les performances du jour !`;
+  }
+  if(perfTxt) html += `<div class="pp-perf${ap}"${dl()}><div class="t">⚡ PERFORMANCE COLLECTIVE</div><div class="s">${esc(perfTxt)}</div></div>`;
+
+  // COUPS D'ÉCLAT (reconstruits depuis les régions pour afficher l'agence)
+  const HL = {premiers:[], parr:[], trip:[], doub:[], quad:[]};
+  regions.forEach(r=>r.agencies.forEach(a=>a.lines.forEach(c=>{
+    const it = {name:c.name, ag:a.agency};
+    if(c.first) HL.premiers.push(it);
+    if(c.parr) HL.parr.push(it);
+    if(c.k===3) HL.trip.push(it);
+    else if(c.k===2) HL.doub.push(it);
+    else if(c.k>=4) HL.quad.push({name:c.name+' ('+c.k+')', ag:a.agency});
+  })));
+  const who = it=>`<span class="who"><b>${esc(it.name)}</b><i>${esc(it.ag)}</i></span>`;
+  const eclat = (cat,arr,pc,emo)=> arr.length ? `<div class="pp-eclat ${pc}">
+      <div class="ic">${emo}<span class="cnt">${arr.length}</span></div>
+      <div class="bd"><div class="cat">${cat}</div><div class="ppl">${arr.map(who).join('')}</div></div>
+    </div>` : '';
+  if(HL.premiers.length||HL.parr.length||HL.doub.length||HL.trip.length||HL.quad.length){
+    html += `<div class="pp-sec${ap}"${dl()}>✨ Les coups d'éclat</div>`;
+    html += `<div class="${ap.trim()}"${dl()}>`;
+    html += eclat('Premiers contrats', HL.premiers, 'gold','🥇');
+    html += eclat('Parrainages', HL.parr, 'dia','💎');
+    html += eclat('Triplés', HL.trip, 'fire','🔱');
+    html += eclat('Doublés', HL.doub, 'fire','✌️');
+    html += eclat('Quadruplés et +', HL.quad, 'fire','🔥');
+    html += `</div>`;
+  }
+
+  // DÉTAIL PAR RÉGION
+  if(regions.length){
+    html += `<div class="pp-sec pp-sec-reg${ap}"${dl()}>📍 Détail par région</div>`;
+    const maxR = Math.max(1, ...regions.map(r=>r.contrats));
+    html += `<div class="${ap.trim()}"${dl()}>`;
+    regions.forEach(r=>{
+      const rc = rcOf(r.key); const pct = Math.round((r.contrats/maxR)*100);
+      html += `<div class="pp-reg" style="--rc:${rc}" data-pct="${pct}">
+        <div class="pp-reg-top"><div class="pp-reg-name">${esc(r.label)}</div><div class="pp-reg-score">${r.contrats}${r.ads?` +${r.ads} ADS`:''}</div></div>
+        <div class="pp-reg-track"><div class="pp-reg-fill" style="width:${A?0:pct}%"></div></div>`;
+      r.agencies.forEach(a=>{
+        html += `<div class="pp-ag"><div class="pp-ag-n">${a.contrats}${a.ads?'+'+a.ads:''}</div><div class="pp-ag-d"><b>${esc(a.agency)}</b> : ${a.lines.map(comLine).join(', ')}${a.persos?`, <span class="mut">Persos ${a.persos}</span>`:''}</div></div>`;
+      });
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
+
+  // MESSAGE DA
+  if(p.message){
+    html += `<div class="pp-msg${ap}"${dl()}><p>"${esc(p.message)}"</p><div class="sig">— ${esc(p.daSemaine||p.publishedBy||'')}</div></div>`;
+  }
+
+  // ACTIONS
+  html += `<div class="pp-actions${ap}"${dl()}>
+      <button class="pp-act share" onclick="toast('📲 Export image — bientôt !')">📲 Partager</button>
+      <button class="pp-act ghost" onclick="goTo('classement')">📊 Voir la semaine</button>
+    </div>`;
+
   el.innerHTML = html;
+
+  // animations
+  if(A){
+    ppCountUp(document.getElementById('ppTotal'), t.contrats, 1100);
+    el.querySelectorAll('.pp-kpi b[data-c]').forEach(b=>ppCountUp(b,+b.dataset.c,1000));
+    ppCountUp(document.getElementById('ppPersos'), persosTot, 1000);
+    setTimeout(()=>{ el.querySelectorAll('.pp-reg').forEach(r=>{ const fEl=r.querySelector('.pp-reg-fill'); if(fEl) fEl.style.width=(r.dataset.pct||0)+'%'; }); }, 150);
+    ppConfetti();
+  }
 }
 
 // ── CLASSEMENT SEMAINE ────────────────────────────────

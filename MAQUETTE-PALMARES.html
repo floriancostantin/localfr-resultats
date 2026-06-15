@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Maquette — Palmarès premium · LocalPerf</title>
+<style>
+:root{
+  --fuchsia:#EC008C; --orange:#FAA61A;
+  --gradient:linear-gradient(135deg,var(--fuchsia),var(--orange));
+  --bg:#0a080d; --card:rgba(255,255,255,.045); --line:rgba(255,255,255,.09);
+  --muted:#9b94ab; --text:#fff;
+  --c-sud:#EC008C; --c-est:#FAA61A; --c-ouest:#8E97C0; --c-paris:#C57BE8;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Poppins',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden}
+/* ambiance lumineuse de fond */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+   radial-gradient(620px 420px at 78% -6%,rgba(236,0,140,.22),transparent 60%),
+   radial-gradient(560px 460px at 8% 8%,rgba(250,166,26,.16),transparent 60%),
+   radial-gradient(900px 700px at 50% 120%,rgba(236,0,140,.10),transparent 60%)}
+.wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:18px 14px 60px}
+
+/* ───────── HERO ───────── */
+.hero{position:relative;border-radius:24px;padding:26px 22px 24px;margin-bottom:14px;overflow:hidden;
+  background:linear-gradient(165deg,rgba(40,16,40,.9),rgba(14,10,18,.94));
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 26px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06)}
+.hero::after{content:"";position:absolute;top:-60px;right:-40px;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(236,0,140,.45),transparent 65%);filter:blur(6px)}
+.hero-top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:2}
+.wm{display:inline-flex;align-items:center;gap:9px}
+.wm .dots{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.wm .dots i{width:6px;height:6px;border-radius:50%;background:#6a6478}
+.wm .dots i.f{background:var(--fuchsia)} .wm .dots i.o{background:var(--orange)}
+.wm b{font-weight:800;font-size:18px;letter-spacing:-.4px}
+.wm b .p{background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.daytag{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;
+  color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);padding:7px 12px;border-radius:30px}
+.daytag .gd{width:7px;height:7px;border-radius:50%;background:var(--gradient);box-shadow:0 0 10px var(--fuchsia)}
+.hero-mid{position:relative;z-index:2;text-align:center;padding:14px 0 4px}
+.hero-label{font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange);margin-bottom:2px}
+.hero-total{font-size:84px;line-height:.9;font-weight:900;letter-spacing:-3px;
+  background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 8px 30px rgba(236,0,140,.35))}
+.hero-total .ads{font-size:30px;font-weight:800;letter-spacing:-1px;color:#fff;-webkit-text-fill-color:#fff;opacity:.85}
+.hero-sub{font-size:13px;color:#cfc8da;font-weight:600;margin-top:8px}
+.hero-date{font-size:11px;color:var(--muted);font-weight:600;text-transform:capitalize;margin-top:2px}
+
+/* ───────── KPIs ───────── */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 6px;text-align:center;
+  backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.kpi b{display:block;font-size:30px;font-weight:900;line-height:1}
+.kpi.cq b{color:#ff4fb0} .kpi.rn b{color:var(--orange)} .kpi.ad b{color:#cfd3e6}
+.kpi span{display:block;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-top:6px}
+
+/* ───────── SECTION TITRE ───────── */
+.sec-title{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#cabfe0;
+  margin:22px 4px 12px;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.18),transparent)}
+
+/* ───────── PODIUM ───────── */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:6px 2px 4px}
+.pod{flex:1;max-width:150px;display:flex;flex-direction:column;align-items:center}
+.pod .ava{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:900;color:#fff;margin-bottom:8px;border:2px solid rgba(255,255,255,.2);
+  background:var(--gradient);box-shadow:0 8px 24px rgba(236,0,140,.4)}
+.pod .nm{font-size:13px;font-weight:800;text-align:center;line-height:1.15;margin-bottom:1px;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .ct{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:7px}
+.pod .bar{width:100%;border-radius:12px 12px 0 0;display:flex;align-items:flex-start;justify-content:center;
+  padding-top:9px;font-size:24px;position:relative;overflow:hidden;
+  transition:height .9s cubic-bezier(.22,1,.36,1)}
+.pod .bar::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 40%)}
+.pod1 .bar{height:118px;background:linear-gradient(180deg,#FFD75E,#F6A700)}
+.pod1 .ava{background:linear-gradient(135deg,#FFD75E,#F6A700);box-shadow:0 10px 30px rgba(246,167,0,.55);
+  border-color:rgba(255,231,138,.7)}
+.pod2 .bar{height:90px;background:linear-gradient(180deg,#cfd3e6,#9aa0bd)}
+.pod2 .ava{background:linear-gradient(135deg,#cfd3e6,#9aa0bd);box-shadow:0 8px 22px rgba(154,160,189,.4)}
+.pod3 .bar{height:70px;background:linear-gradient(180deg,#E59A6A,#C2703E)}
+.pod3 .ava{background:linear-gradient(135deg,#E59A6A,#C2703E);box-shadow:0 8px 22px rgba(194,112,62,.4)}
+.pod .medal{position:relative;z-index:2;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4))}
+
+/* ───────── PERF COLLECTIVE ───────── */
+.perf{position:relative;border-radius:18px;padding:16px 18px;margin:16px 0 4px;overflow:hidden;
+  background:linear-gradient(120deg,rgba(236,0,140,.16),rgba(250,166,26,.13));
+  border:1px solid rgba(250,166,26,.3)}
+.perf .t{font-size:11px;font-weight:900;letter-spacing:1px;color:var(--orange);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.perf .s{font-size:15px;font-weight:700;line-height:1.4;color:#fff}
+
+/* ───────── HIGHLIGHTS (pastilles) ───────── */
+.hl-group{margin-bottom:12px}
+.hl-h{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:0 2px 8px;display:flex;align-items:center;gap:6px}
+.pills{display:flex;flex-wrap:wrap;gap:7px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:30px;font-size:13px;font-weight:700;
+  background:var(--card);border:1px solid var(--line);color:#fff}
+.pill.gold{background:linear-gradient(135deg,rgba(255,215,94,.16),rgba(246,167,0,.10));border-color:rgba(255,215,94,.4)}
+.pill.dia{background:linear-gradient(135deg,rgba(120,200,255,.14),rgba(180,120,255,.10));border-color:rgba(150,170,255,.4)}
+.pill.fire{background:linear-gradient(135deg,rgba(236,0,140,.18),rgba(250,166,26,.12));border-color:rgba(250,166,26,.4)}
+.pill .e{font-size:15px}
+
+/* ───────── RÉGIONS ───────── */
+.reg{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:11px;
+  backdrop-filter:blur(8px);position:relative;overflow:hidden}
+.reg::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--rc,#fff)}
+.reg-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.reg-name{font-size:13px;font-weight:900;letter-spacing:.5px;text-transform:uppercase}
+.reg-score{font-size:13px;font-weight:900;color:var(--rc)}
+.reg-track{height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:11px}
+.reg-fill{height:100%;border-radius:6px;background:var(--rc);width:0;transition:width 1s cubic-bezier(.22,1,.36,1)}
+.ag{display:flex;gap:11px;align-items:flex-start;padding:8px 0;border-top:1px solid rgba(255,255,255,.06)}
+.ag:first-of-type{border-top:none}
+.ag-n{flex-shrink:0;min-width:34px;height:28px;padding:0 7px;border-radius:9px;color:#0a080d;font-weight:900;font-size:13px;
+  display:flex;align-items:center;justify-content:center;background:var(--rc)}
+.ag-d{font-size:13px;line-height:1.5;color:#e8e4f0}
+.ag-d b{color:#fff;font-weight:800}
+.ag-d .w{font-weight:800;color:var(--orange)}
+.ag-d .mut{color:var(--muted)}
+
+/* ───────── MESSAGE DA ───────── */
+.msg{border-radius:18px;padding:18px;margin-top:14px;background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid var(--line)}
+.msg p{font-size:14px;line-height:1.6;color:#efeaf6;font-style:italic}
+.msg .sig{margin-top:11px;font-size:12px;font-weight:800;color:var(--orange);font-style:normal;letter-spacing:.3px}
+
+/* ───────── ACTIONS ───────── */
+.actions{display:flex;gap:10px;margin-top:18px}
+.act{flex:1;padding:14px;border-radius:14px;border:none;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;color:#fff}
+.act.share{background:var(--gradient);box-shadow:0 12px 34px rgba(236,0,140,.45)}
+.act.ghost{background:rgba(255,255,255,.07);border:1px solid var(--line)}
+
+/* ───────── CONFETTIS ───────── */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+.cf{position:absolute;width:9px;height:14px;opacity:0;will-change:transform,opacity}
+@keyframes cffall{0%{opacity:0;transform:translateY(-30px) rotate(0)}10%{opacity:1}100%{opacity:0;transform:translateY(105vh) rotate(720deg)}}
+
+.appear{opacity:0;transform:translateY(14px);animation:rise .6s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+@media(max-width:380px){.hero-total{font-size:68px}.kpi b{font-size:25px}}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero appear">
+    <div class="hero-top">
+      <div class="wm">
+        <div class="dots"><i class="f"></i><i class="f"></i><i></i><i class="f"></i><i class="o"></i><i></i><i></i><i></i><i></i></div>
+        <b>local<span class="p">perf</span></b>
+      </div>
+      <div class="daytag"><span class="gd"></span> Palmarès du jour</div>
+    </div>
+    <div class="hero-mid">
+      <div class="hero-label">Total contrats</div>
+      <div class="hero-total"><span id="heroTotal">0</span><span class="ads" id="heroAds"></span></div>
+      <div class="hero-sub"><span id="heroAg">0</span> agences ont signé aujourd'hui</div>
+      <div class="hero-date" id="heroDate">—</div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis appear" style="animation-delay:.05s">
+    <div class="kpi cq"><b data-count="19">0</b><span>Conquêtes</span></div>
+    <div class="kpi rn"><b data-count="9">0</b><span>Renouv.</span></div>
+    <div class="kpi ad"><b data-count="7">0</b><span>ADS</span></div>
+  </div>
+
+  <!-- PODIUM -->
+  <div class="sec-title appear" style="animation-delay:.1s">🏆 Top agences du jour</div>
+  <div class="podium appear" style="animation-delay:.12s">
+    <div class="pod pod2">
+      <div class="ava">LY</div><div class="nm">Lyon</div><div class="ct">5 contrats</div>
+      <div class="bar"><span class="medal">🥈</span></div>
+    </div>
+    <div class="pod pod1">
+      <div class="ava">TO</div><div class="nm">Toulouse</div><div class="ct">6 +3 ADS</div>
+      <div class="bar"><span class="medal">🥇</span></div>
+    </div>
+    <div class="pod pod3">
+      <div class="ava">PO</div><div class="nm">Paris Ouest</div><div class="ct">4 +1 ADS</div>
+      <div class="bar"><span class="medal">🥉</span></div>
+    </div>
+  </div>
+
+  <!-- PERF COLLECTIVE -->
+  <div class="perf appear" style="animation-delay:.16s">
+    <div class="t">⚡ PERFORMANCE COLLECTIVE</div>
+    <div class="s">Toulouse, Lyon et Paris Ouest signent les performances du jour !</div>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <div class="sec-title appear" style="animation-delay:.2s">✨ Les coups d'éclat</div>
+  <div class="appear" style="animation-delay:.22s">
+    <div class="hl-group">
+      <div class="hl-h">🥇 Premiers contrats</div>
+      <div class="pills"><span class="pill gold"><span class="e">🥇</span>Aïmen</span><span class="pill gold"><span class="e">🥇</span>Sofia</span></div>
+    </div>
+    <div class="hl-group">
+      <div class="hl-h">💎 Parrainages</div>
+      <div class="pills"><span class="pill dia"><span class="e">💎</span>Marc</span><span class="pill dia"><span class="e">💎</span>Léa</span><span class="pill dia"><span class="e">💎</span>Yanis</span></div>
+    </div>
+    <div class="hl-group">
+      <div class="hl-h">🔥 Multi-signatures</div>
+      <div class="pills"><span class="pill fire"><span class="e">🔱</span>Sarah <b style="margin-left:3px">triplé</b></span><span class="pill fire"><span class="e">✌️</span>Karim doublé</span><span class="pill fire"><span class="e">✌️</span>Inès doublé</span></div>
+    </div>
+  </div>
+
+  <!-- RÉGIONS -->
+  <div class="sec-title appear" style="animation-delay:.26s">📍 Détail par région</div>
+  <div class="appear" style="animation-delay:.28s">
+
+    <div class="reg" style="--rc:var(--c-sud)" data-pct="100">
+      <div class="reg-top"><div class="reg-name">Sud</div><div class="reg-score">26 +4 ADS</div></div>
+      <div class="reg-track"><div class="reg-fill"></div></div>
+      <div class="ag"><div class="ag-n">6+3</div><div class="ag-d"><b>Toulouse</b> : Sarah <span class="w">triplé</span> 🥇, Karim <span class="w">doublé</span> 💎, Léo <span class="mut">+3 ADS</span></div></div>
+      <div class="ag"><div class="ag-n">7+1</div><div class="ag-d"><b>Bordeaux</b> : Marc 💎, Aïmen 🥇, Nadia, Tom <span class="mut">+1 ADS</span></div></div>
+      <div class="ag"><div class="ag-n">4</div><div class="ag-d"><b>Nice</b> : Yanis 💎, Clara, Hugo</div></div>
+    </div>
+
+    <div class="reg" style="--rc:var(--c-est)" data-pct="78">
+      <div class="reg-top"><div class="reg-name">Est</div><div class="reg-score">20 +2 ADS</div></div>
+      <div class="reg-track"><div class="reg-fill"></div></div>
+      <div class="ag"><div class="ag-n">5+2</div><div class="ag-d"><b>Lyon</b> : Inès <span class="w">doublé</span>, Sofia 🥇, Mehdi <span class="mut">+2 ADS</span></div></div>
+      <div class="ag"><div class="ag-n">6</div><div class="ag-d"><b>Annecy</b> : Léa 💎, Paul, Emma, Théo</div></div>
+    </div>
+
+    <div class="reg" style="--rc:var(--c-paris)" data-pct="55">
+      <div class="reg-top"><div class="reg-name">Paris IDF</div><div class="reg-score">10 +1 ADS</div></div>
+      <div class="reg-track"><div class="reg-fill"></div></div>
+      <div class="ag"><div class="ag-n">4+1</div><div class="ag-d"><b>Paris Ouest</b> : Camille, Rayan, Lina <span class="mut">+1 ADS</span></div></div>
+      <div class="ag"><div class="ag-n">4</div><div class="ag-d"><b>Paris Centre</b> : Adam, Manon, Jade, Noé</div></div>
+    </div>
+
+    <div class="reg" style="--rc:var(--c-ouest)" data-pct="35">
+      <div class="reg-top"><div class="reg-name">Ouest</div><div class="reg-score">8 contrats</div></div>
+      <div class="reg-track"><div class="reg-fill"></div></div>
+      <div class="ag"><div class="ag-n">5</div><div class="ag-d"><b>Nantes</b> : Lucas, Anaïs, Gabin</div></div>
+      <div class="ag"><div class="ag-n">3</div><div class="ag-d"><b>Caen</b> : Romain, Eva</div></div>
+    </div>
+
+  </div>
+
+  <!-- MESSAGE DA -->
+  <div class="msg appear" style="animation-delay:.32s">
+    <p>"Journée énorme ! Le réseau pousse fort, on garde ce rythme jusqu'à vendredi. Bravo à toutes les équipes 💪"</p>
+    <div class="sig">— Florian C., DA de semaine</div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions appear" style="animation-delay:.36s">
+    <button class="act share">📲 Partager</button>
+    <button class="act ghost">📊 Voir la semaine</button>
+  </div>
+
+</div>
+
+<script>
+// date du jour
+document.getElementById('heroDate').textContent =
+  new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+// compteurs animés
+function countUp(el,to,dur){
+  const start=performance.now();
+  function step(now){
+    const p=Math.min(1,(now-start)/dur);
+    const e=1-Math.pow(1-p,3); // easeOutCubic
+    el.textContent=Math.round(to*e);
+    if(p<1)requestAnimationFrame(step); else el.textContent=to;
+  }
+  requestAnimationFrame(step);
+}
+setTimeout(()=>{
+  countUp(document.getElementById('heroTotal'),28,1100);
+  document.getElementById('heroAds').textContent=' +7';
+  countUp(document.getElementById('heroAg'),11,1100);
+  document.querySelectorAll('.kpi b[data-count]').forEach(b=>countUp(b,+b.dataset.count,1000));
+},250);
+
+// barres de région
+setTimeout(()=>{
+  document.querySelectorAll('.reg').forEach(r=>{
+    r.querySelector('.reg-fill').style.width=(r.dataset.pct||0)+'%';
+  });
+},400);
+
+// confettis
+(function(){
+  const c=document.getElementById('confetti'),x=c.getContext('2d');
+  let W,H,parts=[];
+  function size(){W=c.width=innerWidth;H=c.height=innerHeight;}
+  size();addEventListener('resize',size);
+  const cols=['#EC008C','#FAA61A','#FFD75E','#C57BE8','#fff'];
+  for(let i=0;i<90;i++)parts.push({x:Math.random()*W,y:Math.random()*-H,
+    w:6+Math.random()*7,h:9+Math.random()*9,c:cols[i%cols.length],
+    vy:2+Math.random()*3,vx:-1+Math.random()*2,rot:Math.random()*6,vr:-.15+Math.random()*.3});
+  let frames=0;
+  (function loop(){
+    x.clearRect(0,0,W,H);frames++;
+    parts.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.rot+=p.vr;
+      if(p.y>H+20){p.y=-20;p.x=Math.random()*W;}
+      x.save();x.translate(p.x,p.y);x.rotate(p.rot);x.fillStyle=p.c;
+      x.globalAlpha=Math.max(0,1-frames/260);
+      x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore();});
+    if(frames<280)requestAnimationFrame(loop); else x.clearRect(0,0,W,H);
+  })();
+})();
+</script>
+</body>
+</html>
