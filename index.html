@@ -489,6 +489,12 @@ textarea { resize:vertical; min-height:64px; }
     <div id="palmaresPreview" style="margin-bottom:14px"></div>
 
     <div class="form-group">
+      <label>⚡ Performance collective</label>
+      <textarea id="palmares-perf" placeholder="Ex : Annecy, Clermont, Lille et Aix en Provence signent les performances du jour !"></textarea>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Suggestion pré-remplie d'après les agences en tête — modifie-la comme tu veux.</div>
+    </div>
+
+    <div class="form-group">
       <label>💬 Message du jour (optionnel)</label>
       <textarea id="palmares-message" placeholder="Message de motivation, point fort de la journée…"></textarea>
     </div>
@@ -981,10 +987,19 @@ function checkDASemaine() {
       </div>
       <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${nbAg} agence(s) · ✌️ ${a.doubles.length} doublé(s) · 🔱 ${a.triples.length} triplé(s) · 🥇 ${a.premiers.length} · 💎 ${a.parrainages.length}</div>`;
   }
-  // Pré-remplir le message si déjà publié
+  // Suggestion pré-remplie de la performance collective (les agences en tête) — modifiable
+  const perfEl = document.getElementById('palmares-perf');
+  if(perfEl && !perfEl.value && a.perf.length){
+    const names = a.perf;
+    const last = names.length>1 ? names.slice(0,-1).join(', ')+' et '+names[names.length-1] : names[0];
+    perfEl.value = `${last} signe${names.length>1?'nt':''} les performances du jour !`;
+  }
+  // Pré-remplir depuis un palmarès déjà publié aujourd'hui
   get(ref(db,'palmares/'+todayStr())).then(snap=>{
-    if(snap.exists() && snap.val().message && !document.getElementById('palmares-message').value)
-      document.getElementById('palmares-message').value = snap.val().message;
+    if(!snap.exists()) return;
+    const v = snap.val();
+    if(v.perfText && perfEl) perfEl.value = v.perfText;
+    if(v.message && !document.getElementById('palmares-message').value) document.getElementById('palmares-message').value = v.message;
   });
 }
 
@@ -992,6 +1007,7 @@ window.publishPalmares = function() {
   const data = aggregatePalmares();
   data.week = getWeekKey();
   data.daSemaine = CALENDRIER_2026[data.week] || '';
+  data.perfText = (document.getElementById('palmares-perf').value||'').trim();
   data.message = document.getElementById('palmares-message').value.trim();
   data.publishedAt = Date.now();
   data.publishedBy = STATE.nom;
@@ -1043,8 +1059,10 @@ function renderPalmares() {
       <div class="pal-kpi"><b style="color:#888">${t.ads}</b><span>ADS</span></div>
     </div>`;
 
-  // Performance collective
-  if(p.perf && p.perf.length){
+  // Performance collective (texte rédigé par le DA ; sinon repli sur les agences en tête)
+  if(p.perfText){
+    html += `<div class="perf-banner"><div class="t">⚡ PERFORMANCE COLLECTIVE</div><div class="s">${esc(p.perfText)}</div></div>`;
+  } else if(p.perf && p.perf.length){
     const names = p.perf.map(esc);
     const last = names.length>1 ? names.slice(0,-1).join(', ')+' et '+names[names.length-1] : names[0];
     html += `<div class="perf-banner"><div class="t">⚡ PERFORMANCE COLLECTIVE</div><div class="s">${last} signe${names.length>1?'nt':''} les performances du jour !</div></div>`;
