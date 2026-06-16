@@ -23,8 +23,8 @@ async function sendPushNotification(title, message) {
       included_segments: ["Subscribed Users"],
       headings: { fr: title, en: title },
       contents: { fr: message, en: message },
-      url: "https://localperf.netlify.app",
-      web_url: "https://localperf.netlify.app",
+      url: "https://local-perf.pages.dev",
+      web_url: "https://local-perf.pages.dev",
     });
 
     const options = {
