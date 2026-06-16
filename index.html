@@ -925,7 +925,21 @@ window.goTo = function(page) {
   // n'avait pas zoomé/dézoomé. On force un reflow de la page affichée.
   const shown = document.getElementById('page-'+page);
   if(shown){ shown.style.display='none'; void shown.offsetHeight; shown.style.display='block'; }
+  fitBottomPad();
 };
+
+// Réserve sous le contenu exactement la hauteur réelle de la barre du bas
+// (mesurée en JS — robuste vs taille des emoji et safe-area iPhone), pour que
+// le bouton « Valider ma saisie » ne passe jamais derrière la nav.
+function fitBottomPad(){
+  const nav = document.getElementById('bottomNav');
+  if(!nav || nav.style.display==='none') return;
+  const h = nav.offsetHeight;
+  if(!h) return;
+  document.querySelectorAll('.content').forEach(c=>{ c.style.paddingBottom = (h + 24) + 'px'; });
+}
+window.addEventListener('resize', fitBottomPad);
+window.addEventListener('orientationchange', ()=>setTimeout(fitBottomPad, 200));
 
 // ── FIREBASE SUBSCRIBE ────────────────────────────────
 function subscribeData() {
