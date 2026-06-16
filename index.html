@@ -62,7 +62,7 @@ header { background:var(--dark); padding:0 16px; height:56px; display:flex; alig
 .nav-item.active { color:var(--fuchsia); }
 
 /* CONTENT */
-.content { padding:14px; padding-bottom:calc(84px + var(--safe-bottom)); max-width:600px; margin:0 auto; }
+.content { padding:14px; padding-bottom:calc(132px + var(--safe-bottom)); max-width:600px; margin:0 auto; }
 
 /* CARD */
 .card { background:white; border-radius:16px; padding:18px; box-shadow:0 1px 8px rgba(0,0,0,0.06); border:1px solid var(--border); margin-bottom:12px; }
@@ -925,21 +925,7 @@ window.goTo = function(page) {
   // n'avait pas zoomé/dézoomé. On force un reflow de la page affichée.
   const shown = document.getElementById('page-'+page);
   if(shown){ shown.style.display='none'; void shown.offsetHeight; shown.style.display='block'; }
-  fitBottomPad();
 };
-
-// Réserve sous le contenu exactement la hauteur réelle de la barre du bas
-// (mesurée en JS — robuste vs taille des emoji et safe-area iPhone), pour que
-// le bouton « Valider ma saisie » ne passe jamais derrière la nav.
-function fitBottomPad(){
-  const nav = document.getElementById('bottomNav');
-  if(!nav || nav.style.display==='none') return;
-  const h = nav.offsetHeight;
-  if(!h) return;
-  document.querySelectorAll('.content').forEach(c=>{ c.style.paddingBottom = (h + 24) + 'px'; });
-}
-window.addEventListener('resize', fitBottomPad);
-window.addEventListener('orientationchange', ()=>setTimeout(fitBottomPad, 200));
 
 // ── FIREBASE SUBSCRIBE ────────────────────────────────
 function subscribeData() {
