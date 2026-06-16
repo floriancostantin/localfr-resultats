@@ -7,7 +7,8 @@ const https = require("https");
 admin.initializeApp();
 
 const ONESIGNAL_APP_ID = "a8d87e84-ebe4-454e-94be-e6e0da23283d";
-const ONESIGNAL_API_KEY = "os_v2_app_vdmh5bhl4rcu5ff643qnuizihvfjgwg2s5our5ms4vimukqlfn73rfoyhmamqd6uwxw57vecgxlwamuehuwes5yc3nmjtr6pdmdo7zi";
+// La clé API REST OneSignal est un SECRET → stockée via Firebase Secret Manager
+// (firebase functions:secrets:set ONESIGNAL_API_KEY), jamais en clair dans le dépôt.
 
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
@@ -15,9 +16,11 @@ function todayStr() {
 
 async function sendPushNotification(title, message) {
   return new Promise((resolve, reject) => {
+    const apiKey = process.env.ONESIGNAL_API_KEY;
+    if (!apiKey) { console.error("ONESIGNAL_API_KEY manquant (secret non configuré)"); return reject(new Error("ONESIGNAL_API_KEY manquant")); }
     const body = JSON.stringify({
       app_id: ONESIGNAL_APP_ID,
-      included_segments: ["All"],
+      included_segments: ["Subscribed Users"],
       headings: { fr: title, en: title },
       contents: { fr: message, en: message },
       url: "https://localperf.netlify.app",
@@ -25,12 +28,12 @@ async function sendPushNotification(title, message) {
     });
 
     const options = {
-      hostname: "onesignal.com",
-      path: "/api/v1/notifications",
+      hostname: "api.onesignal.com",
+      path: "/notifications",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Key ${ONESIGNAL_API_KEY}`,
+        "Authorization": `Key ${apiKey}`,
         "Content-Length": Buffer.byteLength(body),
       },
     };
@@ -38,7 +41,11 @@ async function sendPushNotification(title, message) {
     const req = https.request(options, (res) => {
       let data = "";
       res.on("data", (chunk) => { data += chunk; });
-      res.on("end", () => resolve(JSON.parse(data)));
+      res.on("end", () => {
+        console.log("OneSignal status", res.statusCode, "réponse:", data);
+        let parsed; try { parsed = JSON.parse(data); } catch (e) { parsed = { raw: data }; }
+        resolve(parsed);
+      });
     });
     req.on("error", reject);
     req.write(body);
@@ -68,7 +75,7 @@ async function buildSummary() {
 
 // ── Notification auto 19h ────────────────
 exports.notificationQuotidienne = onSchedule(
-  { schedule: "0 19 * * *", timeZone: "Europe/Paris", region: "europe-west1" },
+  { schedule: "0 19 * * *", timeZone: "Europe/Paris", region: "europe-west1", secrets: ["ONESIGNAL_API_KEY"] },
   async () => {
     const { totalSig, agenciesCount, topAgency, topCount } = await buildSummary();
     const d = new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
@@ -81,7 +88,7 @@ exports.notificationQuotidienne = onSchedule(
 
 // ── Envoi manuel depuis l'appli ──────────
 exports.envoyerNotificationMaintenant = onCall(
-  { region: "europe-west1" },
+  { region: "europe-west1", secrets: ["ONESIGNAL_API_KEY"] },
   async (request) => {
     const { totalSig, agenciesCount, topAgency, topCount } = await buildSummary();
     const d = new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
@@ -95,7 +102,7 @@ exports.envoyerNotificationMaintenant = onCall(
 
 // ── Notification quand tous les DA ont saisi ──
 exports.checkAllAgenciesSoumises = onValueWritten(
-  { ref: "/results/{agencyKey}/{date}", region: "europe-west1" },
+  { ref: "/results/{agencyKey}/{date}", region: "europe-west1", secrets: ["ONESIGNAL_API_KEY"] },
   async (event) => {
     const today = todayStr();
     if (event.params.date !== today) return null;

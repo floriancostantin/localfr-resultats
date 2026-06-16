@@ -1221,7 +1221,11 @@ window.publishPalmares = function() {
     envoyerNotif({
       title: `🏆 Palmarès du ${new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}`,
       message: `${t.contrats} contrat${t.contrats>1?'s':''}${t.ads?` + ${t.ads} ADS`:''}${top?` · 🥇 ${top}`:''} · Voir le palmarès !`,
-    }).catch(e=>console.warn('Notif error',e));
+    }).then(r=>{
+      const res = r && r.data && r.data.result;
+      if(res && res.id && !(res.errors)) toast(`🔔 Notification envoyée (${res.recipients!=null?res.recipients:'?'} destinataires)`);
+      else toast('⚠️ Notif non envoyée : '+JSON.stringify((res&&res.errors)||res||'erreur'));
+    }).catch(e=>toast('⚠️ Notif : '+(e.message||e)));
   }).catch(e=>toast('❌ '+e.message));
 };
 
