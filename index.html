@@ -919,6 +919,12 @@ window.goTo = function(page) {
   if(page==='calendrier') renderCalendrier();
   if(page==='saisie') renderSaisie();
   if(page==='palmares-da') checkDASemaine();
+
+  // Fix iOS Safari : après l'affichage + injection du contenu, le bas de page
+  // (ex. bouton « Valider ma saisie ») n'était parfois pas peint tant qu'on
+  // n'avait pas zoomé/dézoomé. On force un reflow de la page affichée.
+  const shown = document.getElementById('page-'+page);
+  if(shown){ shown.style.display='none'; void shown.offsetHeight; shown.style.display='block'; }
 };
 
 // ── FIREBASE SUBSCRIBE ────────────────────────────────
