@@ -10,3 +10,10 @@ ACCUEIL-JOURS.html
 ACCUEIL-PHOTOS.html
 ACCUEIL-IMMERSIF.html
 VISUELS-ACCUEIL.html
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
