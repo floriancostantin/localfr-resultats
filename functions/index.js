@@ -20,7 +20,7 @@ async function sendPushNotification(title, message) {
     if (!apiKey) { console.error("ONESIGNAL_API_KEY manquant (secret non configuré)"); return reject(new Error("ONESIGNAL_API_KEY manquant")); }
     const body = JSON.stringify({
       app_id: ONESIGNAL_APP_ID,
-      included_segments: ["Subscribed Users"],
+      included_segments: ["Total Subscriptions"],
       headings: { fr: title, en: title },
       contents: { fr: message, en: message },
       url: "https://local-perf.pages.dev",
