@@ -1,0 +1,6 @@
+name = "localperf"
+compatibility_date = "2024-12-01"
+
+# Site statique : sert les fichiers du dépôt (index.html à la racine)
+[assets]
+directory = "."
