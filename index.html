@@ -200,6 +200,11 @@ textarea { resize:vertical; min-height:64px; }
 .sc-flags{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .sc-flag{border:1.5px solid var(--border);background:#fff;border-radius:20px;padding:6px 10px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;font-family:inherit}
 .sc-flag.on{border-color:var(--fuchsia);background:linear-gradient(135deg,rgba(236,0,140,.08),rgba(250,166,26,.08));color:var(--fuchsia)}
+.sc-pflag{display:inline-flex;align-items:center;gap:2px;border:1.5px solid var(--border);background:#fff;border-radius:20px;padding:2px 4px;color:var(--muted)}
+.sc-pflag.on{border-color:var(--fuchsia);background:linear-gradient(135deg,rgba(236,0,140,.08),rgba(250,166,26,.08));color:var(--fuchsia)}
+.sc-pflag .pf-l{font-size:12px;font-weight:800;padding:0 2px;min-width:34px;text-align:center}
+.sc-pflag button{width:24px;height:24px;border:none;background:transparent;color:var(--fuchsia);font-size:16px;font-weight:300;cursor:pointer;font-family:inherit;border-radius:50%;line-height:1}
+.sc-pflag button:active{background:rgba(236,0,140,.1)}
 .sc-res{margin-left:auto;font-size:13px;font-weight:800;color:var(--fuchsia)}
 .sc-res .muted{color:#999;font-weight:700}
 .sc-empty{text-align:center;color:var(--muted);font-size:13px;padding:14px 0}
@@ -1029,13 +1034,13 @@ function renderSaisie() {
   // Charger la saisie existante du jour (une seule fois, sans écraser une saisie en cours)
   if(!STATE.comsLoaded){
     if(Array.isArray(todayEntry.commerciaux) && todayEntry.commerciaux.length){
-      STATE.coms = todayEntry.commerciaux.map(c=>({id:++STATE.comUid,name:c.name||'',cq:c.cq||0,rn:c.rn||0,ad:c.ad||0,first:!!c.first,parr:!!c.parr,up:!!c.up}));
+      STATE.coms = todayEntry.commerciaux.map(c=>({id:++STATE.comUid,name:c.name||'',cq:c.cq||0,rn:c.rn||0,ad:c.ad||0,first:!!c.first,parr:(typeof c.parr==='number'?c.parr:(c.parr?1:0)),up:!!c.up}));
       STATE.persos = todayEntry.persos!=null?todayEntry.persos:(todayEntry.rdv||0);
       STATE.comsLoaded = true;
       document.getElementById('submitStatus').textContent = '✓ Saisie déjà envoyée — modifiable';
     } else if(Array.isArray(todayEntry.signataires) && todayEntry.signataires.length){
       // compat ancienne saisie : 1 contrat par signataire
-      STATE.coms = todayEntry.signataires.map(n=>({id:++STATE.comUid,name:n,cq:1,rn:0,ad:0,first:false,parr:false,up:false}));
+      STATE.coms = todayEntry.signataires.map(n=>({id:++STATE.comUid,name:n,cq:1,rn:0,ad:0,first:false,parr:0,up:false}));
       STATE.persos = todayEntry.rdv||0;
       STATE.comsLoaded = true;
     }
@@ -1054,7 +1059,7 @@ function renderSaisie() {
   renderComs();
 }
 
-window.addCom = function(){ STATE.comsLoaded=true; STATE.coms.push({id:++STATE.comUid,name:'',cq:0,rn:0,ad:0,first:false,parr:false,up:false}); renderComs(); };
+window.addCom = function(){ STATE.comsLoaded=true; STATE.coms.push({id:++STATE.comUid,name:'',cq:0,rn:0,ad:0,first:false,parr:0,up:false}); renderComs(); };
 window.delCom = function(id){ STATE.comsLoaded=true; STATE.coms=STATE.coms.filter(c=>c.id!==id); renderComs(); };
 window.stepCom = function(id,f,d){ STATE.comsLoaded=true; const c=STATE.coms.find(x=>x.id===id); if(!c)return; c[f]=Math.max(0,c[f]+d); renderComs(); };
 window.nameCom = function(id,v){ STATE.comsLoaded=true; const c=STATE.coms.find(x=>x.id===id); if(c)c.name=v; updateRecap(); };
@@ -1076,8 +1081,8 @@ function renderComs(){
       </div>
       <div class="sc-flags">
         <button class="sc-flag ${c.first?'on':''}" onclick="toggleCom(${c.id},'first')">🥇 1er</button>
-        <button class="sc-flag ${c.parr?'on':''}" onclick="toggleCom(${c.id},'parr')">💎 Parrainage</button>
         <button class="sc-flag ${c.up?'on':''}" onclick="toggleCom(${c.id},'up')">⬆️ Upsell</button>
+        <div class="sc-pflag ${c.parr?'on':''}"><button onclick="stepCom(${c.id},'parr',-1)">−</button><span class="pf-l">💎 ${c.parr}</span><button onclick="stepCom(${c.id},'parr',1)">+</button></div>
         <span class="sc-res">${tier?`${tier}`:''}${c.ad?` <span class="muted">+${c.ad} ADS</span>`:''}</span>
       </div>
     </div>`;
@@ -1089,7 +1094,7 @@ function updateRecap(){
   let cq=0,rn=0,ad=0; const doubles=[],triples=[],quad=[],firsts=[],parr=[];
   STATE.coms.forEach(c=>{ cq+=c.cq;rn+=c.rn;ad+=c.ad; const k=c.cq+c.rn; const nm=(c.name||'').trim()||'(sans nom)';
     if(k===2)doubles.push(nm); else if(k===3)triples.push(nm); else if(k>=4)quad.push(nm+` (${k})`);
-    if(c.first)firsts.push(nm); if(c.parr)parr.push(nm); });
+    if(c.first)firsts.push(nm); if(c.parr)parr.push(c.parr>1?`${nm} ×${c.parr}`:nm); });
   const contrats=cq+rn;
   document.getElementById('saiTot').textContent = ad?`${contrats}+${ad}`:contrats;
   document.getElementById('saiCq').textContent=cq;
@@ -1153,7 +1158,7 @@ function aggregatePalmares() {
       conquetes+=cq; renouv+=rn; ads+=ad; ag.contrats+=k; ag.ads+=ad;
       if(k===2)doubles.push(nm); else if(k===3)triples.push(nm); else if(k>=4)quad.push(nm+' ('+k+')');
       if(c.first)premiers.push(nm); if(c.parr)parrainages.push(nm);
-      ag.lines.push({name:nm,cq,rn,ad,first:!!c.first,parr:!!c.parr,up:!!c.up,k});
+      ag.lines.push({name:nm,cq,rn,ad,first:!!c.first,parr:(typeof c.parr==='number'?c.parr:(c.parr?1:0)),up:!!c.up,k});
     });
     regMap[rk].contrats+=ag.contrats; regMap[rk].ads+=ag.ads; regMap[rk].agencies[key]=ag;
   });
@@ -1226,7 +1231,7 @@ function comLine(c){
   if(c.k>=2){ const w = c.k===2?'doublé':c.k===3?'triplé':c.k===4?'quadruplé':(c.k+'×'); s += ` <b>${w}</b>`; }
   else if(c.k===1 && c.rn===1 && c.cq===0){ s += ' <span style="color:var(--muted)">(renouv)</span>'; }
   if(c.first) s += ' 🥇';
-  if(c.parr) s += ' 💎';
+  if(c.parr) s += c.parr>1 ? ` 💎×${c.parr}` : ' 💎';
   if(c.up) s += ' <span style="color:var(--muted)">+Upsell</span>';
   if(c.ad) s += ` <span style="color:#999">+${c.ad} ADS</span>`;
   return s;
@@ -1333,7 +1338,7 @@ function renderPalmares(animate) {
   regions.forEach(r=>r.agencies.forEach(a=>a.lines.forEach(c=>{
     const it = {name:c.name, ag:a.agency};
     if(c.first) HL.premiers.push(it);
-    if(c.parr) HL.parr.push(it);
+    if(c.parr) HL.parr.push({name:c.parr>1?`${c.name} ×${c.parr}`:c.name, ag:a.agency});
     if(c.k===3) HL.trip.push(it);
     else if(c.k===2) HL.doub.push(it);
     else if(c.k>=4) HL.quad.push({name:c.name+' ('+c.k+')', ag:a.agency});
