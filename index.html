@@ -1717,12 +1717,20 @@ function renderCalendrier() {
 }
 
 // ── NOTIFICATIONS ──────────────────────────────────────
-window.subscribeToNotifications = function() {
-  if(window.OneSignal) {
-    window.OneSignal.Notifications.requestPermission().then(granted=>{
-      toast(granted ? '🔔 Notifications activées !' : 'Notifications refusées');
-    });
-  } else { toast('OneSignal non chargé'); }
+window.subscribeToNotifications = async function() {
+  if(!window.OneSignal) { toast('OneSignal non chargé'); return; }
+  try {
+    await window.OneSignal.Notifications.requestPermission();
+    if(window.OneSignal.Notifications.permission) {
+      // Force l'opt-in (sinon l'abonnement peut rester "non abonné" en v16)
+      await window.OneSignal.User.PushSubscription.optIn();
+      const sub = window.OneSignal.User.PushSubscription;
+      console.log('OneSignal optedIn:', sub.optedIn, 'id:', sub.id);
+      toast(sub.optedIn ? '🔔 Notifications activées !' : '⚠️ Abonnement non finalisé');
+    } else {
+      toast('Notifications refusées');
+    }
+  } catch(e) { console.warn('OneSignal sub error', e); toast('Notif : '+(e.message||e)); }
 };
 
 // ── ACCUEIL IMMERSIF (visuel du jour) ─────────────────
