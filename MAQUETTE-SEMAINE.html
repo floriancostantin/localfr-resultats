@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Maquette — Palmarès semaine premium</title>
+<style>
+:root{
+  --fuchsia:#EC008C; --orange:#FAA61A;
+  --gradient:linear-gradient(135deg,var(--fuchsia),var(--orange));
+  --dia:linear-gradient(135deg,#7CC8FF,#B478FF);
+  --bg:#0a080d; --muted:#9b94ab;
+  --c-sud:#EC008C; --c-est:#FAA61A; --c-ouest:#8E97C0; --c-paris:#C57BE8;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Poppins',-apple-system,system-ui,sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+   radial-gradient(620px 420px at 80% -6%,rgba(236,0,140,.22),transparent 60%),
+   radial-gradient(560px 460px at 6% 6%,rgba(250,166,26,.15),transparent 60%),
+   radial-gradient(900px 700px at 50% 120%,rgba(236,0,140,.10),transparent 60%)}
+.wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:18px 14px 60px}
+.appear{opacity:0;transform:translateY(12px);animation:rise .5s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+/* HERO */
+.hero{position:relative;border-radius:24px;padding:22px 20px;margin-bottom:14px;overflow:hidden;
+  background:linear-gradient(165deg,rgba(40,16,40,.9),rgba(14,10,18,.94));border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 26px 70px rgba(0,0,0,.55)}
+.hero::after{content:"";position:absolute;top:-60px;right:-40px;width:230px;height:230px;border-radius:50%;
+  background:radial-gradient(circle,rgba(236,0,140,.45),transparent 65%);filter:blur(6px)}
+.hero-top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:2}
+.wm{display:inline-flex;align-items:center;gap:9px}
+.wm .dots{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.wm .dots i{width:6px;height:6px;border-radius:50%;background:#6a6478}
+.wm .dots i.f{background:var(--fuchsia)} .wm .dots i.o{background:var(--orange)}
+.wm b{font-weight:800;font-size:18px;letter-spacing:-.4px}
+.wm b .p{background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.daytag{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+  color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);padding:7px 12px;border-radius:30px}
+.daytag .gd{width:7px;height:7px;border-radius:50%;background:var(--gradient);box-shadow:0 0 10px var(--fuchsia)}
+.hero-mid{position:relative;z-index:2;text-align:center;padding:12px 0 2px}
+.hero-label{font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange);margin-bottom:2px}
+.hero-total{font-size:76px;line-height:.9;font-weight:900;letter-spacing:-3px;
+  background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 8px 30px rgba(236,0,140,.35))}
+.hero-total .ads{font-size:28px;-webkit-text-fill-color:#fff;opacity:.85}
+.hero-sub{font-size:13px;color:#cfc8da;font-weight:600;margin-top:8px}
+.hero-date{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px}
+
+/* TABS niveau */
+.tabs{display:flex;gap:7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:5px;margin-bottom:10px}
+.tab{flex:1;padding:10px 4px;border:none;background:transparent;border-radius:11px;font-family:inherit;font-size:12.5px;font-weight:800;color:var(--muted);cursor:pointer;transition:.15s}
+.tab.on{background:var(--gradient);color:#fff;box-shadow:0 8px 22px rgba(236,0,140,.4)}
+
+/* TOGGLE critère */
+.toggle{display:flex;gap:8px;justify-content:center;margin-bottom:18px}
+.tg{padding:8px 16px;border-radius:30px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);
+  font-family:inherit;font-size:12px;font-weight:800;color:#cabfe0;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s}
+.tg.on{color:#fff;border-color:transparent}
+.tg.on.contrats{background:var(--gradient)}
+.tg.on.parr{background:var(--dia)}
+.tg.on.persos{background:linear-gradient(135deg,#6366f1,#8b5cf6)}
+
+/* PODIUM (réutilisé du palmarès du jour) */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:4px 2px 20px}
+.pod{flex:1;max-width:150px;display:flex;flex-direction:column;align-items:center}
+.pod .ava{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;margin-bottom:8px;border:2px solid rgba(255,255,255,.2);background:var(--gradient)}
+.pod .nm{font-size:13px;font-weight:800;text-align:center;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .sub{font-size:9.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.pod .ct{font-size:12px;color:#fff;font-weight:800;margin:1px 0 7px}
+.pod .bar{width:100%;border-radius:12px 12px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:9px;font-size:24px;position:relative;overflow:hidden;height:0;animation:grow .9s cubic-bezier(.22,1,.36,1) forwards}
+.pod .bar::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 40%)}
+.pod .medal{position:relative;z-index:2;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4))}
+.pod1 .bar{--bh:112px;background:linear-gradient(180deg,#FFD75E,#F6A700)} .pod1 .ava{background:linear-gradient(135deg,#FFD75E,#F6A700);box-shadow:0 10px 30px rgba(246,167,0,.55)}
+.pod2 .bar{--bh:86px;background:linear-gradient(180deg,#cfd3e6,#9aa0bd)} .pod2 .ava{background:linear-gradient(135deg,#cfd3e6,#9aa0bd)}
+.pod3 .bar{--bh:66px;background:linear-gradient(180deg,#E59A6A,#C2703E)} .pod3 .ava{background:linear-gradient(135deg,#E59A6A,#C2703E)}
+@keyframes grow{to{height:var(--bh,80px)}}
+
+/* SECTION TITRE */
+.sec{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#cabfe0;margin:4px 4px 10px;display:flex;align-items:center;gap:8px}
+.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.18),transparent)}
+
+/* RANKING list */
+.rank{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:6px 16px;backdrop-filter:blur(8px)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.row:last-child{border-bottom:none}
+.pos{width:24px;text-align:center;font-size:15px;font-weight:900;color:var(--muted);flex-shrink:0}
+.pos.t1{color:#FFD75E} .pos.t2{color:#cfd3e6} .pos.t3{color:#E59A6A}
+.main{flex:1;min-width:0}
+.nm{display:flex;align-items:baseline;gap:8px}
+.nm b{font-size:15px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nm i{font-size:10px;font-style:normal;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;flex-shrink:0}
+.track{height:7px;border-radius:7px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:7px}
+.fill{height:100%;border-radius:7px;width:0;transition:width .9s cubic-bezier(.22,1,.36,1)}
+.score{font-size:21px;font-weight:900;flex-shrink:0;min-width:34px;text-align:right;
+  background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.score.parr{background:var(--dia);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.score.persos{background:linear-gradient(135deg,#9aa6ff,#c39bff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.score small{display:block;font-size:8.5px;font-weight:800;color:var(--muted);-webkit-text-fill-color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-top:-2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero appear">
+    <div class="hero-top">
+      <div class="wm"><div class="dots"><i class="f"></i><i class="f"></i><i></i><i class="f"></i><i class="o"></i><i></i><i></i><i></i><i></i></div><b>local<span class="p">perf</span></b></div>
+      <div class="daytag"><span class="gd"></span> Palmarès semaine</div>
+    </div>
+    <div class="hero-mid">
+      <div class="hero-label">Contrats de la semaine</div>
+      <div class="hero-total"><span id="hTot">0</span><span class="ads" id="hAds"></span></div>
+      <div class="hero-sub"><span id="hMeta"></span></div>
+      <div class="hero-date" id="hDate">—</div>
+    </div>
+  </div>
+
+  <div class="tabs appear" style="animation-delay:.05s">
+    <button class="tab on" data-niv="com">🧑 Commerciaux</button>
+    <button class="tab" data-niv="ag">🏢 Agences</button>
+    <button class="tab" data-niv="reg">📍 Régions</button>
+  </div>
+
+  <div class="toggle appear" style="animation-delay:.08s">
+    <button class="tg contrats on" data-crit="contrats">🏆 Contrats</button>
+    <button class="tg parr" data-crit="parr">💎 Parrainages</button>
+    <button class="tg persos" data-crit="persos">📞 Persos</button>
+  </div>
+
+  <div id="view"></div>
+
+</div>
+
+<script>
+// ── DONNÉES FICTIVES (niveau commercial : la base, le reste est agrégé) ──
+const REGCOL = {SUD:'#EC008C',EST:'#FAA61A',OUEST:'#8E97C0',PARIS:'#C57BE8'};
+const REGLBL = {SUD:'Sud',EST:'Est',OUEST:'Ouest',PARIS:'Paris IDF'};
+const COMS = [
+  {name:'Sarah', agency:'Toulouse',    region:'SUD',   contrats:14, parr:3},
+  {name:'Inès',  agency:'Lyon',        region:'EST',   contrats:12, parr:5},
+  {name:'Camille',agency:'Paris Ouest',region:'PARIS', contrats:11, parr:2},
+  {name:'Marc',  agency:'Bordeaux',    region:'SUD',   contrats:10, parr:4},
+  {name:'Théo',  agency:'Annecy',      region:'EST',   contrats:9,  parr:1},
+  {name:'Lucas', agency:'Nantes',      region:'OUEST', contrats:8,  parr:2},
+  {name:'Léa',   agency:'Annecy',      region:'EST',   contrats:7,  parr:6},
+  {name:'Aïmen', agency:'Bordeaux',    region:'SUD',   contrats:7,  parr:1},
+  {name:'Adam',  agency:'Paris Centre',region:'PARIS', contrats:6,  parr:0},
+  {name:'Emma',  agency:'Lyon',        region:'EST',   contrats:5,  parr:2},
+  {name:'Hugo',  agency:'Nice',        region:'SUD',   contrats:5,  parr:1},
+  {name:'Gabin', agency:'Nantes',      region:'OUEST', contrats:4,  parr:1},
+];
+
+// agrégation agences / régions
+function aggBy(field){
+  const m={};
+  COMS.forEach(c=>{
+    const k=c[field];
+    if(!m[k]) m[k]={name:(field==='region'?REGLBL[k]:k), key:k, region:(field==='region'?k:c.region), contrats:0, parr:0, n:0};
+    m[k].contrats+=c.contrats; m[k].parr+=c.parr; m[k].n++;
+  });
+  return Object.values(m);
+}
+const AG = aggBy('agency');
+const REG = aggBy('region');
+// RDV perso saisis au niveau AGENCE (pas par commercial)
+const PERSOS = {Toulouse:18, Bordeaux:9, Nice:6, Lyon:14, Annecy:11, 'Paris Ouest':8, 'Paris Centre':5, Nantes:10};
+AG.forEach(a=>a.persos = PERSOS[a.key]||0);
+REG.forEach(r=>r.persos = AG.filter(a=>a.region===r.key).reduce((s,a)=>s+a.persos,0));
+const totC = COMS.reduce((s,c)=>s+c.contrats,0);
+const totP = COMS.reduce((s,c)=>s+c.parr,0);
+const totPers = Object.values(PERSOS).reduce((s,v)=>s+v,0);
+
+// hero
+document.getElementById('hMeta').textContent = `${AG.length} agences · ${COMS.length} commerciaux · 💎 ${totP} parr. · 📞 ${totPers} persos`;
+document.getElementById('hDate').textContent = 'Semaine du 9 au 15 juin 2026';
+
+let NIV='com', CRIT='contrats';
+const initials = s=>{const w=(s||'').trim().split(/\s+/);return (w.length>1?w[0][0]+w[1][0]:s.slice(0,2)).toUpperCase();};
+function countUp(el,to,dur){if(!el)return;const st=performance.now();(function f(n){const p=Math.min(1,(n-st)/dur);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);else el.textContent=to;})(performance.now());}
+
+function dataFor(niv){ return niv==='com'?COMS.slice() : niv==='ag'?AG.slice() : REG.slice(); }
+
+function render(){
+  // Persos = donnée niveau agence : pas de classement par commercial
+  if(NIV==='com' && CRIT==='persos'){
+    document.getElementById('view').innerHTML = `<div class="rank appear" style="padding:28px 22px;text-align:center">
+      <div style="font-size:36px;margin-bottom:10px">📞</div>
+      <div style="font-weight:800;font-size:15px;color:#fff;margin-bottom:6px">Les RDV perso se suivent par agence</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.5">Le nombre de RDV perso est saisi au niveau de l'agence, pas par commercial.<br>Choisis <b style="color:#fff">Agences</b> ou <b style="color:#fff">Régions</b> pour le classement des persos.</div>
+    </div>`;
+    return;
+  }
+  const list = dataFor(NIV).sort((a,b)=> b[CRIT]-a[CRIT] || b.contrats-a.contrats);
+  const max = Math.max(1, ...list.map(x=>x[CRIT]));
+  const isParr = CRIT==='parr', isPers = CRIT==='persos';
+  const fillCol = x => isParr ? 'linear-gradient(90deg,#7CC8FF,#B478FF)'
+                   : isPers ? 'linear-gradient(90deg,#6366f1,#8b5cf6)'
+                   : `linear-gradient(90deg,${REGCOLor(x)},${REGCOLor(x)})`;
+  const top = list.slice(0,3);
+  const order = top.length>=3?[top[1],top[0],top[2]]:(top.length===2?[top[1],top[0]]:[top[0]]);
+  const cls = top.length>=3?['pod2','pod1','pod3']:(top.length===2?['pod2','pod1']:['pod1']);
+  const med={pod1:'🥇',pod2:'🥈',pod3:'🥉'};
+  const unit = isParr?'parr.':isPers?'RDV':'contrats';
+  const scoreCls = isParr?'parr':isPers?'persos':'';
+  const emo = isParr?'💎':isPers?'📞':'';
+  const secTitle = isParr?'💎 Classement parrainages':isPers?'📞 Classement RDV perso':'🏆 Classement contrats';
+  const nivLbl = NIV==='com'?'commerciaux':NIV==='ag'?'agences':'régions';
+
+  let h = `<div class="podium appear">`;
+  order.forEach((x,i)=>{ h+=`<div class="pod ${cls[i]}">
+      <div class="ava">${NIV==='reg'?'📍':initials(x.name)}</div>
+      <div class="nm">${x.name}</div>
+      ${NIV==='com'?`<div class="sub">${x.agency}</div>`:''}
+      <div class="ct">${x[CRIT]} ${emo}</div>
+      <div class="bar"><span class="medal">${med[cls[i]]}</span></div>
+    </div>`; });
+  h += `</div>`;
+
+  h += `<div class="sec appear" style="animation-delay:.04s">${secTitle} · ${nivLbl}</div>`;
+  h += `<div class="rank appear" style="animation-delay:.06s">`;
+  list.forEach((x,i)=>{
+    const pct = Math.round(x[CRIT]/max*100);
+    const sub = NIV==='com'?`<i>${x.agency}</i>` : NIV==='ag'?`<i>${REGLBL[x.region]}</i>` : `<i>${x.n} agences</i>`;
+    h+=`<div class="row">
+      <div class="pos ${i<3?'t'+(i+1):''}">${i<3?med['pod'+(i+1)]:i+1}</div>
+      <div class="main">
+        <div class="nm"><b>${x.name}</b>${sub}</div>
+        <div class="track"><div class="fill" data-pct="${pct}" style="background:${fillCol(x)}"></div></div>
+      </div>
+      <div class="score ${scoreCls}">${x[CRIT]}<small>${unit}</small></div>
+    </div>`;
+  });
+  h += `</div>`;
+  document.getElementById('view').innerHTML = h;
+
+  // animations barres
+  requestAnimationFrame(()=>setTimeout(()=>{
+    document.querySelectorAll('#view .fill').forEach(f=>f.style.width=(f.dataset.pct||0)+'%');
+  },80));
+}
+function REGCOLor(x){ return REGCOL[NIV==='reg'?x.key:x.region] || '#EC008C'; }
+
+// hero counters
+setTimeout(()=>{ countUp(document.getElementById('hTot'),totC,1000); },200);
+
+// interactions
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on')); b.classList.add('on'); NIV=b.dataset.niv; render();
+});
+document.querySelectorAll('.tg').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tg').forEach(x=>x.classList.remove('on')); b.classList.add('on'); CRIT=b.dataset.crit; render();
+});
+render();
+</script>
+</body>
+</html>
