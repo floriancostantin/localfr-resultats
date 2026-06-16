@@ -644,7 +644,7 @@ textarea { resize:vertical; min-height:64px; }
         <label style="margin:0">📞 RDV perso (Persos)</label>
         <div class="counter-row" style="width:150px">
           <button class="counter-btn" onclick="saiPersoStep(-1)">−</button>
-          <input class="counter-val" type="number" id="saiPerso" value="0" min="0" readonly />
+          <span class="counter-val" id="saiPerso">0</span>
           <button class="counter-btn" onclick="saiPersoStep(1)">+</button>
         </div>
       </div>
@@ -1046,7 +1046,7 @@ function renderSaisie() {
     }
     if(todayEntry.commentaire && !document.getElementById('commentaire').value) document.getElementById('commentaire').value = todayEntry.commentaire;
   }
-  document.getElementById('saiPerso').value = STATE.persos||0;
+  document.getElementById('saiPerso').textContent = STATE.persos||0;
 
   // Stats jour / semaine (en contrats)
   let weekC=0, weekR=0;
@@ -1064,7 +1064,7 @@ window.delCom = function(id){ STATE.comsLoaded=true; STATE.coms=STATE.coms.filte
 window.stepCom = function(id,f,d){ STATE.comsLoaded=true; const c=STATE.coms.find(x=>x.id===id); if(!c)return; c[f]=Math.max(0,c[f]+d); renderComs(); };
 window.nameCom = function(id,v){ STATE.comsLoaded=true; const c=STATE.coms.find(x=>x.id===id); if(c)c.name=v; updateRecap(); };
 window.toggleCom = function(id,f){ STATE.comsLoaded=true; const c=STATE.coms.find(x=>x.id===id); if(!c)return; c[f]=!c[f]; renderComs(); };
-window.saiPersoStep = function(d){ STATE.comsLoaded=true; STATE.persos=Math.max(0,(STATE.persos||0)+d); document.getElementById('saiPerso').value=STATE.persos; };
+window.saiPersoStep = function(d){ STATE.comsLoaded=true; STATE.persos=Math.max(0,(STATE.persos||0)+d); document.getElementById('saiPerso').textContent=STATE.persos; };
 
 function renderComs(){
   document.getElementById('saiComs').innerHTML = STATE.coms.map(c=>{
