@@ -1735,14 +1735,16 @@ window.subscribeToNotifications = async function() {
 
 // ── ACCUEIL IMMERSIF (visuel du jour) ─────────────────
 const DAY_VISUALS = {
-  2:{img:'images/mardi.png',    tag:'Mardi · Vitesse',    quote:"Sortie de virage : c'est maintenant qu'on accélère."},
-  3:{img:'images/mercredi.png', tag:'Mercredi · Ascension',quote:"Le sommet récompense ceux qui pédalent encore."},
-  4:{img:'images/jeudi.png',    tag:'Jeudi · Cap',         quote:"Maîtriser le vent vaut mieux que l'attendre."},
-  5:{img:'images/vendredi.png', tag:'Vendredi · Explosion',quote:"Tout se joue dans les premiers appuis."},
+  2:{img:'images/mardi.png',    tag:'Mardi · Vitesse',    quote:"Sortie de virage : c'est maintenant qu'on accélère.", pos:'68% 50%'},
+  3:{img:'images/mercredi.png', tag:'Mercredi · Ascension',quote:"Le sommet récompense ceux qui pédalent encore.",   pos:'62% 45%'},
+  4:{img:'images/jeudi.png',    tag:'Jeudi · Cap',         quote:"Maîtriser le vent vaut mieux que l'attendre.",       pos:'55% 45%'},
+  5:{img:'images/vendredi.png', tag:'Vendredi · Explosion',quote:"Tout se joue dans les premiers appuis.",              pos:'68% 48%'},
 };
 function paintDayBg() {
   const d = DAY_VISUALS[new Date().getDay()] || DAY_VISUALS[2];
-  document.getElementById('dayBgImg').src = d.img;
+  const img = document.getElementById('dayBgImg');
+  img.src = d.img;
+  img.style.objectPosition = d.pos || '50% 50%';
   document.getElementById('hhDaytag').textContent = d.tag;
   document.getElementById('hhQuote').textContent = d.quote;
 }
