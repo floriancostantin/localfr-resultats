@@ -24,7 +24,6 @@ async function sendPushNotification(title, message) {
       headings: { fr: title, en: title },
       contents: { fr: message, en: message },
       url: "https://local-perf.pages.dev",
-      web_url: "https://local-perf.pages.dev",
     });
 
     const options = {
