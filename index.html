@@ -83,7 +83,7 @@ textarea { resize:vertical; min-height:64px; }
 .counter-row { display:flex; align-items:center; border:1.5px solid var(--border); border-radius:10px; overflow:hidden; background:#fafafa; }
 .counter-btn { width:52px; height:48px; border:none; background:transparent; font-size:22px; color:var(--fuchsia); cursor:pointer; font-weight:300; flex-shrink:0; font-family:inherit; }
 .counter-btn:active { background:rgba(236,0,140,0.06); }
-.counter-val { flex:1; text-align:center; font-size:22px; font-weight:900; color:var(--text); border:none; background:transparent; font-family:inherit; }
+.counter-row .counter-val { flex:1; text-align:center; font-size:22px; font-weight:900; color:var(--text); border:none; background:transparent; font-family:inherit; padding:0; min-width:0; width:auto; }
 
 /* TAGS */
 .tags-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
@@ -642,7 +642,7 @@ textarea { resize:vertical; min-height:64px; }
     <div class="form-group" style="margin-bottom:0">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
         <label style="margin:0">📞 RDV perso (Persos)</label>
-        <div class="counter-row" style="width:130px">
+        <div class="counter-row" style="width:150px">
           <button class="counter-btn" onclick="saiPersoStep(-1)">−</button>
           <input class="counter-val" type="number" id="saiPerso" value="0" min="0" readonly />
           <button class="counter-btn" onclick="saiPersoStep(1)">+</button>
