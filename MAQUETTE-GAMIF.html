@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Maquette — Gamification (niveaux + trophées)</title>
+<style>
+:root{
+  --fuchsia:#EC008C; --orange:#FAA61A;
+  --gradient:linear-gradient(135deg,var(--fuchsia),var(--orange));
+  --bg:#0a080d; --muted:#9b94ab;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Poppins',-apple-system,system-ui,sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+   radial-gradient(620px 420px at 80% -6%,rgba(236,0,140,.22),transparent 60%),
+   radial-gradient(560px 460px at 6% 6%,rgba(250,166,26,.15),transparent 60%),
+   radial-gradient(900px 700px at 50% 120%,rgba(236,0,140,.10),transparent 60%)}
+.wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:18px 14px 60px}
+.appear{opacity:0;transform:translateY(12px);animation:rise .5s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+.sec{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#cabfe0;margin:22px 4px 12px;display:flex;align-items:center;gap:8px}
+.sec:first-child{margin-top:4px}
+.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.18),transparent)}
+.hint{font-size:11px;color:var(--muted);margin:-6px 4px 10px}
+
+/* ── NIVEAUX D'AGENCE (scroll horizontal) ── */
+.lvl-scroll{display:flex;gap:11px;overflow-x:auto;padding:2px 4px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.lvl-scroll::-webkit-scrollbar{display:none}
+.lvl-card{scroll-snap-align:start;flex:0 0 auto;width:158px;border-radius:18px;padding:15px 14px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);position:relative;overflow:hidden}
+.lvl-card::before{content:"";position:absolute;top:-40px;right:-30px;width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,var(--tc,#EC008C),transparent 68%);opacity:.35;filter:blur(4px)}
+.lvl-badge{width:54px;height:54px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-weight:900;color:#0a080d;background:var(--tg);box-shadow:0 8px 22px var(--tc);position:relative;z-index:1;margin-bottom:11px}
+.lvl-badge .n{font-size:22px;line-height:1}
+.lvl-badge .l{font-size:7.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:1px;opacity:.8}
+.lvl-name{font-size:15px;font-weight:800;color:#fff;position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvl-tier{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--tc);margin-bottom:10px;position:relative;z-index:1}
+.lvl-track{height:7px;border-radius:7px;background:rgba(255,255,255,.1);overflow:hidden;position:relative;z-index:1}
+.lvl-fill{height:100%;border-radius:7px;background:var(--tg);width:0;transition:width 1s cubic-bezier(.22,1,.36,1)}
+.lvl-xp{font-size:10px;color:var(--muted);font-weight:700;margin-top:6px;position:relative;z-index:1}
+.lvl-xp b{color:#fff}
+
+/* ── TROPHÉES DE LA SEMAINE ── */
+.tro-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tro{display:flex;align-items:center;gap:12px;border-radius:16px;padding:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);position:relative;overflow:hidden;
+  animation:pop .5s cubic-bezier(.22,1.4,.5,1) backwards}
+@keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+.tro .ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:1px solid rgba(255,255,255,.2);background:var(--bgc,linear-gradient(135deg,#EC008C,#FAA61A));box-shadow:0 6px 18px rgba(0,0,0,.3)}
+.tro .bd{min-width:0}
+.tro .t{font-size:13px;font-weight:800;color:#fff;line-height:1.15}
+.tro .a{font-size:11px;font-weight:700;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* placeholder de ce qui suit (les classements existants) */
+.next{margin-top:26px;border:1.5px dashed rgba(255,255,255,.18);border-radius:18px;padding:22px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="sec appear">🆙 Niveaux des agences</div>
+  <div class="hint appear">Niveau = contrats cumulés depuis le lancement · glisse pour voir toutes les agences →</div>
+  <div class="lvl-scroll appear" id="lvls"></div>
+
+  <div class="sec appear" style="animation-delay:.1s">🏅 Trophées de la semaine</div>
+  <div class="tro-grid appear" id="tros" style="animation-delay:.12s"></div>
+
+  <div class="next appear" style="animation-delay:.2s">⬇️ Ici s'affichent ensuite les classements de la semaine (Commerciaux / Agences / Régions)</div>
+
+</div>
+
+<script>
+// paliers de niveau (XP = contrats cumulés)
+const TIERS = [
+  {min:0,   name:'Recrue',  c:'#C2703E', g:'linear-gradient(135deg,#E59A6A,#C2703E)'},
+  {min:15,  name:'Confirmé',c:'#9aa6c0', g:'linear-gradient(135deg,#cfd3e6,#9aa0bd)'},
+  {min:35,  name:'Expert',  c:'#FAA61A', g:'linear-gradient(135deg,#FFD75E,#F6A700)'},
+  {min:60,  name:'Élite',   c:'#EC008C', g:'linear-gradient(135deg,#FF5FB0,#EC008C)'},
+  {min:95,  name:'Maître',  c:'#B478FF', g:'linear-gradient(135deg,#C9A0FF,#9B5BFF)'},
+  {min:140, name:'Légende', c:'#7CC8FF', g:'linear-gradient(135deg,#9AD8FF,#5BA8FF)'},
+  {min:200, name:'Mythique',c:'#FFD75E', g:'linear-gradient(135deg,#FFF1B8,#FFC93C)'},
+];
+function levelOf(xp){
+  let i=0; for(let k=0;k<TIERS.length;k++){ if(xp>=TIERS[k].min) i=k; }
+  const cur=TIERS[i], next=TIERS[i+1]||null;
+  const lo=cur.min, hi=next?next.min:cur.min;
+  const pct= next ? Math.round((xp-lo)/(hi-lo)*100) : 100;
+  return {lvl:i+1, tier:cur, next, pct, toNext: next? (hi-xp):0, hi};
+}
+
+// agences (XP cumulé fictif)
+const AGENCES = [
+  {name:'Toulouse', xp:142}, {name:'Lyon', xp:98}, {name:'Bordeaux', xp:76},
+  {name:'Annecy', xp:61}, {name:'Paris Ouest', xp:44}, {name:'Nantes', xp:33},
+  {name:'Nice', xp:21}, {name:'Clermont', xp:12}, {name:'Strasbourg', xp:7},
+].sort((a,b)=>b.xp-a.xp);
+
+const lvlsEl=document.getElementById('lvls');
+lvlsEl.innerHTML = AGENCES.map(a=>{
+  const L=levelOf(a.xp);
+  return `<div class="lvl-card" style="--tc:${L.tier.c};--tg:${L.tier.g}">
+    <div class="lvl-badge"><span class="n">${L.lvl}</span><span class="l">Niv.</span></div>
+    <div class="lvl-name">${a.name}</div>
+    <div class="lvl-tier">${L.tier.name}</div>
+    <div class="lvl-track"><div class="lvl-fill" data-pct="${L.pct}"></div></div>
+    <div class="lvl-xp">${L.next?`<b>${a.xp}</b> / ${L.hi} XP · niv. ${L.lvl+1} dans ${L.toNext}`:`<b>${a.xp}</b> XP · niveau max 🏆`}</div>
+  </div>`;
+}).join('');
+
+// trophées de la semaine (calculés en live dans l'appli)
+const TROPHEES = [
+  {ic:'🏆', t:'Tête du réseau', a:'Toulouse', g:'linear-gradient(135deg,#FFD75E,#F6A700)'},
+  {ic:'🚀', t:'En feu · 10+ contrats', a:'Toulouse · Lyon', g:'linear-gradient(135deg,#EC008C,#FAA61A)'},
+  {ic:'💎', t:'Parrain · 3+ parrainages', a:'Lyon · Annecy', g:'linear-gradient(135deg,#7CC8FF,#B478FF)'},
+  {ic:'🔱', t:'Triplé', a:'Théo · Annecy', g:'linear-gradient(135deg,#FF5FB0,#EC008C)'},
+  {ic:'🥇', t:'Premier contrat', a:'Aïmen · Bordeaux', g:'linear-gradient(135deg,#FFD75E,#F6A700)'},
+  {ic:'📞', t:'Chasseur · 15+ persos', a:'Toulouse', g:'linear-gradient(135deg,#6366f1,#8b5cf6)'},
+];
+document.getElementById('tros').innerHTML = TROPHEES.map((b,i)=>`
+  <div class="tro" style="animation-delay:${(.14+i*.06).toFixed(2)}s">
+    <div class="ic" style="--bgc:${b.g}">${b.ic}</div>
+    <div class="bd"><div class="t">${b.t}</div><div class="a">${b.a}</div></div>
+  </div>`).join('');
+
+// anim barres niveaux
+setTimeout(()=>document.querySelectorAll('.lvl-fill').forEach(f=>f.style.width=(f.dataset.pct||0)+'%'),350);
+</script>
+</body>
+</html>

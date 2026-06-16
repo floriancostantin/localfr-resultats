@@ -429,6 +429,29 @@ textarea { resize:vertical; min-height:64px; }
 .wk-note .ic{font-size:36px;margin-bottom:10px}
 .wk-note .t{font-weight:800;font-size:15px;color:#fff;margin-bottom:6px}
 .wk-note .s{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* ══════════ GAMIFICATION (niveaux + trophées) ══════════ */
+.gm-hint{font-size:11px;color:var(--muted);margin:-6px 4px 10px}
+.lvl-scroll{display:flex;gap:11px;overflow-x:auto;padding:2px 4px 10px;-webkit-overflow-scrolling:touch}
+.lvl-scroll::-webkit-scrollbar{display:none}
+.lvl-card{flex:0 0 auto;width:158px;border-radius:18px;padding:15px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);position:relative;overflow:hidden}
+.lvl-card::before{content:"";position:absolute;top:-40px;right:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--tc,#EC008C),transparent 68%);opacity:.35;filter:blur(4px)}
+.lvl-badge{width:54px;height:54px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;color:#0a080d;background:var(--tg);box-shadow:0 8px 22px var(--tc);position:relative;z-index:1;margin-bottom:11px}
+.lvl-badge .n{font-size:22px;line-height:1}
+.lvl-badge .l{font-size:7.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:1px;opacity:.8}
+.lvl-name{font-size:15px;font-weight:800;color:#fff;position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvl-tier{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--tc);margin-bottom:10px;position:relative;z-index:1}
+.lvl-track{height:7px;border-radius:7px;background:rgba(255,255,255,.1);overflow:hidden;position:relative;z-index:1}
+.lvl-fill{height:100%;border-radius:7px;background:var(--tg);width:0;transition:width 1s cubic-bezier(.22,1,.36,1)}
+.lvl-xp{font-size:10px;color:var(--muted);font-weight:700;margin-top:6px;position:relative;z-index:1}
+.lvl-xp b{color:#fff}
+.tro-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tro{display:flex;align-items:center;gap:12px;border-radius:16px;padding:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);position:relative;overflow:hidden;animation:tro-pop .5s cubic-bezier(.22,1.4,.5,1) backwards}
+@keyframes tro-pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+.tro .ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:1px solid rgba(255,255,255,.2);background:var(--bgc,linear-gradient(135deg,#EC008C,#FAA61A));box-shadow:0 6px 18px rgba(0,0,0,.3)}
+.tro .bd{min-width:0}
+.tro .t{font-size:13px;font-weight:800;color:#fff;line-height:1.15}
+.tro .a{font-size:11px;font-weight:700;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -1358,6 +1381,109 @@ function renderPalmares(animate) {
   }
 }
 
+// ── GAMIFICATION ──────────────────────────────────────
+// Niveaux d'agence = contrats du MOIS en cours (remis à zéro le 1er). Seuils fixés par Florian.
+const LEVEL_TIERS = [
+  {min:0,  name:'Recrue',   c:'#C2703E', g:'linear-gradient(135deg,#E59A6A,#C2703E)'},
+  {min:30, name:'Confirmé', c:'#9aa6c0', g:'linear-gradient(135deg,#cfd3e6,#9aa0bd)'},
+  {min:35, name:'Expert',   c:'#FAA61A', g:'linear-gradient(135deg,#FFD75E,#F6A700)'},
+  {min:40, name:'Élite',    c:'#EC008C', g:'linear-gradient(135deg,#FF5FB0,#EC008C)'},
+  {min:45, name:'Maître',   c:'#B478FF', g:'linear-gradient(135deg,#C9A0FF,#9B5BFF)'},
+  {min:50, name:'Légende',  c:'#7CC8FF', g:'linear-gradient(135deg,#9AD8FF,#5BA8FF)'},
+  {min:55, name:'Mythique', c:'#FFD75E', g:'linear-gradient(135deg,#FFF1B8,#FFC93C)'},
+];
+// Seuils des trophées (semaine), par agence
+const TROPHY = { enFeu:20, parrain:3, chasseur:30 };
+const TRO_G = { gold:'linear-gradient(135deg,#FFD75E,#F6A700)', fire:'linear-gradient(135deg,#EC008C,#FAA61A)',
+  dia:'linear-gradient(135deg,#7CC8FF,#B478FF)', indigo:'linear-gradient(135deg,#6366f1,#8b5cf6)', fuchsia:'linear-gradient(135deg,#FF5FB0,#EC008C)' };
+
+function getMonthKey(d=new Date()){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function monthLabel(){ return new Date().toLocaleDateString('fr-FR',{month:'long'}); }
+
+function levelOf(xp){
+  let i=0; for(let k=0;k<LEVEL_TIERS.length;k++){ if(xp>=LEVEL_TIERS[k].min) i=k; }
+  const cur=LEVEL_TIERS[i], next=LEVEL_TIERS[i+1]||null;
+  const hi = next ? next.min : cur.min;
+  const pct = next ? Math.max(4, Math.round((xp-cur.min)/(hi-cur.min)*100)) : 100;
+  return { lvl:i+1, tier:cur, next, hi, pct, toNext: next ? (hi-xp) : 0 };
+}
+
+// Contrats cumulés du mois en cours, par agence
+function aggregateMonth(){
+  const mk=getMonthKey(); const ag={};
+  Object.entries(STATE.allData).forEach(([key,days])=>{
+    Object.entries(days).forEach(([d,v])=>{
+      if(!d.startsWith(mk)) return;
+      const agency=v.agency||key;
+      let c=0;
+      if(Array.isArray(v.commerciaux)) v.commerciaux.forEach(x=>c+=(x.cq||0)+(x.rn||0));
+      else c = (v.contrats!=null ? v.contrats : (v.signatures||0));
+      if(!ag[key]) ag[key]={name:agency, xp:0};
+      ag[key].xp+=c;
+    });
+  });
+  return Object.values(ag).filter(a=>a.xp>0).sort((a,b)=>b.xp-a.xp);
+}
+
+// Trophées de la semaine en cours (calculés en live)
+function computeTrophies(){
+  const w = STATE._wk || aggregateWeek();
+  const tros=[];
+  const agByC=[...w.agences].sort((a,b)=>b.contrats-a.contrats);
+  if(agByC.length && agByC[0].contrats>0) tros.push({ic:'🏆',t:'Tête du réseau',a:agByC[0].name,g:TRO_G.gold});
+  const join=arr=>arr.join(' · ');
+  const feu=w.agences.filter(a=>a.contrats>=TROPHY.enFeu).map(a=>a.name);
+  if(feu.length) tros.push({ic:'🚀',t:`En feu · ${TROPHY.enFeu}+ contrats`,a:join(feu),g:TRO_G.fire});
+  const par=w.agences.filter(a=>a.parr>=TROPHY.parrain).map(a=>a.name);
+  if(par.length) tros.push({ic:'💎',t:`Parrain · ${TROPHY.parrain}+ parrainages`,a:join(par),g:TRO_G.dia});
+  const cha=w.agences.filter(a=>a.persos>=TROPHY.chasseur).map(a=>a.name);
+  if(cha.length) tros.push({ic:'📞',t:`Chasseur · ${TROPHY.chasseur}+ persos`,a:join(cha),g:TRO_G.indigo});
+  // triplés / premiers contrats : scan journalier de la semaine
+  const week=getWeekKey();
+  Object.entries(STATE.allData).forEach(([key,days])=>Object.entries(days).forEach(([d,v])=>{
+    if(getWeekKey(new Date(d))!==week) return;
+    const agency=v.agency||key;
+    (Array.isArray(v.commerciaux)?v.commerciaux:[]).forEach(c=>{
+      const k=(c.cq||0)+(c.rn||0); const nm=(c.name||'').trim()||'(sans nom)';
+      if(k>=3) tros.push({ic:'🔱',t:'Triplé',a:nm+' · '+agency,g:TRO_G.fuchsia});
+      if(c.first) tros.push({ic:'🥇',t:'Premier contrat',a:nm+' · '+agency,g:TRO_G.gold});
+    });
+  }));
+  return tros;
+}
+
+function gamifHtml(ap){
+  const months = aggregateMonth();
+  const tros = computeTrophies();
+  let h = '';
+  if(months.length){
+    h += `<div class="pp-sec${ap}">🆙 Niveaux des agences · ${monthLabel()}</div>`;
+    h += `<div class="gm-hint${ap}">Contrats du mois en cours · remis à zéro le 1er · glisse pour tout voir →</div>`;
+    h += `<div class="lvl-scroll${ap}">`;
+    months.forEach(a=>{
+      const L=levelOf(a.xp);
+      h += `<div class="lvl-card" style="--tc:${L.tier.c};--tg:${L.tier.g}">
+        <div class="lvl-badge"><span class="n">${L.lvl}</span><span class="l">Niv.</span></div>
+        <div class="lvl-name">${esc(a.name)}</div>
+        <div class="lvl-tier">${L.tier.name}</div>
+        <div class="lvl-track"><div class="lvl-fill" data-pct="${L.pct}"></div></div>
+        <div class="lvl-xp">${L.next?`<b>${a.xp}</b> / ${L.hi} · niv. ${L.lvl+1} dans ${L.toNext}`:`<b>${a.xp}</b> contrats · niveau max 🏆`}</div>
+      </div>`;
+    });
+    h += `</div>`;
+  }
+  if(tros.length){
+    h += `<div class="pp-sec${ap}">🏅 Trophées de la semaine</div>`;
+    h += `<div class="tro-grid${ap}">`;
+    tros.forEach((b,i)=>{ h += `<div class="tro" style="animation-delay:${(0.05+i*0.05).toFixed(2)}s">
+        <div class="ic" style="--bgc:${b.g}">${b.ic}</div>
+        <div class="bd"><div class="t">${b.t}</div><div class="a">${esc(b.a)}</div></div>
+      </div>`; });
+    h += `</div>`;
+  }
+  return h;
+}
+
 // ── CLASSEMENT SEMAINE ────────────────────────────────
 // Agrège toutes les saisies de la SEMAINE en cours → commerciaux / agences / régions
 // (lit la structure `commerciaux` ; parr lu comme un nombre = rétro-compatible
@@ -1439,6 +1565,8 @@ function renderClassement(animate){
       </div>
     </div>`;
 
+  html += gamifHtml(ap);
+
   html += `<div class="wk-tabs${ap}">
       <button class="wk-tab ${NIV==='com'?'on':''}" onclick="setWkNiveau('com',this)">🧑 Commerciaux</button>
       <button class="wk-tab ${NIV==='ag'?'on':''}" onclick="setWkNiveau('ag',this)">🏢 Agences</button>
@@ -1452,7 +1580,10 @@ function renderClassement(animate){
   html += `<div id="wkView"></div>`;
 
   document.getElementById('classContent').innerHTML = html;
-  if(A) ppCountUp(document.getElementById('wkTot'), t.contrats, 1000);
+  if(A){
+    ppCountUp(document.getElementById('wkTot'), t.contrats, 1000);
+    setTimeout(()=>{ document.querySelectorAll('.lvl-fill').forEach(f=>{ f.style.width=(f.dataset.pct||0)+'%'; }); }, 300);
+  }
   renderWkView(A);
 }
 
