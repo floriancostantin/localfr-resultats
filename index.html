@@ -235,10 +235,7 @@ textarea { resize:vertical; min-height:64px; }
 
 /* ══════════ ACCUEIL IMMERSIF (welcome + login background) ══════════ */
 .wm{display:inline-flex;align-items:center;gap:11px}
-.wm .logo-dots{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5px}
-.wm .logo-dots i{width:7px;height:7px;border-radius:50%;background:#6a6478}
-.wm .logo-dots i.f{background:var(--fuchsia)}
-.wm .logo-dots i.o{background:var(--orange)}
+.wm .logo-dots{height:30px;width:auto;display:block}
 .wm .wm-text{font-weight:800;letter-spacing:-.5px;font-size:24px;color:#fff;line-height:1}
 .wm .wm-text .p{background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
@@ -489,7 +486,7 @@ textarea { resize:vertical; min-height:64px; }
   <div class="hh-topbar">
     <div class="hh-topleft">
       <div class="wm">
-        <div class="logo-dots"><i class="f"></i><i class="f"></i><i></i><i class="f"></i><i class="o"></i><i></i><i></i><i></i><i></i></div>
+        <img class="logo-dots" src="images/logo-localfr.svg" alt="local.fr">
         <div class="wm-text">local<span class="p">perf</span></div>
       </div>
       <div class="hh-best">
@@ -1293,7 +1290,7 @@ function renderPalmares(animate) {
   // HERO
   let html = `<div class="pp-hero${ap}">
     <div class="pp-hero-top">
-      <div class="wm"><div class="logo-dots"><i class="f"></i><i class="f"></i><i></i><i class="f"></i><i class="o"></i><i></i><i></i><i></i><i></i></div><div class="wm-text">local<span class="p">perf</span></div></div>
+      <div class="wm"><img class="logo-dots" src="images/logo-localfr.svg" alt="local.fr"><div class="wm-text">local<span class="p">perf</span></div></div>
       <div class="pp-daytag"><span class="gd"></span> Palmarès du jour</div>
     </div>
     <div class="pp-hero-mid">
@@ -1596,7 +1593,7 @@ function renderClassement(animate){
 
   let html = `<div class="pp-hero${ap}">
       <div class="pp-hero-top">
-        <div class="wm"><div class="logo-dots"><i class="f"></i><i class="f"></i><i></i><i class="f"></i><i class="o"></i><i></i><i></i><i></i><i></i></div><div class="wm-text">local<span class="p">perf</span></div></div>
+        <div class="wm"><img class="logo-dots" src="images/logo-localfr.svg" alt="local.fr"><div class="wm-text">local<span class="p">perf</span></div></div>
         <div class="pp-daytag"><span class="gd"></span> Palmarès semaine</div>
       </div>
       <div class="pp-hero-mid">
