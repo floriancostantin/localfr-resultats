@@ -251,7 +251,12 @@ textarea { resize:vertical; min-height:64px; }
 
 #homeHero{position:fixed;inset:0;z-index:600;display:none;font-family:'Poppins',-apple-system,system-ui,sans-serif}
 #homeHero .wm,#homeHero .hh-daytag,#homeHero .hh-chip,#homeHero .hh-quote,#homeHero .hh-h1,#homeHero .hh-enter,#homeHero .hh-stats{font-family:'Poppins',-apple-system,system-ui,sans-serif}
-.hh-topbar{position:absolute;top:calc(var(--safe-top) + 30px);left:56px;right:56px;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:3}
+.hh-topbar{position:absolute;top:calc(var(--safe-top) + 30px);left:56px;right:56px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;z-index:3}
+.hh-topleft{display:flex;flex-direction:column;gap:16px}
+.hh-best{display:flex;flex-direction:column;gap:6px;font-family:'Poppins',-apple-system,system-ui,sans-serif}
+.hh-best .l{font-size:11px;font-weight:700;letter-spacing:.8px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.7)}
+.hh-best .l b{font-weight:800}
+.hh-best .l em{font-style:normal;color:#c4bdd0;font-weight:600;text-transform:uppercase;letter-spacing:1px}
 .hh-daytag{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#fff;background:rgba(12,10,16,.5);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:30px;white-space:nowrap}
 .hh-daytag .gd{width:8px;height:8px;border-radius:50%;background:var(--gradient);box-shadow:0 0 10px var(--fuchsia)}
 .hh-chip{position:absolute;z-index:4;top:calc(var(--safe-top) + 120px);right:64px;background:rgba(18,13,22,.7);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 18px 50px rgba(0,0,0,.5);animation:lp-float 4s ease-in-out infinite}
@@ -485,14 +490,21 @@ textarea { resize:vertical; min-height:64px; }
 <!-- ══════════════════ ACCUEIL — ÉCRAN DE BIENVENUE ══════════════════ -->
 <div id="homeHero">
   <div class="hh-topbar">
-    <div class="wm">
-      <div class="logo-dots"><i class="f"></i><i class="f"></i><i></i><i class="f"></i><i class="o"></i><i></i><i></i><i></i><i></i></div>
-      <div class="wm-text">local<span class="p">perf</span></div>
+    <div class="hh-topleft">
+      <div class="wm">
+        <div class="logo-dots"><i class="f"></i><i class="f"></i><i></i><i class="f"></i><i class="o"></i><i></i><i></i><i></i><i></i></div>
+        <div class="wm-text">local<span class="p">perf</span></div>
+      </div>
+      <div class="hh-best">
+        <div class="l">🥇 <b id="hhBestCom">—</b> <em>· meilleur commercial S‑1</em></div>
+        <div class="l">🏆 <b id="hhBestAg">—</b> <em>· meilleure agence S‑1</em></div>
+        <div class="l">📍 <b id="hhBestReg">—</b> <em>· meilleure région S‑1</em></div>
+      </div>
     </div>
     <div class="hh-daytag"><span class="gd"></span> <span id="hhDaytag">—</span></div>
   </div>
 
-  <div class="hh-chip"><div class="ic">🥇</div><div><b>Toulouse</b><span>12 contrats</span></div></div>
+  <div class="hh-chip"><div class="ic">🥇</div><div><b id="hhChipAg">—</b><span id="hhChipCt">—</span></div></div>
 
   <div class="hh-wrap">
     <div class="hh-inner">
@@ -504,9 +516,8 @@ textarea { resize:vertical; min-height:64px; }
       </div>
       <button class="hh-da-link" onclick="openDA()">🔒 Espace directeur</button>
       <div class="hh-stats">
-        <div class="s"><b>21</b><span>AGENCES</span></div>
-        <div class="s"><b>87</b><span>CONTRATS · AUJOURD'HUI</span></div>
-        <div class="s"><b>+18%</b><span>VS HIER</span></div>
+        <div class="s"><b id="hhPrevWeek">—</b><span>VENTES · SEMAINE DERNIÈRE</span></div>
+        <div class="s"><b id="hhWeekContrats">—</b><span>CONTRATS · CETTE SEMAINE</span></div>
       </div>
     </div>
   </div>
@@ -964,14 +975,13 @@ function buildNav() {
     nav.innerHTML = `
       <button class="nav-item" onclick="goTo('palmares')" id="nav-palmares"><span class="nav-icon">🏆</span>Palmarès</button>
       <button class="nav-item" onclick="goTo('classement')" id="nav-classement"><span class="nav-icon">📊</span>Classement</button>
-      <button class="nav-item" onclick="goTo('calendrier')" id="nav-calendrier"><span class="nav-icon">📅</span>Agenda</button>
     `;
   }
 }
 
 window.goTo = function(page) {
   // Pages réservées aux directeurs — blocage même si un commercial force la navigation
-  const DA_ONLY = ['saisie','palmares-da'];
+  const DA_ONLY = ['saisie','palmares-da','calendrier'];
   if(DA_ONLY.includes(page) && STATE.role!=='da') {
     toast('🔒 Accès réservé aux directeurs');
     page = 'palmares';
@@ -1215,18 +1225,26 @@ window.publishPalmares = function() {
   data.message = document.getElementById('palmares-message').value.trim();
   data.publishedAt = Date.now();
   data.publishedBy = STATE.nom;
-  set(ref(db,'palmares/'+data.date), data).then(()=>{
-    toast('✅ Palmarès publié !');
-    const envoyerNotif = httpsCallable(fns,'envoyerNotificationMaintenant');
-    const t = data.totals, top = data.perf[0];
-    envoyerNotif({
-      title: `🏆 Palmarès du ${new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}`,
-      message: `${t.contrats} contrat${t.contrats>1?'s':''}${t.ads?` + ${t.ads} ADS`:''}${top?` · 🥇 ${top}`:''} · Voir le palmarès !`,
-    }).then(r=>{
-      const res = r && r.data && r.data.result;
-      if(res && res.id && !(res.errors)) toast(`🔔 Notification envoyée (${res.recipients!=null?res.recipients:'?'} destinataires)`);
-      else toast('⚠️ Notif non envoyée : '+JSON.stringify((res&&res.errors)||res||'erreur'));
-    }).catch(e=>toast('⚠️ Notif : '+(e.message||e)));
+  const palRef = ref(db,'palmares/'+data.date);
+  // Détecter une re-publication : si un palmarès existe déjà pour aujourd'hui,
+  // la notif annonce une MISE À JOUR (vente tardive corrigée) plutôt qu'une 1re publication.
+  get(palRef).then(snap=>{
+    const isUpdate = snap.exists() && snap.val() && snap.val().totals;
+    return set(palRef, data).then(()=>{
+      toast(isUpdate ? '✅ Palmarès mis à jour !' : '✅ Palmarès publié !');
+      const envoyerNotif = httpsCallable(fns,'envoyerNotificationMaintenant');
+      const t = data.totals, top = data.perf[0];
+      const jour = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+      const corps = `${t.contrats} contrat${t.contrats>1?'s':''}${t.ads?` + ${t.ads} ADS`:''}${top?` · 🥇 ${top}`:''} · Voir le palmarès !`;
+      const notif = isUpdate
+        ? { title: `🔄 Palmarès mis à jour — ${jour}`, message: `Nouveau total : ${corps}` }
+        : { title: `🏆 Palmarès du ${jour}`, message: corps };
+      envoyerNotif(notif).then(r=>{
+        const res = r && r.data && r.data.result;
+        if(res && res.id && !(res.errors)) toast(`🔔 Notification envoyée (${res.recipients!=null?res.recipients:'?'} destinataires)`);
+        else toast('⚠️ Notif non envoyée : '+JSON.stringify((res&&res.errors)||res||'erreur'));
+      }).catch(e=>toast('⚠️ Notif : '+(e.message||e)));
+    });
   }).catch(e=>toast('❌ '+e.message));
 };
 
@@ -1517,8 +1535,7 @@ function gamifHtml(ap){
 // Agrège toutes les saisies de la SEMAINE en cours → commerciaux / agences / régions
 // (lit la structure `commerciaux` ; parr lu comme un nombre = rétro-compatible
 // si on passe plus tard d'un booléen à un compteur de parrainages)
-function aggregateWeek() {
-  const week = getWeekKey();
+function aggregateWeek(week = getWeekKey()) {
   const pNum = p => (typeof p==='number' ? p : (p?1:0));
   const comMap={}, agMap={}, regMap={};
   Object.entries(STATE.allData).forEach(([key,days])=>{
@@ -1736,10 +1753,10 @@ window.subscribeToNotifications = async function() {
 
 // ── ACCUEIL IMMERSIF (visuel du jour) ─────────────────
 const DAY_VISUALS = {
-  2:{img:'images/mardi.png',    tag:'Mardi · Vitesse',    quote:"Sortie de virage : c'est maintenant qu'on accélère.", pos:'68% 50%'},
-  3:{img:'images/mercredi.png', tag:'Mercredi · Ascension',quote:"Le sommet récompense ceux qui pédalent encore.",   pos:'62% 45%'},
-  4:{img:'images/jeudi.png',    tag:'Jeudi · Cap',         quote:"Maîtriser le vent vaut mieux que l'attendre.",       pos:'55% 45%'},
-  5:{img:'images/vendredi.png', tag:'Vendredi · Explosion',quote:"Tout se joue dans les premiers appuis.",              pos:'68% 48%'},
+  2:{img:'images/mardi.png',    tag:'Mardi',    quote:"Sortie de virage : c'est maintenant qu'on accélère.", pos:'68% 50%'},
+  3:{img:'images/mercredi.png', tag:'Mercredi',quote:"Le sommet récompense ceux qui pédalent encore.",   pos:'62% 45%'},
+  4:{img:'images/jeudi.png',    tag:'Jeudi',         quote:"Maîtriser le vent vaut mieux que l'attendre.",       pos:'55% 45%'},
+  5:{img:'images/vendredi.png', tag:'Vendredi',quote:"Tout se joue dans les premiers appuis.",              pos:'68% 48%'},
 };
 function paintDayBg() {
   const d = DAY_VISUALS[new Date().getDay()] || DAY_VISUALS[2];
@@ -1747,7 +1764,8 @@ function paintDayBg() {
   img.src = d.img;
   img.style.objectPosition = d.pos || '50% 50%';
   document.getElementById('hhDaytag').textContent = d.tag;
-  document.getElementById('hhQuote').textContent = d.quote;
+  // Citations retirées pour l'instant (les libellés quote restent en data pour une éventuelle réactivation).
+  document.getElementById('hhQuote').style.display = 'none';
 }
 window.openDA = function() {
   // Ouvre directement le formulaire directeur, par-dessus le visuel du jour.
@@ -1779,6 +1797,35 @@ function showLogin() {
   document.getElementById('bottomNav').style.display = 'none';
 }
 
+// Stats de l'accueil (lecture seule) : total semaine en cours + S-1 + meilleurs S-1.
+let homeStatsAttached = false;
+function attachHomeStats() {
+  if(homeStatsAttached) return;
+  homeStatsAttached = true;
+  onValue(ref(db,'results'), snap => {
+    STATE.allData = snap.val() || {};
+    renderHomeStats();
+  });
+}
+function renderHomeStats() {
+  const setTxt = (id,v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
+  const top = arr => arr.slice().sort((a,b)=>b.contrats-a.contrats)[0];
+  // Semaine en cours : total + agence de tête (pastille flottante)
+  const cur = aggregateWeek();
+  setTxt('hhWeekContrats', cur.totals.contrats);
+  const curAg = top(cur.agences);
+  setTxt('hhChipAg', curAg && curAg.contrats>0 ? curAg.name : '—');
+  setTxt('hhChipCt', curAg && curAg.contrats>0 ? `${curAg.contrats} contrat${curAg.contrats>1?'s':''}` : 'cette semaine');
+  // Semaine dernière (S-1) : on agrège la semaine ISO précédente
+  const prevKey = getWeekKey(new Date(Date.now() - 7*86400000));
+  const prev = aggregateWeek(prevKey);
+  setTxt('hhPrevWeek', prev.totals.contrats);
+  const bc = top(prev.coms), ba = top(prev.agences), br = top(prev.regions);
+  setTxt('hhBestCom', bc && bc.contrats>0 ? bc.name : '—');
+  setTxt('hhBestAg',  ba && ba.contrats>0 ? ba.name : '—');
+  setTxt('hhBestReg', br && br.contrats>0 ? br.name : '—');
+}
+
 (function init() {
   // Accueil immersif affiché tout de suite (avant même la résolution de l'auth).
   showLogin();
@@ -1790,6 +1837,9 @@ function showLogin() {
     // Cohérence : pas de session valide, ou un commercial (anonyme) qui prétend être DA → on redemande le login
     if(!user || !role || (role==='da' && user.isAnonymous)) {
       showLogin();
+      // Accueil pré-connexion : on lit en seule lecture pour alimenter le total semaine.
+      if(user) attachHomeStats();
+      else signInAnonymously(auth).catch(()=>{}); // re-déclenche onAuthStateChanged avec un user anonyme
       return;
     }
     startApp(role, agency, nom||'');
