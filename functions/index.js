@@ -11,7 +11,8 @@ const ONESIGNAL_APP_ID = "a8d87e84-ebe4-454e-94be-e6e0da23283d";
 // (firebase functions:secrets:set ONESIGNAL_API_KEY), jamais en clair dans le dépôt.
 
 function todayStr() {
-  return new Date().toISOString().slice(0, 10);
+  // Date du jour sur le fuseau de Paris (cohérent avec l'appli), pas UTC
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Paris" });
 }
 
 async function sendPushNotification(title, message) {

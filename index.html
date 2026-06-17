@@ -831,7 +831,8 @@ let STATE = {
 };
 
 // ── UTILS ─────────────────────────────────────────────
-function todayStr() { return new Date().toISOString().slice(0,10); }
+// Date du jour sur le fuseau de Paris (et non UTC), pour ne pas décaler d'un jour la nuit
+function todayStr() { return new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Paris' }); }
 
 function getWeekKey(date = new Date()) {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
