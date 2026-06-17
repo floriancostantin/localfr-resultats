@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#ffffff"/>
+  <g transform="translate(76,94.6) scale(0.23077)">
+    <!-- gris -->
+    <circle cx="858"  cy="182"  r="88"  fill="#b4b4b4"/>
+    <circle cx="1061" cy="182"  r="88"  fill="#b4b4b4"/>
+    <circle cx="1342" cy="189"  r="112" fill="#b4b4b4"/>
+    <circle cx="1349" cy="462"  r="88"  fill="#b4b4b4"/>
+    <circle cx="1342" cy="686"  r="90"  fill="#b4b4b4"/>
+    <!-- fuchsia -->
+    <circle cx="764"  cy="434"  r="90"  fill="#EC008C"/>
+    <circle cx="975"  cy="427"  r="92"  fill="#EC008C"/>
+    <circle cx="600"  cy="574"  r="92"  fill="#EC008C"/>
+    <circle cx="600"  cy="770"  r="90"  fill="#EC008C"/>
+    <circle cx="741"  cy="938"  r="92"  fill="#EC008C"/>
+    <circle cx="944"  cy="952"  r="92"  fill="#EC008C"/>
+    <!-- orange -->
+    <circle cx="1100" cy="588"  r="90"  fill="#FAA61A"/>
+    <circle cx="1092" cy="798"  r="88"  fill="#FAA61A"/>
+    <!-- noir -->
+    <circle cx="332"  cy="658"  r="82"  fill="#161616"/>
+    <circle cx="332"  cy="882"  r="82"  fill="#161616"/>
+    <circle cx="335"  cy="1155" r="110" fill="#161616"/>
+    <circle cx="612"  cy="1162" r="90"  fill="#161616"/>
+    <circle cx="832"  cy="1162" r="90"  fill="#161616"/>
+  </g>
+</svg>
