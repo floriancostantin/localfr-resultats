@@ -259,9 +259,6 @@ textarea { resize:vertical; min-height:64px; }
 .hh-best .l em{font-style:normal;color:#c4bdd0;font-weight:600;text-transform:uppercase;letter-spacing:1px}
 .hh-daytag{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#fff;background:rgba(12,10,16,.5);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:30px;white-space:nowrap}
 .hh-daytag .gd{width:8px;height:8px;border-radius:50%;background:var(--gradient);box-shadow:0 0 10px var(--fuchsia)}
-.hh-chip{position:absolute;z-index:4;top:calc(var(--safe-top) + 120px);right:64px;background:rgba(18,13,22,.7);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 18px 50px rgba(0,0,0,.5);animation:lp-float 4s ease-in-out infinite}
-.hh-chip .ic{font-size:26px}.hh-chip b{font-size:16px;font-weight:800;color:#fff}.hh-chip span{display:block;font-size:11px;color:#b3acc0}
-@keyframes lp-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .hh-wrap{position:absolute;left:0;right:0;bottom:0;z-index:3;max-width:1180px;margin:0 auto;padding:0 56px calc(var(--safe-bottom) + 64px)}
 .hh-inner{max-width:680px}
 .hh-quote{font-size:15px;font-style:italic;font-weight:500;color:#f0d9e8;margin-bottom:18px;text-shadow:0 2px 10px rgba(0,0,0,.5)}
@@ -503,8 +500,6 @@ textarea { resize:vertical; min-height:64px; }
     </div>
     <div class="hh-daytag"><span class="gd"></span> <span id="hhDaytag">—</span></div>
   </div>
-
-  <div class="hh-chip"><div class="ic">🥇</div><div><b id="hhChipAg">—</b><span id="hhChipCt">—</span></div></div>
 
   <div class="hh-wrap">
     <div class="hh-inner">
@@ -1810,12 +1805,8 @@ function attachHomeStats() {
 function renderHomeStats() {
   const setTxt = (id,v) => { const e = document.getElementById(id); if(e) e.textContent = v; };
   const top = arr => arr.slice().sort((a,b)=>b.contrats-a.contrats)[0];
-  // Semaine en cours : total + agence de tête (pastille flottante)
-  const cur = aggregateWeek();
-  setTxt('hhWeekContrats', cur.totals.contrats);
-  const curAg = top(cur.agences);
-  setTxt('hhChipAg', curAg && curAg.contrats>0 ? curAg.name : '—');
-  setTxt('hhChipCt', curAg && curAg.contrats>0 ? `${curAg.contrats} contrat${curAg.contrats>1?'s':''}` : 'cette semaine');
+  // Semaine en cours
+  setTxt('hhWeekContrats', aggregateWeek().totals.contrats);
   // Semaine dernière (S-1) : on agrège la semaine ISO précédente
   const prevKey = getWeekKey(new Date(Date.now() - 7*86400000));
   const prev = aggregateWeek(prevKey);
