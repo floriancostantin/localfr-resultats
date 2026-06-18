@@ -935,10 +935,23 @@ window.askLogout = function() {
 };
 
 // ── START APP ─────────────────────────────────────────
+// Tague l'appareil dans OneSignal selon le rôle, pour pouvoir cibler les
+// directeurs (role=da) sans notifier les commerciaux.
+function setOneSignalRole(role) {
+  try {
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(function(OneSignal) {
+      try { OneSignal.User.addTag('role', role === 'da' ? 'da' : 'commercial'); }
+      catch(e) { console.warn('OneSignal addTag role', e); }
+    });
+  } catch(e) { console.warn('setOneSignalRole', e); }
+}
+
 function startApp(role, agency, nom) {
   STATE.role = role;
   STATE.agency = agency;
   STATE.nom = nom;
+  setOneSignalRole(role);
 
   document.getElementById('loginOverlay').style.display='none';
   document.getElementById('homeHero').style.display='none';

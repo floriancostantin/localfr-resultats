@@ -14,17 +14,20 @@ function todayStr() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Paris" });
 }
 
-async function sendPushNotification(title, message) {
+async function sendPushNotification(title, message, targeting) {
   return new Promise((resolve, reject) => {
     const apiKey = process.env.ONESIGNAL_API_KEY;
     if (!apiKey) { console.error("ONESIGNAL_API_KEY manquant (secret non configuré)"); return reject(new Error("ONESIGNAL_API_KEY manquant")); }
-    const body = JSON.stringify({
+    const payload = {
       app_id: ONESIGNAL_APP_ID,
-      included_segments: ["Total Subscriptions"],
       headings: { fr: title, en: title },
       contents: { fr: message, en: message },
       url: "https://local-perf.pages.dev",
-    });
+    };
+    // Ciblage : par défaut tout le monde ; sinon filtres par tag (ex. role=da).
+    if (targeting && targeting.filters) payload.filters = targeting.filters;
+    else payload.included_segments = ["Total Subscriptions"];
+    const body = JSON.stringify(payload);
 
     const options = {
       hostname: "api.onesignal.com",
@@ -101,10 +104,12 @@ exports.checkAllAgenciesSoumises = onValueWritten(
     const saisi = Object.values(data).filter(days => days[today]).length;
 
     if (saisi >= TOTAL_AGENCES) {
-      const { totalSig, topAgency, topCount } = await buildSummary();
+      // Notif réservée aux directeurs (appareils tagués role=da) : invitation à
+      // rédiger le palmarès. Le réseau, lui, n'est notifié qu'à la publication.
       await sendPushNotification(
-        "✅ Tous les résultats sont là !",
-        `${totalSig} contrats aujourd'hui · 🥇 ${topAgency} (${topCount}) · Voir le classement`
+        "✅ Toutes les agences ont saisi",
+        "Les 21 agences ont rempli leurs résultats — le palmarès du jour peut être rédigé et publié.",
+        { filters: [{ field: "tag", key: "role", relation: "=", value: "da" }] }
       );
     }
     return null;
