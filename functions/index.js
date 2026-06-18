@@ -1,4 +1,3 @@
-const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { onCall } = require("firebase-functions/v2/https");
 const { onValueWritten } = require("firebase-functions/v2/database");
 const admin = require("firebase-admin");
@@ -72,19 +71,6 @@ async function buildSummary() {
 
   return { totalSig, agenciesCount, topAgency, topCount };
 }
-
-// ── Notification auto 19h ────────────────
-exports.notificationQuotidienne = onSchedule(
-  { schedule: "0 19 * * *", timeZone: "Europe/Paris", region: "europe-west1", secrets: ["ONESIGNAL_API_KEY"] },
-  async () => {
-    const { totalSig, agenciesCount, topAgency, topCount } = await buildSummary();
-    const d = new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
-    const title = `🏆 Résultats du ${d}`;
-    let msg = `${totalSig} contrat${totalSig > 1 ? "s" : ""} signés · ${agenciesCount} agences`;
-    if (topAgency) msg += ` · 🥇 ${topAgency} (${topCount})`;
-    await sendPushNotification(title, msg);
-  }
-);
 
 // ── Envoi manuel depuis l'appli ──────────
 exports.envoyerNotificationMaintenant = onCall(
