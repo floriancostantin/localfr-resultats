@@ -146,6 +146,10 @@ textarea { resize:vertical; min-height:64px; }
 
 /* BADGE DA DE SEMAINE */
 .da-semaine-banner { background:var(--gradient); border-radius:12px; padding:12px 16px; color:white; text-align:center; margin-bottom:12px; font-size:13px; font-weight:700; }
+.go-pal-banner { display:flex; align-items:center; justify-content:center; gap:8px; background:linear-gradient(135deg,#00c48c,#00a86b); border-radius:14px; padding:16px; color:#fff; text-align:center; margin-bottom:14px; font-size:15px; font-weight:800; cursor:pointer; box-shadow:0 8px 24px rgba(0,196,140,.35); animation:goPalPulse 2s ease-in-out infinite; }
+.go-pal-banner:active { opacity:.9; }
+.go-pal-banner b { font-size:18px; }
+@keyframes goPalPulse { 0%,100%{ box-shadow:0 8px 24px rgba(0,196,140,.30); } 50%{ box-shadow:0 8px 30px rgba(0,196,140,.55); } }
 
 /* OVERLAY / LOGIN */
 .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; align-items:flex-end; z-index:999; padding-bottom:var(--safe-bottom); }
@@ -629,6 +633,10 @@ textarea { resize:vertical; min-height:64px; }
 <!-- PAGE: SAISIE (DA seulement) -->
 <div class="content" id="page-saisie" style="display:none">
 
+  <div id="goPalBanner" class="go-pal-banner" style="display:none" onclick="goTo('palmares-da')">
+    <span>✅ Tout est saisi — Go Palmarès</span> <b>→</b>
+  </div>
+
   <div class="stats-grid">
     <div class="stat-box"><div class="stat-val" id="myDaySig">—</div><div class="stat-lbl">Contrats jour</div></div>
     <div class="stat-box"><div class="stat-val" id="myWeekSig">—</div><div class="stat-lbl">Contrats semaine</div></div>
@@ -1025,6 +1033,7 @@ function subscribeData() {
     dot.className='sync-dot online';
     if(STATE.currentPage==='classement') renderClassement(false);
     if(STATE.currentPage==='saisie') renderSaisie();
+    updateGoPalBanner();
   });
 
   // Palmarès publié
@@ -1032,6 +1041,19 @@ function subscribeData() {
     STATE.palmares = snap.val();
     if(STATE.currentPage==='palmares') renderPalmares(false);
   });
+}
+
+// Bandeau « Tout est saisi — Go Palmarès » : filet de sécurité visuel pour les
+// directeurs (en plus de la notif), affiché en haut de la Saisie quand les 21
+// agences ont saisi aujourd'hui.
+function updateGoPalBanner() {
+  const el = document.getElementById('goPalBanner');
+  if(!el) return;
+  if(STATE.role !== 'da') { el.style.display = 'none'; return; }
+  const today = todayStr();
+  let saisi = 0;
+  Object.values(STATE.allData||{}).forEach(days => { if(days && days[today]) saisi++; });
+  el.style.display = saisi >= 21 ? 'flex' : 'none';
 }
 
 // ── SAISIE ────────────────────────────────────────────
@@ -1073,6 +1095,7 @@ function renderSaisie() {
   document.getElementById('myWeekRdv').textContent = weekR;
 
   renderComs();
+  updateGoPalBanner();
 }
 
 window.addCom = function(){ STATE.comsLoaded=true; STATE.coms.push({id:++STATE.comUid,name:'',cq:0,rn:0,ad:0,first:false,parr:0,up:false}); renderComs(); };
