@@ -48,7 +48,8 @@ body { font-family: -apple-system,'Segoe UI',system-ui,sans-serif; background:#f
 
 /* HEADER */
 header { background:var(--dark); padding:0 16px; height:56px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.3); }
-.logo { font-weight:900; font-size:18px; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.logo { font-weight:900; font-size:18px; color:#fff; }
+.logo .p { background:var(--gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 .user-badge { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); color:white; padding:5px 12px; border-radius:20px; font-size:11px; font-weight:600; cursor:pointer; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .sync-dot { width:8px; height:8px; border-radius:50%; background:var(--muted); transition:background 0.3s; flex-shrink:0; }
 .sync-dot.online { background:var(--success); }
@@ -613,7 +614,7 @@ textarea { resize:vertical; min-height:64px; }
 <header>
   <div style="display:flex;align-items:center;gap:8px">
     <div class="sync-dot" id="syncDot"></div>
-    <div class="logo">LocalPerf</div>
+    <div class="logo">Local<span class="p">Perf</span></div>
   </div>
   <div class="user-badge" id="userBadge" onclick="askLogout()">—</div>
 </header>
