@@ -1845,7 +1845,7 @@ function renderHomeStats() {
   const prev = aggregateWeek(prevKey);
   setTxt('hhPrevWeek', prev.totals.contrats);
   const bc = top(prev.coms), ba = top(prev.agences), br = top(prev.regions);
-  setTxt('hhBestCom', bc && bc.contrats>0 ? bc.name : '—');
+  setTxt('hhBestCom', bc && bc.contrats>0 ? `${bc.name}${bc.agency ? ` (${bc.agency})` : ''}` : '—');
   setTxt('hhBestAg',  ba && ba.contrats>0 ? ba.name : '—');
   setTxt('hhBestReg', br && br.contrats>0 ? br.name : '—');
 }
