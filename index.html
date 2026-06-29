@@ -58,7 +58,7 @@ header { background:var(--dark); padding:0 16px; height:56px; display:flex; alig
 
 /* BOTTOM NAV */
 .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:white; border-top:1px solid var(--border); display:flex; padding-bottom:var(--safe-bottom); z-index:100; }
-.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:10px 0 8px; cursor:pointer; border:none; background:none; color:var(--muted); font-size:10px; font-weight:600; gap:3px; font-family:inherit; transition:color 0.15s; }
+.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:15px 0 13px; cursor:pointer; border:none; background:none; color:var(--muted); font-size:13px; font-weight:600; gap:3px; font-family:inherit; transition:color 0.15s; }
 .nav-item .nav-icon { font-size:22px; line-height:1; }
 .nav-item.active { color:var(--fuchsia); }
 
@@ -474,6 +474,14 @@ textarea { resize:vertical; min-height:64px; }
 .tro .bd{min-width:0}
 .tro .t{font-size:13px;font-weight:800;color:#fff;line-height:1.15}
 .tro .a{font-size:11px;font-weight:700;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Badge rond ×N (doublés/triplés) — remplace les emojis dans les marqueurs inline */
+.mx{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:50%;border:1.5px solid currentColor;font-size:10.5px;font-weight:800;line-height:1;vertical-align:middle}
+/* Bandeau « Palmarès d'hier » + écran d'attente illustré (page Palmarès) */
+.pp-stale{background:linear-gradient(135deg,#EC008C,#FAA61A);color:#fff;text-align:center;font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:13px;padding:11px 14px;border-radius:14px;margin-bottom:16px;box-shadow:0 8px 24px rgba(236,0,140,.45)}
+.pp-stale small{display:block;font-size:10px;font-weight:600;letter-spacing:.4px;opacity:.92;text-transform:none;margin-top:3px}
+.pp-wait{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:58vh;text-align:center;padding:20px}
+.pp-wait img{max-width:100%;border-radius:20px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.pp-wait-cap{margin-top:16px;font-size:14px;font-weight:700;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -495,9 +503,9 @@ textarea { resize:vertical; min-height:64px; }
         <div class="wm-text">Local<span class="p">Perf</span></div>
       </div>
       <div class="hh-best">
-        <div class="l">🥇 <b id="hhBestCom">—</b> <em>· meilleur commercial S‑1</em></div>
-        <div class="l">🏆 <b id="hhBestAg">—</b> <em>· meilleure agence S‑1</em></div>
-        <div class="l">📍 <b id="hhBestReg">—</b> <em>· meilleure région S‑1</em></div>
+        <div class="l"><b id="hhBestCom">—</b> <em>· meilleur commercial S‑1</em></div>
+        <div class="l"><b id="hhBestAg">—</b> <em>· meilleure agence S‑1</em></div>
+        <div class="l"><b id="hhBestReg">—</b> <em>· meilleure région S‑1</em></div>
       </div>
     </div>
     <div class="hh-daytag"><span class="gd"></span> <span id="hhDaytag">—</span></div>
@@ -508,12 +516,12 @@ textarea { resize:vertical; min-height:64px; }
       <div class="hh-quote" id="hhQuote"></div>
       <h1 class="hh-h1">Chaque signature <span class="g">fait vibrer</span> le réseau.</h1>
       <div class="hh-cta">
-        <button class="hh-enter" onclick="openPalmares('palmares')">🏆 Palmarès du jour</button>
-        <button class="hh-enter hh-enter-2" onclick="openPalmares('classement')">📊 Palmarès semaine</button>
+        <button class="hh-enter" onclick="openPalmares('palmares')">Palmarès du jour</button>
+        <button class="hh-enter hh-enter-2" onclick="openPalmares('classement')">Palmarès semaine</button>
       </div>
-      <button class="hh-da-link" onclick="openDA()">🔒 Espace directeur</button>
+      <button class="hh-da-link" onclick="openDA()">Espace directeur</button>
       <div class="hh-stats">
-        <div class="s"><b id="hhPrevWeek">—</b><span>VENTES · SEMAINE DERNIÈRE</span></div>
+        <div class="s"><b id="hhPrevWeek">—</b><span>CONTRATS · SEMAINE DERNIÈRE</span></div>
         <div class="s"><b id="hhWeekContrats">—</b><span>CONTRATS · CETTE SEMAINE</span></div>
       </div>
     </div>
@@ -585,7 +593,7 @@ textarea { resize:vertical; min-height:64px; }
         <input type="text" id="loginNom" placeholder="Prénom NOM" autocomplete="name" />
       </div>
       <div class="form-group">
-        <label>🔒 Code d'accès directeur</label>
+        <label>Code d'accès directeur</label>
         <input type="password" id="loginCode" placeholder="Code confidentiel" autocomplete="current-password" onkeydown="if(event.key==='Enter'){event.preventDefault();doLoginDA()}" />
       </div>
       <div id="loginDAStatus" style="text-align:center;font-size:12px;color:#ff5c7a;font-weight:700;margin-bottom:10px;min-height:16px"></div>
@@ -635,7 +643,7 @@ textarea { resize:vertical; min-height:64px; }
 <div class="content" id="page-saisie" style="display:none">
 
   <div id="goPalBanner" class="go-pal-banner" style="display:none" onclick="goTo('palmares-da')">
-    <span>✅ Tout est saisi — Go Palmarès</span> <b>→</b>
+    <span>Tout est saisi — Go Palmarès</span> <b>→</b>
   </div>
 
   <div class="stats-grid">
@@ -645,7 +653,7 @@ textarea { resize:vertical; min-height:64px; }
   </div>
 
   <div class="card">
-    <div class="card-title">👥 Mes commerciaux du <span id="todayLabel">—</span></div>
+    <div class="card-title">Mes commerciaux du <span id="todayLabel">—</span></div>
     <div id="saiComs"></div>
     <button class="sc-add" onclick="addCom()">+ Ajouter un commercial</button>
   </div>
@@ -653,7 +661,7 @@ textarea { resize:vertical; min-height:64px; }
   <div class="card">
     <div class="form-group" style="margin-bottom:0">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-        <label style="margin:0">📞 RDV perso (Persos)</label>
+        <label style="margin:0">RDV perso (Persos)</label>
         <div class="counter-row" style="width:150px">
           <button class="counter-btn" onclick="saiPersoStep(-1)">−</button>
           <span class="counter-val" id="saiPerso">0</span>
@@ -686,34 +694,34 @@ textarea { resize:vertical; min-height:64px; }
 
 <!-- PAGE: PALMARES DA (saisie palmarès — DA de semaine seulement) -->
 <div class="content" id="page-palmares-da" style="display:none">
-  <div class="da-semaine-banner" id="daSemaineBanner">🏆 Vous êtes DA de semaine — Rédigez le palmarès</div>
+  <div class="da-semaine-banner" id="daSemaineBanner">Vous êtes DA de semaine — Rédigez le palmarès</div>
 
   <div class="card palmares-input-card">
-    <div class="card-title">✨ Palmarès automatique</div>
+    <div class="card-title">Palmarès automatique</div>
     <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px">Tout se génère à partir des saisies des agences : totaux, doublés / triplés, 1ers contrats, parrainages, performance collective et détail par région. Tu n'as qu'à ajouter un message (optionnel) et publier.</p>
 
     <div id="palmaresPreview" style="margin-bottom:14px"></div>
 
     <div class="form-group">
-      <label>⚡ Performance collective</label>
+      <label>Performance collective</label>
       <textarea id="palmares-perf" placeholder="Ex : Annecy, Clermont, Lille et Aix en Provence signent les performances du jour !"></textarea>
       <div style="font-size:11px;color:var(--muted);margin-top:4px">Suggestion pré-remplie d'après les agences en tête — modifie-la comme tu veux.</div>
     </div>
 
     <div class="form-group">
-      <label>💬 Message du jour (optionnel)</label>
+      <label>Message du jour (optionnel)</label>
       <textarea id="palmares-message" placeholder="Message de motivation, point fort de la journée…"></textarea>
     </div>
 
-    <button class="btn-publish" onclick="publishPalmares()">📤 Publier le palmarès + Notifier</button>
-    <button class="btn-secondary" style="margin-top:8px" onclick="goTo('palmares')">👁️ Voir l'aperçu complet</button>
+    <button class="btn-publish" onclick="publishPalmares()">Publier le palmarès + Notifier</button>
+    <button class="btn-secondary" style="margin-top:8px" onclick="goTo('palmares')">Voir l'aperçu complet</button>
   </div>
 </div>
 
 <!-- PAGE: CALENDRIER -->
 <div class="content" id="page-calendrier" style="display:none">
   <div class="card">
-    <div class="card-title">📅 DA de semaine — <span id="anneeLabel">2026</span></div>
+    <div class="card-title">DA de semaine — <span id="anneeLabel">2026</span></div>
     <div id="calendrierContent"></div>
   </div>
 </div>
@@ -845,6 +853,8 @@ let STATE = {
 // ── UTILS ─────────────────────────────────────────────
 // Date du jour sur le fuseau de Paris (et non UTC), pour ne pas décaler d'un jour la nuit
 function todayStr() { return new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Paris' }); }
+function yesterdayStr() { return new Date(Date.now()-86400000).toLocaleDateString('en-CA', { timeZone: 'Europe/Paris' }); }
+function parisHour() { return parseInt(new Date().toLocaleString('en-GB', { timeZone: 'Europe/Paris', hour: '2-digit', hour12: false }), 10) % 24; }
 
 function getWeekKey(date = new Date()) {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -979,16 +989,16 @@ function buildNav() {
   const nav = document.getElementById('bottomNav');
   if(STATE.role==='da') {
     nav.innerHTML = `
-      <button class="nav-item" onclick="goTo('saisie')" id="nav-saisie"><span class="nav-icon">✏️</span>Saisie</button>
-      <button class="nav-item" onclick="goTo('palmares')" id="nav-palmares"><span class="nav-icon">🏆</span>Palmarès</button>
-      <button class="nav-item" onclick="goTo('classement')" id="nav-classement"><span class="nav-icon">📊</span>Classement</button>
-      <button class="nav-item" onclick="goTo('palmares-da')" id="nav-palmares-da"><span class="nav-icon">📝</span>Rédiger</button>
-      <button class="nav-item" onclick="goTo('calendrier')" id="nav-calendrier"><span class="nav-icon">📅</span>Agenda</button>
+      <button class="nav-item" onclick="goTo('saisie')" id="nav-saisie">Saisie</button>
+      <button class="nav-item" onclick="goTo('palmares')" id="nav-palmares">Palmarès</button>
+      <button class="nav-item" onclick="goTo('classement')" id="nav-classement">Classement</button>
+      <button class="nav-item" onclick="goTo('palmares-da')" id="nav-palmares-da">Rédiger</button>
+      <button class="nav-item" onclick="goTo('calendrier')" id="nav-calendrier">Agenda</button>
     `;
   } else {
     nav.innerHTML = `
-      <button class="nav-item" onclick="goTo('palmares')" id="nav-palmares"><span class="nav-icon">🏆</span>Palmarès</button>
-      <button class="nav-item" onclick="goTo('classement')" id="nav-classement"><span class="nav-icon">📊</span>Classement</button>
+      <button class="nav-item" onclick="goTo('palmares')" id="nav-palmares">Palmarès</button>
+      <button class="nav-item" onclick="goTo('classement')" id="nav-classement">Classement</button>
     `;
   }
 }
@@ -1037,9 +1047,14 @@ function subscribeData() {
     updateGoPalBanner();
   });
 
-  // Palmarès publié
+  // Palmarès publié (aujourd'hui)
   onValue(ref(db,'palmares/'+todayStr()), snap => {
     STATE.palmares = snap.val();
+    if(STATE.currentPage==='palmares') renderPalmares(false);
+  });
+  // Palmarès de la veille (rejoué le lendemain matin jusqu'à 18h pour ceux qui ne l'ont pas vu)
+  onValue(ref(db,'palmares/'+yesterdayStr()), snap => {
+    STATE.palmaresYesterday = snap.val();
     if(STATE.currentPage==='palmares') renderPalmares(false);
   });
 }
@@ -1058,7 +1073,7 @@ function updateGoPalBanner() {
 }
 
 // ── SAISIE ────────────────────────────────────────────
-function tierLabel(n){ return n>=5?(n+'× 🔥'):n===4?'4× Quadruplé':n===3?'🔱 Triplé':n===2?'✌️ Doublé':n===1?'1 contrat':''; }
+function tierLabel(n){ return n>=5?`<span class="mx">×${n}</span>`:n===4?'<span class="mx">×4</span> Quadruplé':n===3?'<span class="mx">×3</span> Triplé':n===2?'<span class="mx">×2</span> Doublé':n===1?'1 contrat':''; }
 
 function renderSaisie() {
   if(!STATE.agency) return;
@@ -1120,13 +1135,13 @@ function renderComs(){
         <div class="sc-ct"><div class="sc-lbl ad">ADS</div><div class="sc-step"><button onclick="stepCom(${c.id},'ad',-1)">−</button><span>${c.ad}</span><button onclick="stepCom(${c.id},'ad',1)">+</button></div></div>
       </div>
       <div class="sc-flags">
-        <button class="sc-flag ${c.first?'on':''}" onclick="toggleCom(${c.id},'first')">🥇 1er</button>
-        <button class="sc-flag ${c.up?'on':''}" onclick="toggleCom(${c.id},'up')">⬆️ Upsell</button>
+        <button class="sc-flag ${c.first?'on':''}" onclick="toggleCom(${c.id},'first')">1er</button>
+        <button class="sc-flag ${c.up?'on':''}" onclick="toggleCom(${c.id},'up')">Upsell</button>
         <div class="sc-pflag ${c.parr?'on':''}"><button onclick="stepCom(${c.id},'parr',-1)">−</button><span class="pf-l">💎 ${c.parr}</span><button onclick="stepCom(${c.id},'parr',1)">+</button></div>
         <span class="sc-res">${tier?`${tier}`:''}${c.ad?` <span class="muted">+${c.ad} ADS</span>`:''}</span>
       </div>
     </div>`;
-  }).join('') || '<div class="sc-empty">Aucun commercial. Ajoute la première vente du jour 👇</div>';
+  }).join('') || '<div class="sc-empty">Aucun commercial. Ajoute la première vente du jour.</div>';
   updateRecap();
 }
 
@@ -1142,9 +1157,9 @@ function updateRecap(){
   document.getElementById('saiAd').textContent=ad;
   document.getElementById('myDaySig').textContent = contrats;
   const parts=[];
-  if(doubles.length)parts.push('✌️ '+doubles.join(', '));
-  if(triples.length)parts.push('🔱 '+triples.join(', '));
-  if(quad.length)parts.push('🔥 '+quad.join(', '));
+  if(doubles.length)parts.push('<span class="mx">×2</span> '+doubles.join(', '));
+  if(triples.length)parts.push('<span class="mx">×3</span> '+triples.join(', '));
+  if(quad.length)parts.push('<span class="mx">×4</span> '+quad.join(', '));
   if(firsts.length)parts.push('🥇 '+firsts.join(', '));
   if(parr.length)parts.push('💎 '+parr.join(', '));
   document.getElementById('saiRecap').innerHTML = parts.join(' &nbsp;·&nbsp; ');
@@ -1216,7 +1231,7 @@ function aggregatePalmares() {
 
 function checkDASemaine() {
   const week = getWeekKey();
-  document.getElementById('daSemaineBanner').textContent = `🏆 DA de semaine : ${CALENDRIER_2026[week] || '—'}`;
+  document.getElementById('daSemaineBanner').textContent = `DA de semaine : ${CALENDRIER_2026[week] || '—'}`;
   // Aperçu de ce qui sera publié
   const a = aggregatePalmares(); const t=a.totals;
   const prev = document.getElementById('palmaresPreview');
@@ -1228,7 +1243,7 @@ function checkDASemaine() {
         <div class="pal-kpi"><b style="color:var(--orange)">${t.renouv}</b><span>Renouv</span></div>
         <div class="pal-kpi"><b style="color:#888">${t.ads}</b><span>ADS</span></div>
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${nbAg} agence(s) · ✌️ ${a.doubles.length} doublé(s) · 🔱 ${a.triples.length} triplé(s) · 🥇 ${a.premiers.length} · 💎 ${a.parrainages.length}</div>`;
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${nbAg} agence(s) · <span class="mx">×2</span> ${a.doubles.length} doublé(s) · <span class="mx">×3</span> ${a.triples.length} triplé(s) · 🥇 ${a.premiers.length} · 💎 ${a.parrainages.length}</div>`;
   }
   // Suggestion pré-remplie de la performance collective (les agences en tête) — modifiable
   const perfEl = document.getElementById('palmares-perf');
@@ -1302,17 +1317,42 @@ function ppConfetti(){
   (function loop(){ x.clearRect(0,0,W,H); f++; parts.forEach(p=>{ p.y+=p.vy;p.x+=p.vx;p.rot+=p.vr; if(p.y>H+20){p.y=-20;p.x=Math.random()*W;} x.save();x.translate(p.x,p.y);x.rotate(p.rot);x.globalAlpha=Math.max(0,1-f/240);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore(); }); if(f<260)requestAnimationFrame(loop); else c.remove(); })();
 }
 
+// Écran d'attente du palmarès (à partir de 18h, ou si rien à afficher) — illustré.
+// ⚠️ WAIT_IMAGES : à compléter avec les images créées par Florian (images/...).
+// Images de l'écran d'attente, en rotation par jour de la semaine (à déposer dans images/).
+const WAIT_IMAGES = {
+  // Jours de terrain (mardi→vendredi). Lundi + week-end → placeholder texte.
+  2:'images/attente-mardi.jpg',
+  3:'images/attente-mercredi.jpg',
+  4:'images/attente-jeudi.jpg',
+  5:'images/attente-vendredi.jpg',
+};
+// Repli propre si l'image du jour n'est pas (encore) disponible.
+window.waitImgFail = function(img){ const c = img.closest('#palmaresContent'); if(c) c.innerHTML = `<div class="empty"><div class="e-icon">🌙</div><p>Le palmarès du soir arrive…</p></div>`; };
+function waitPalmaresScreen() {
+  const src = WAIT_IMAGES[new Date().getDay()];
+  if(src) return `<div class="pp-wait"><img src="${src}" alt="Le palmarès du soir arrive" onerror="waitImgFail(this)"><div class="pp-wait-cap">Le palmarès du soir arrive…</div></div>`;
+  return `<div class="empty"><div class="e-icon">🌙</div><p>Le palmarès du soir arrive…<br>Les résultats sont en cours de saisie.</p></div>`;
+}
+
 function renderPalmares(animate) {
   const el = document.getElementById('palmaresContent');
   const page = document.getElementById('page-palmares');
-  const p = STATE.palmares;
+  let p = STATE.palmares;
+  let stale = false;
   if(!p || !p.totals) {
-    if(page) page.classList.remove('pp-page');
-    el.innerHTML = `<div class="empty"><div class="e-icon">🏆</div><p>Le palmarès du jour n'est pas encore publié.</p></div>`;
-    return;
+    // Pas de palmarès aujourd'hui : avant 18h on rejoue celui d'hier, sinon écran d'attente illustré.
+    const y = STATE.palmaresYesterday;
+    if(parisHour() < 18 && y && y.totals) { p = y; stale = true; }
+    else {
+      if(page) page.classList.remove('pp-page');
+      el.innerHTML = waitPalmaresScreen();
+      return;
+    }
   }
   if(page) page.classList.add('pp-page');
   const A = animate !== false;
+  const jw = stale ? 'hier' : "aujourd'hui";
   const t = p.totals;
   const dateStr = new Date((p.date||todayStr())+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   const regions = p.regions||[];
@@ -1325,15 +1365,15 @@ function renderPalmares(animate) {
   let d = 0; const dl = () => A ? ` style="animation-delay:${(d+=0.04).toFixed(2)}s"` : '';
 
   // HERO
-  let html = `<div class="pp-hero${ap}">
+  let html = `${stale?'<div class="pp-stale">Palmarès d\'hier<small>Pour ceux qui ne l\'ont pas vu</small></div>':''}<div class="pp-hero${ap}">
     <div class="pp-hero-top">
       <div class="wm"><img class="logo-dots" src="images/logo-localfr.svg" alt="local.fr"><div class="wm-text">Local<span class="p">Perf</span></div></div>
-      <div class="pp-daytag"><span class="gd"></span> Palmarès du jour</div>
+      <div class="pp-daytag"><span class="gd"></span> ${stale?"Palmarès d'hier":"Palmarès du jour"}</div>
     </div>
     <div class="pp-hero-mid">
       <div class="pp-hero-label">Total contrats</div>
       <div class="pp-hero-total"><span id="ppTotal">${A?0:t.contrats}</span>${t.ads?`<span class="ads"> +${t.ads}</span>`:''}</div>
-      <div class="pp-hero-sub">${nbAg} agence${nbAg>1?'s':''} ${nbAg>1?'ont':'a'} signé aujourd'hui</div>
+      <div class="pp-hero-sub">${nbAg} agence${nbAg>1?'s':''} ${nbAg>1?'ont':'a'} signé ${jw}</div>
       <div class="pp-hero-date">${dateStr}</div>
     </div>
   </div>`;
@@ -1351,7 +1391,7 @@ function renderPalmares(animate) {
   if(persosTot > 0){
     html += `<div class="pp-persos${ap}"${dl()}>
         <div class="ic">📅</div>
-        <div class="pt"><b id="ppPersos">${A?0:persosTot}</b>RDV perso<span>pris aujourd'hui dans le réseau</span></div>
+        <div class="pt"><b id="ppPersos">${A?0:persosTot}</b>RDV perso<span>pris ${jw} dans le réseau</span></div>
       </div>`;
   }
 
@@ -1364,7 +1404,7 @@ function renderPalmares(animate) {
     const order = top.length>=3 ? [top[1],top[0],top[2]] : [top[1],top[0]];
     const cls = top.length>=3 ? ['pp-pod2','pp-pod1','pp-pod3'] : ['pp-pod2','pp-pod1'];
     const med = {'pp-pod1':'🥇','pp-pod2':'🥈','pp-pod3':'🥉'};
-    html += `<div class="pp-sec${ap}"${dl()}>🏆 Top agences du jour</div>`;
+    html += `<div class="pp-sec${ap}"${dl()}>Top agences du jour</div>`;
     html += `<div class="pp-podium${ap}"${dl()}>`;
     order.forEach((a,i)=>{
       html += `<div class="pp-pod ${cls[i]}">
@@ -1383,7 +1423,7 @@ function renderPalmares(animate) {
     const n = p.perf;
     perfTxt = (n.length>1 ? n.slice(0,-1).join(', ')+' et '+n[n.length-1] : n[0]) + ` signe${n.length>1?'nt':''} les performances du jour !`;
   }
-  if(perfTxt) html += `<div class="pp-perf${ap}"${dl()}><div class="t">⚡ PERFORMANCE COLLECTIVE</div><div class="s">${esc(perfTxt)}</div></div>`;
+  if(perfTxt) html += `<div class="pp-perf${ap}"${dl()}><div class="t">PERFORMANCE COLLECTIVE</div><div class="s">${esc(perfTxt)}</div></div>`;
 
   // COUPS D'ÉCLAT (reconstruits depuis les régions pour afficher l'agence)
   const HL = {premiers:[], parr:[], trip:[], doub:[], quad:[]};
@@ -1401,19 +1441,19 @@ function renderPalmares(animate) {
       <div class="bd"><div class="cat">${cat}</div><div class="ppl">${arr.map(who).join('')}</div></div>
     </div>` : '';
   if(HL.premiers.length||HL.parr.length||HL.doub.length||HL.trip.length||HL.quad.length){
-    html += `<div class="pp-sec${ap}"${dl()}>✨ Les coups d'éclat</div>`;
+    html += `<div class="pp-sec${ap}"${dl()}>Les coups d'éclat</div>`;
     html += `<div class="${ap.trim()}"${dl()}>`;
     html += eclat('Premiers contrats', HL.premiers, 'gold','🥇');
     html += eclat('Parrainages', HL.parr, 'dia','💎');
-    html += eclat('Triplés', HL.trip, 'fire','🔱');
-    html += eclat('Doublés', HL.doub, 'fire','✌️');
-    html += eclat('Quadruplés et +', HL.quad, 'fire','🔥');
+    html += eclat('Triplés', HL.trip, 'fire','×3');
+    html += eclat('Doublés', HL.doub, 'fire','×2');
+    html += eclat('Quadruplés et +', HL.quad, 'fire','×4');
     html += `</div>`;
   }
 
   // DÉTAIL PAR RÉGION
   if(regions.length){
-    html += `<div class="pp-sec pp-sec-reg${ap}"${dl()}>📍 Détail par région</div>`;
+    html += `<div class="pp-sec pp-sec-reg${ap}"${dl()}>Détail par région</div>`;
     const maxR = Math.max(1, ...regions.map(r=>r.contrats));
     html += `<div class="${ap.trim()}"${dl()}>`;
     regions.forEach(r=>{
@@ -1436,7 +1476,7 @@ function renderPalmares(animate) {
 
   // ACTIONS
   html += `<div class="pp-actions${ap}"${dl()}>
-      <button class="pp-act share" onclick="goTo('classement')">📊 Voir le classement de la semaine</button>
+      <button class="pp-act share" onclick="goTo('classement')">Voir le classement de la semaine</button>
     </div>`;
 
   el.innerHTML = html;
@@ -1510,11 +1550,11 @@ window.openRecords = function(){
   const old=document.getElementById('recOverlay'); if(old) old.remove();
   const ov=document.createElement('div'); ov.id='recOverlay'; ov.className='rec-overlay';
   ov.innerHTML=`<div class="rec-sheet">
-      <div class="rec-top"><div class="rec-title">🏆 Records de l'année</div><button class="rec-close" onclick="closeRecords()">✕</button></div>
+      <div class="rec-top"><div class="rec-title">Records de l'année</div><button class="rec-close" onclick="closeRecords()">✕</button></div>
       <div class="rec-hint">Les 5 meilleures semaines de ${new Date().getFullYear()} · par contrats</div>
-      ${cat('🏢 Agences', R.agences, false)}
-      ${cat('🧑 Commerciaux', R.commerciaux, true)}
-      ${cat('📍 Régions', R.regions, false)}
+      ${cat('Agences', R.agences, false)}
+      ${cat('Commerciaux', R.commerciaux, true)}
+      ${cat('Régions', R.regions, false)}
     </div>`;
   ov.onclick=e=>{ if(e.target===ov) closeRecords(); };
   document.body.appendChild(ov);
@@ -1547,14 +1587,14 @@ const uniqJoin = arr => [...new Set(arr)].join(' · ');
 
 function gamifHtml(ap){
   const T = STATE._tro || (STATE._tro = computeTrophies());
-  let h = `<button class="rec-btn${ap}" onclick="openRecords()"><span>🏆 Records de l'année</span><span class="rec-btn-go">Voir ›</span></button>`;
+  let h = `<button class="rec-btn${ap}" onclick="openRecords()"><span>Records de l'année</span><span class="rec-btn-go">Voir ›</span></button>`;
   const cards=[];
   if(T.enFeu.length)   cards.push({ic:'🚀',t:`En feu · ${TROPHY.enFeu}+ contrats`,a:uniqJoin(T.enFeu),g:TRO_G.fire});
-  if(T.triples.length) cards.push({ic:'🔱',t:`Triplés ×${T.triples.length}`,a:uniqJoin(T.triples),g:TRO_G.fuchsia});
-  if(T.doubles.length) cards.push({ic:'✌️',t:`Doublés ×${T.doubles.length}`,a:uniqJoin(T.doubles),g:TRO_G.fuchsia});
+  if(T.triples.length) cards.push({ic:'×3',t:`Triplés ×${T.triples.length}`,a:uniqJoin(T.triples),g:TRO_G.fuchsia});
+  if(T.doubles.length) cards.push({ic:'×2',t:`Doublés ×${T.doubles.length}`,a:uniqJoin(T.doubles),g:TRO_G.fuchsia});
   if(T.premiers.length)cards.push({ic:'🥇',t:`1ers contrats ×${T.premiers.length}`,a:uniqJoin(T.premiers),g:TRO_G.gold});
   if(cards.length){
-    h += `<div class="pp-sec${ap}">🏅 Trophées de la semaine</div>`;
+    h += `<div class="pp-sec${ap}">Trophées de la semaine</div>`;
     h += `<div class="tro-grid${ap}">` + cards.map((b,i)=>troCard(b,i)).join('') + `</div>`;
   }
   return h;
@@ -1644,14 +1684,14 @@ function renderClassement(animate){
   html += gamifHtml(ap);
 
   html += `<div class="wk-tabs${ap}">
-      <button class="wk-tab ${NIV==='com'?'on':''}" onclick="setWkNiveau('com',this)">🧑 Commerciaux</button>
-      <button class="wk-tab ${NIV==='ag'?'on':''}" onclick="setWkNiveau('ag',this)">🏢 Agences</button>
-      <button class="wk-tab ${NIV==='reg'?'on':''}" onclick="setWkNiveau('reg',this)">📍 Régions</button>
+      <button class="wk-tab ${NIV==='com'?'on':''}" onclick="setWkNiveau('com',this)">Commerciaux</button>
+      <button class="wk-tab ${NIV==='ag'?'on':''}" onclick="setWkNiveau('ag',this)">Agences</button>
+      <button class="wk-tab ${NIV==='reg'?'on':''}" onclick="setWkNiveau('reg',this)">Régions</button>
     </div>`;
   html += `<div class="wk-toggle${ap}">
-      <button class="wk-tg contrats ${CRIT==='contrats'?'on':''}" onclick="setWkCritere('contrats',this)">🏆 Contrats</button>
-      <button class="wk-tg parr ${CRIT==='parr'?'on':''}" onclick="setWkCritere('parr',this)">💎 Parrainages</button>
-      <button class="wk-tg persos ${CRIT==='persos'?'on':''}" onclick="setWkCritere('persos',this)">📞 Persos</button>
+      <button class="wk-tg contrats ${CRIT==='contrats'?'on':''}" onclick="setWkCritere('contrats',this)">Contrats</button>
+      <button class="wk-tg parr ${CRIT==='parr'?'on':''}" onclick="setWkCritere('parr',this)">Parrainages</button>
+      <button class="wk-tg persos ${CRIT==='persos'?'on':''}" onclick="setWkCritere('persos',this)">Persos</button>
     </div>`;
   html += `<div id="wkView"></div>`;
 
@@ -1694,7 +1734,7 @@ function renderWkView(animate){
   const unit = isParr?'parr.':isPers?'RDV':'contrats';
   const scoreCls = isParr?'parr':isPers?'persos':'';
   const emo = isParr?'💎':isPers?'📞':'';
-  const secTitle = isParr?'💎 Classement parrainages':isPers?'📞 Classement RDV perso':'🏆 Classement contrats';
+  const secTitle = isParr?'Classement parrainages':isPers?'Classement RDV perso':'Classement contrats';
   const nivLbl = NIV==='com'?'commerciaux':NIV==='ag'?'agences':'régions';
   const ap = A ? ' pp-appear' : '';
 
@@ -1781,19 +1821,59 @@ window.subscribeToNotifications = async function() {
 };
 
 // ── ACCUEIL IMMERSIF (visuel du jour) ─────────────────
+// Rotation sur 4 semaines : chaque jour garde son rôle narratif (départ → victoire),
+// la variante affichée dépend du numéro de semaine ISO (cycle S1→S2→S3→S4).
+// Pour ajouter une variante : déposer l'image dans images/ (suffixe -2 / -3 / -4).
+// Tant qu'une image n'existe pas, on retombe sur la variante S1 du même jour (ou mardi).
 const DAY_VISUALS = {
-  2:{img:'images/mardi.png',    tag:'Mardi',    quote:"Sortie de virage : c'est maintenant qu'on accélère.", pos:'68% 50%'},
-  3:{img:'images/mercredi.png', tag:'Mercredi',quote:"Le sommet récompense ceux qui pédalent encore.",   pos:'62% 45%'},
-  4:{img:'images/jeudi.png',    tag:'Jeudi',         quote:"Maîtriser le vent vaut mieux que l'attendre.",       pos:'55% 45%'},
-  5:{img:'images/vendredi.png', tag:'Vendredi',quote:"Tout se joue dans les premiers appuis.",              pos:'68% 48%'},
+  1:{ tag:'Lundi', v:[
+    {img:'images/lundi.png',      quote:"La semaine se gagne dès le premier appui.",            pos:'50% 50%'},
+    {img:'images/lundi-2.png',    quote:"Avant de gravir, on choisit son rythme.",              pos:'50% 50%'},
+    {img:'images/lundi-3.png',    quote:"Le combat se gagne avant le premier round.",           pos:'50% 45%'},
+    {img:'images/lundi-4.png',    quote:"Les grandes journées commencent avant les autres.",    pos:'50% 50%'},
+  ]},
+  2:{ tag:'Mardi', v:[
+    {img:'images/mardi.png',      quote:"Sortie de virage : c'est maintenant qu'on accélère.",  pos:'68% 50%'},
+    {img:'images/mardi-2.png',    quote:"Lâcher les freins au bon moment, tout est là.",        pos:'55% 50%'},
+    {img:'images/mardi-3.png',    quote:"L'attaque appartient à celui qui ose.",                pos:'55% 45%'},
+    {img:'images/mardi-4.png',    quote:"L'énergie d'une équipe se voit dès le matin.",         pos:'50% 50%'},
+  ]},
+  3:{ tag:'Mercredi', v:[
+    {img:'images/mercredi.png',   quote:"Le sommet récompense ceux qui pédalent encore.",       pos:'62% 45%'},
+    {img:'images/mercredi-2.png', quote:"Les écarts se creusent quand les autres ralentissent.",pos:'55% 50%'},
+    {img:'images/mercredi-3.png', quote:"C'est dans l'effort qu'on prend l'avantage.",          pos:'55% 50%'},
+    {img:'images/mercredi-4.png', quote:"On gravit les étages une marche à la fois.",           pos:'50% 45%'},
+  ]},
+  4:{ tag:'Jeudi', v:[
+    {img:'images/jeudi.png',      quote:"Maîtriser le vent vaut mieux que l'attendre.",         pos:'55% 45%'},
+    {img:'images/jeudi-2.png',    quote:"Une prise après l'autre, on prend de la hauteur.",     pos:'50% 45%'},
+    {img:'images/jeudi-3.png',    quote:"Le sang-froid décide des grands moments.",             pos:'50% 50%'},
+    {img:'images/jeudi-4.png',    quote:"Un deal se conclut dans la confiance.",                pos:'50% 50%'},
+  ]},
+  5:{ tag:'Vendredi', v:[
+    {img:'images/vendredi.png',   quote:"On ne ralentit jamais avant la ligne.",                pos:'68% 48%'},
+    {img:'images/vendredi-2.png', quote:"En haut, on savoure — puis on vise plus haut.",        pos:'50% 40%'},
+    {img:'images/vendredi-3.png', quote:"La victoire récompense le dernier effort.",            pos:'60% 48%'},
+    {img:'images/vendredi-4.png', quote:"Une victoire, ça se fête en équipe.",                  pos:'50% 45%'},
+  ]},
 };
 function paintDayBg() {
-  const d = DAY_VISUALS[new Date().getDay()] || DAY_VISUALS[2];
+  const entry = DAY_VISUALS[new Date().getDay()] || DAY_VISUALS[2];
+  const variants = entry.v;
+  // Numéro de semaine ISO → variante (cycle de 4).
+  const wk = parseInt((getWeekKey().split('-W')[1] || '1'), 10) || 1;
+  const d = variants[(wk - 1) % variants.length];
   const img = document.getElementById('dayBgImg');
+  // Repli si l'image n'existe pas encore : variante S1 du jour, sinon visuel mardi.
+  img.onerror = () => {
+    img.onerror = null;
+    const fb = (d.img !== variants[0].img) ? variants[0] : DAY_VISUALS[2].v[0];
+    img.src = fb.img; img.style.objectPosition = fb.pos;
+  };
   img.src = d.img;
   img.style.objectPosition = d.pos || '50% 50%';
-  document.getElementById('hhDaytag').textContent = d.tag;
-  // Citations retirées pour l'instant (les libellés quote restent en data pour une éventuelle réactivation).
+  document.getElementById('hhDaytag').textContent = entry.tag;
+  // Citations masquées pour l'instant (gardées en data pour réactivation éventuelle).
   document.getElementById('hhQuote').style.display = 'none';
 }
 window.openDA = function() {
@@ -1865,6 +1945,13 @@ function renderHomeStats() {
       // Accueil pré-connexion : on lit en seule lecture pour alimenter le total semaine.
       if(user) attachHomeStats();
       else signInAnonymously(auth).catch(()=>{}); // re-déclenche onAuthStateChanged avec un user anonyme
+      return;
+    }
+    // Commercial : à l'ouverture on reste sur l'accueil immersif (visuel du jour),
+    // l'utilisateur entre dans le palmarès via les boutons. Évite d'atterrir direct sur le palmarès.
+    if(role === 'commercial') {
+      showLogin();
+      attachHomeStats();
       return;
     }
     startApp(role, agency, nom||'');
