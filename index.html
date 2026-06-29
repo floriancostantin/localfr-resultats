@@ -1864,14 +1864,13 @@ function paintDayBg() {
   const wk = parseInt((getWeekKey().split('-W')[1] || '1'), 10) || 1;
   const d = variants[(wk - 1) % variants.length];
   const img = document.getElementById('dayBgImg');
-  // Repli si l'image n'existe pas encore : variante S1 du jour, sinon visuel mardi.
-  img.onerror = () => {
-    img.onerror = null;
-    const fb = (d.img !== variants[0].img) ? variants[0] : DAY_VISUALS[2].v[0];
-    img.src = fb.img; img.style.objectPosition = fb.pos;
-  };
-  img.src = d.img;
-  img.style.objectPosition = d.pos || '50% 50%';
+  // Chaîne de replis si l'image n'existe pas encore : variante choisie → S1 du même
+  // jour → mardi S1 (toujours présente). Garantit qu'un visuel s'affiche toujours.
+  const chain = [d, variants[0], DAY_VISUALS[2].v[0]].filter((v,i,a)=> v && a.indexOf(v)===i);
+  const apply = (v) => { img.style.objectPosition = v.pos || '50% 50%'; img.src = v.img; };
+  let idx = 0;
+  img.onerror = () => { idx++; if(idx < chain.length) apply(chain[idx]); else img.onerror = null; };
+  apply(chain[0]);
   document.getElementById('hhDaytag').textContent = entry.tag;
   // Citations masquées pour l'instant (gardées en data pour réactivation éventuelle).
   document.getElementById('hhQuote').style.display = 'none';
