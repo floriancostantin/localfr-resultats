@@ -479,9 +479,10 @@ textarea { resize:vertical; min-height:64px; }
 /* Bandeau « Palmarès d'hier » + écran d'attente illustré (page Palmarès) */
 .pp-stale{background:linear-gradient(135deg,#EC008C,#FAA61A);color:#fff;text-align:center;font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:13px;padding:11px 14px;border-radius:14px;margin-bottom:16px;box-shadow:0 8px 24px rgba(236,0,140,.45)}
 .pp-stale small{display:block;font-size:10px;font-weight:600;letter-spacing:.4px;opacity:.92;text-transform:none;margin-top:3px}
-.pp-wait{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:58vh;text-align:center;padding:20px}
-.pp-wait img{max-width:100%;border-radius:20px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
-.pp-wait-cap{margin-top:16px;font-size:14px;font-weight:700;color:var(--muted)}
+.pp-wait{position:fixed;inset:0;z-index:50}
+.pp-wait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:0;box-shadow:none}
+.pp-wait::after{content:"";position:absolute;left:0;right:0;bottom:0;height:48%;background:linear-gradient(to top,rgba(10,8,13,.88),rgba(10,8,13,.35) 55%,transparent);z-index:1}
+.pp-wait-cap{position:absolute;left:0;right:0;bottom:calc(150px + var(--safe-bottom));z-index:2;text-align:center;font-size:23px;font-weight:800;color:#fff;letter-spacing:.2px;padding:0 26px;text-shadow:0 2px 18px rgba(0,0,0,.6)}
 </style>
 </head>
 <body>
@@ -1532,18 +1533,37 @@ function computeRecords(){
   return { agences:top5(agW), commerciaux:top5(comW), regions:top5(regW) };
 }
 
+// Classement parrainages de l'année (instantané depuis le fichier signatures — cumul 2026)
+const PARRAINAGES_RECORDS = {
+  commerciaux:[
+    {name:"Marion WROBLEWSKI",agency:"Aix-en-Provence",c:14},
+    {name:"Alexis CAPIALI",agency:"Corse",c:12},
+    {name:"Alexandra N'GUYEN",agency:"Angoulême",c:10},
+    {name:"Pauline LAURENT",agency:"Corse",c:9},
+    {name:"Maëlys HUMMEL",agency:"Nantes",c:9}
+  ],
+  agences:[
+    {name:"Aix-en-Provence",c:53},{name:"Toulouse",c:30},{name:"Corse",c:30},{name:"Lille",c:27},{name:"Nice",c:25}
+  ],
+  regions:[
+    {name:"SUD",c:175},{name:"EST",c:104},{name:"OUEST",c:78},{name:"PARIS IDF",c:8}
+  ]
+};
+let recMode='contrats';
+window.setRecMode = function(m){ if(m!==recMode){ recMode=m; openRecords(); } };
 window.openRecords = function(){
-  const R=computeRecords();
+  const isParr = recMode==='parr';
+  const R = isParr ? PARRAINAGES_RECORDS : computeRecords();
   const med={0:'🥇',1:'🥈',2:'🥉'};
   const wkLabel=d=>getWeekBounds(new Date(d));
   const cat=(title,arr,withAg)=>{
     let s=`<div class="rec-cat"><div class="rec-cat-h">${title}</div>`;
-    if(!arr.length){ return s+`<div class="rec-empty">Pas encore de record.</div></div>`; }
+    if(!arr||!arr.length){ return s+`<div class="rec-empty">Pas encore de record.</div></div>`; }
     s+=`<div class="rec-list">`;
     arr.forEach((x,i)=>{ s+=`<div class="rec-row">
         <div class="rec-pos ${i<3?'t'+(i+1):''}">${i<3?med[i]:i+1}</div>
-        <div class="rec-main"><div class="rec-nm">${esc(x.name)}${withAg?` <span>${esc(x.agency)}</span>`:''}</div><div class="rec-wk">Semaine du ${wkLabel(x.date)}</div></div>
-        <div class="rec-score">${x.c}<small>contrats</small></div>
+        <div class="rec-main"><div class="rec-nm">${esc(x.name)}${withAg&&x.agency?` <span>${esc(x.agency)}</span>`:''}</div>${isParr?'':`<div class="rec-wk">Semaine du ${wkLabel(x.date)}</div>`}</div>
+        <div class="rec-score">${x.c}<small>${isParr?'parrainages':'contrats'}</small></div>
       </div>`; });
     return s+`</div></div>`;
   };
@@ -1551,9 +1571,13 @@ window.openRecords = function(){
   const ov=document.createElement('div'); ov.id='recOverlay'; ov.className='rec-overlay';
   ov.innerHTML=`<div class="rec-sheet">
       <div class="rec-top"><div class="rec-title">Records de l'année</div><button class="rec-close" onclick="closeRecords()">✕</button></div>
-      <div class="rec-hint">Les 5 meilleures semaines de ${new Date().getFullYear()} · par contrats</div>
-      ${cat('Agences', R.agences, false)}
+      <div class="rec-modeswitch" style="display:flex;gap:8px;margin:2px 2px 12px">
+        <button class="wk-tg contrats ${!isParr?'on':''}" onclick="setRecMode('contrats')">Contrats</button>
+        <button class="wk-tg parr ${isParr?'on':''}" onclick="setRecMode('parr')">Parrainages</button>
+      </div>
+      <div class="rec-hint">${isParr?`Top 5 parrains de ${new Date().getFullYear()} · cumul parrainages`:`Les 5 meilleures semaines de ${new Date().getFullYear()} · par contrats`}</div>
       ${cat('Commerciaux', R.commerciaux, true)}
+      ${cat('Agences', R.agences, false)}
       ${cat('Régions', R.regions, false)}
     </div>`;
   ov.onclick=e=>{ if(e.target===ov) closeRecords(); };
@@ -1629,6 +1653,11 @@ function aggregateWeek(week = getWeekKey()) {
         A.contrats+=k; A.ad+=ad; A.parr+=parr; A.comset.add(nm.toLowerCase());
         R.contrats+=k; R.parr+=parr;
       });
+      // Fallback historique : jours sans détail par commercial → on agrège v.contrats
+      if(coms.length===0 && v.contrats!=null){
+        A.contrats+=v.contrats; A.ad+=(v.ads||0);
+        R.contrats+=v.contrats;
+      }
     });
   });
   const coms=Object.values(comMap);
@@ -1637,7 +1666,7 @@ function aggregateWeek(week = getWeekKey()) {
   return {
     weekLabel:getWeekBounds(),
     totals:{
-      contrats:coms.reduce((s,c)=>s+c.contrats,0),
+      contrats:agences.reduce((s,a)=>s+a.contrats,0),
       parr:coms.reduce((s,c)=>s+c.parr,0),
       persos:agences.reduce((s,a)=>s+a.persos,0),
     },
@@ -1683,15 +1712,15 @@ function renderClassement(animate){
 
   html += gamifHtml(ap);
 
-  html += `<div class="wk-tabs${ap}">
-      <button class="wk-tab ${NIV==='com'?'on':''}" onclick="setWkNiveau('com',this)">Commerciaux</button>
-      <button class="wk-tab ${NIV==='ag'?'on':''}" onclick="setWkNiveau('ag',this)">Agences</button>
-      <button class="wk-tab ${NIV==='reg'?'on':''}" onclick="setWkNiveau('reg',this)">Régions</button>
-    </div>`;
   html += `<div class="wk-toggle${ap}">
       <button class="wk-tg contrats ${CRIT==='contrats'?'on':''}" onclick="setWkCritere('contrats',this)">Contrats</button>
       <button class="wk-tg parr ${CRIT==='parr'?'on':''}" onclick="setWkCritere('parr',this)">Parrainages</button>
       <button class="wk-tg persos ${CRIT==='persos'?'on':''}" onclick="setWkCritere('persos',this)">Persos</button>
+    </div>`;
+  html += `<div class="wk-tabs${ap}">
+      <button class="wk-tab ${NIV==='com'?'on':''}" onclick="setWkNiveau('com',this)">Commerciaux</button>
+      <button class="wk-tab ${NIV==='ag'?'on':''}" onclick="setWkNiveau('ag',this)">Agences</button>
+      <button class="wk-tab ${NIV==='reg'?'on':''}" onclick="setWkNiveau('reg',this)">Régions</button>
     </div>`;
   html += `<div id="wkView"></div>`;
 
