@@ -267,13 +267,15 @@ textarea { resize:vertical; min-height:64px; }
 .hh-quote::before{content:"\201C";color:var(--orange);font-weight:800;font-style:normal;margin-right:2px}
 .hh-h1{font-size:74px;line-height:.98;font-weight:800;letter-spacing:-2.2px;color:#fff;margin-bottom:26px;text-shadow:0 6px 30px rgba(0,0,0,.4)}
 .hh-h1 .g{background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.hh-cta{display:flex;gap:13px;flex-wrap:wrap;margin-bottom:16px}
-.hh-enter{padding:16px 28px;background:var(--gradient);color:#fff;border:none;border-radius:15px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 14px 40px rgba(236,0,140,.5);transition:transform .15s}
+.hh-cta{display:flex;gap:14px;align-items:center;margin-bottom:16px}
+.hh-col{display:flex;flex-direction:column;gap:10px;flex:1;min-width:0;max-width:330px}
+.hh-enter{width:100%;padding:15px 20px;text-align:center;background:var(--gradient);color:#fff;border:none;border-radius:15px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 14px 40px rgba(236,0,140,.5);transition:transform .15s}
 .hh-enter:active{transform:scale(.98)}
 .hh-enter-2{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);box-shadow:none;backdrop-filter:blur(6px)}
-.hh-records{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;max-width:420px;margin:0 0 16px;padding:15px 20px;border:none;border-radius:15px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:800;color:#3a2400;background:linear-gradient(135deg,#FFD75E,#F6A700);box-shadow:0 14px 40px rgba(246,167,0,.45);transition:transform .15s}
-.hh-records:active{transform:scale(.98)}
-.hh-records-go{font-size:12px;font-weight:800;opacity:.7}
+.hh-records{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:108px;height:108px;flex:none;border:none;border-radius:50%;cursor:pointer;font-family:inherit;color:#3a2400;background:linear-gradient(135deg,#FFD75E,#F6A700);box-shadow:0 14px 40px rgba(246,167,0,.5);transition:transform .15s}
+.hh-records:active{transform:scale(.96)}
+.hh-records .ic{font-size:30px;line-height:1}
+.hh-records .lb{font-size:13px;font-weight:800;letter-spacing:.3px}
 .hh-da-link{display:inline-block;margin:0 0 30px;padding:5px 0;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.62);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:color .15s}
 .hh-da-link:hover{color:#fff}
 .hh-stats{display:flex;gap:40px}
@@ -520,10 +522,12 @@ textarea { resize:vertical; min-height:64px; }
       <div class="hh-quote" id="hhQuote"></div>
       <h1 class="hh-h1">Chaque signature <span class="g">fait vibrer</span> le réseau.</h1>
       <div class="hh-cta">
-        <button class="hh-enter" onclick="openPalmares('palmares')">Palmarès du jour</button>
-        <button class="hh-enter hh-enter-2" onclick="openPalmares('classement')">Palmarès semaine</button>
+        <div class="hh-col">
+          <button class="hh-enter" onclick="openPalmares('palmares')">Palmarès du jour</button>
+          <button class="hh-enter hh-enter-2" onclick="openPalmares('classement')">Palmarès semaine</button>
+        </div>
+        <button class="hh-records" onclick="openRecords()" aria-label="Records de l'année" title="Records de l'année"><span class="ic">🏆</span><span class="lb">Records</span></button>
       </div>
-      <button class="hh-records" onclick="openRecords()"><span>🏆 Records de l'année</span><span class="hh-records-go">Voir ›</span></button>
       <button class="hh-da-link" onclick="openDA()">Espace directeur</button>
       <div class="hh-stats">
         <div class="s"><b id="hhPrevWeek">—</b><span>CONTRATS · SEMAINE DERNIÈRE</span></div>
@@ -1711,7 +1715,7 @@ function renderClassement(animate){
       <div class="pp-hero-mid">
         <div class="pp-hero-label">Contrats de la semaine</div>
         <div class="pp-hero-total"><span id="wkTot">${A?0:t.contrats}</span></div>
-        <div class="pp-hero-sub">${w.nbAgences} agence${w.nbAgences>1?'s':''} · ${w.nbComs} commercial${w.nbComs>1?'aux':''} · 💎 ${t.parr} · 📞 ${t.persos}</div>
+        <div class="pp-hero-sub">${w.nbAgences} agence${w.nbAgences>1?'s':''} · ${w.nbComs} commercia${w.nbComs>1?'ux':'l'} · 💎 ${t.parr} · 📞 ${t.persos}</div>
         <div class="pp-hero-date">Semaine du ${w.weekLabel}</div>
       </div>
     </div>`;
