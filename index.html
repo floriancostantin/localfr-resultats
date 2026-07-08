@@ -1332,11 +1332,12 @@ function ppConfetti(){
 // ⚠️ WAIT_IMAGES : à compléter avec les images créées par Florian (images/...).
 // Images de l'écran d'attente, en rotation par jour de la semaine (à déposer dans images/).
 const WAIT_IMAGES = {
-  // Jours de terrain (mardi→vendredi). Lundi + week-end → placeholder texte.
-  2:'images/attente-mardi.jpg',
-  3:'images/attente-mercredi.jpg',
-  4:'images/attente-jeudi.jpg',
-  5:'images/attente-vendredi.jpg',
+  // Lundi→vendredi. Week-end → placeholder texte.
+  1:'images/attente%20lundi.png',
+  2:'images/attente%20mardi.png',
+  3:'images/attente%20mercredi.png',
+  4:'images/attente%20jeudi.png',
+  5:'images/attente%20vendredi.png',
 };
 // Repli propre si l'image du jour n'est pas (encore) disponible.
 window.waitImgFail = function(img){ const c = img.closest('#palmaresContent'); if(c) c.innerHTML = `<div class="empty"><div class="e-icon">🌙</div><p>Le palmarès du soir arrive…</p></div>`; };
