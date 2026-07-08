@@ -272,7 +272,7 @@ textarea { resize:vertical; min-height:64px; }
 .hh-enter{width:100%;padding:15px 20px;text-align:center;background:var(--gradient);color:#fff;border:none;border-radius:15px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 14px 40px rgba(236,0,140,.5);transition:transform .15s}
 .hh-enter:active{transform:scale(.98)}
 .hh-enter-2{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);box-shadow:none;backdrop-filter:blur(6px)}
-.hh-records{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:108px;height:108px;flex:none;border:none;border-radius:50%;cursor:pointer;font-family:inherit;color:#3a2400;background:linear-gradient(135deg,#FFD75E,#F6A700);box-shadow:0 14px 40px rgba(246,167,0,.5);transition:transform .15s}
+.hh-records{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:104px;align-self:stretch;flex:none;border:1px solid rgba(255,215,94,.4);border-radius:15px;cursor:pointer;font-family:inherit;color:#FFD75E;background:linear-gradient(135deg,rgba(246,167,0,.5),rgba(0,0,0,.35));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:none;transition:transform .15s}
 .hh-records:active{transform:scale(.96)}
 .hh-records .ic{font-size:30px;line-height:1}
 .hh-records .lb{font-size:13px;font-weight:800;letter-spacing:.3px}
@@ -486,8 +486,6 @@ textarea { resize:vertical; min-height:64px; }
 .pp-stale small{display:block;font-size:10px;font-weight:600;letter-spacing:.4px;opacity:.92;text-transform:none;margin-top:3px}
 .pp-wait{position:fixed;inset:0;z-index:50}
 .pp-wait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:0;box-shadow:none}
-.pp-wait::after{content:"";position:absolute;left:0;right:0;bottom:0;height:48%;background:linear-gradient(to top,rgba(10,8,13,.88),rgba(10,8,13,.35) 55%,transparent);z-index:1}
-.pp-wait-cap{position:absolute;left:0;right:0;bottom:calc(150px + var(--safe-bottom));z-index:2;text-align:center;font-size:23px;font-weight:800;color:#fff;letter-spacing:.2px;padding:0 26px;text-shadow:0 2px 18px rgba(0,0,0,.6)}
 </style>
 </head>
 <body>
@@ -633,7 +631,7 @@ textarea { resize:vertical; min-height:64px; }
     <div class="sync-dot" id="syncDot"></div>
     <div class="logo">Local<span class="p">Perf</span></div>
   </div>
-  <div class="user-badge" id="userBadge" onclick="askLogout()">—</div>
+  <div class="user-badge" id="userBadge" onclick="goHomeHero()">‹ Accueil</div>
 </header>
 
 <!-- ══════════════════ PAGES ══════════════════ -->
@@ -985,7 +983,6 @@ function startApp(role, agency, nom) {
   document.getElementById('homeHero').style.display='none';
   document.getElementById('dayBg').style.display='none';
   document.getElementById('bottomNav').style.display='flex';
-  document.getElementById('userBadge').textContent = agency ? `${agency}` : nom;
 
   buildNav();
   subscribeData();
@@ -1343,7 +1340,7 @@ const WAIT_IMAGES = {
 window.waitImgFail = function(img){ const c = img.closest('#palmaresContent'); if(c) c.innerHTML = `<div class="empty"><div class="e-icon">🌙</div><p>Le palmarès du soir arrive…</p></div>`; };
 function waitPalmaresScreen() {
   const src = WAIT_IMAGES[new Date().getDay()];
-  if(src) return `<div class="pp-wait"><img src="${src}" alt="Le palmarès du soir arrive" onerror="waitImgFail(this)"><div class="pp-wait-cap">Le palmarès du soir arrive…</div></div>`;
+  if(src) return `<div class="pp-wait"><img src="${src}" alt="Le palmarès du soir arrive" onerror="waitImgFail(this)"></div>`;
   return `<div class="empty"><div class="e-icon">🌙</div><p>Le palmarès du soir arrive…<br>Les résultats sont en cours de saisie.</p></div>`;
 }
 
@@ -1358,10 +1355,14 @@ function renderPalmares(animate) {
     if(parisHour() < 18 && y && y.totals) { p = y; stale = true; }
     else {
       if(page) page.classList.remove('pp-page');
+      // Écran d'attente : image plein écran, on masque la barre d'onglets.
+      const nav = document.getElementById('bottomNav'); if(nav) nav.style.display='none';
       el.innerHTML = waitPalmaresScreen();
       return;
     }
   }
+  // Palmarès disponible : on rétablit la barre d'onglets.
+  const nav = document.getElementById('bottomNav'); if(nav) nav.style.display='flex';
   if(page) page.classList.add('pp-page');
   const A = animate !== false;
   const jw = stale ? 'hier' : "aujourd'hui";
@@ -1871,30 +1872,38 @@ const DAY_VISUALS = {
     {img:'images/lundi-2.png',    quote:"Avant de gravir, on choisit son rythme.",              pos:'50% 50%'},
     {img:'images/lundi-3.png',    quote:"Le combat se gagne avant le premier round.",           pos:'50% 45%'},
     {img:'images/lundi-4.png',    quote:"Les grandes journées commencent avant les autres.",    pos:'50% 50%'},
+    {img:'images/accueil-trail.png',    quote:"On avance vers le sommet, un pas après l'autre.",   pos:'50% 45%'},
+    {img:'images/accueil-escalade.png', quote:"Le vide sous les pieds, les yeux vers le haut.",     pos:'58% 45%'},
   ]},
   2:{ tag:'Mardi', v:[
     {img:'images/mardi.png',      quote:"Sortie de virage : c'est maintenant qu'on accélère.",  pos:'68% 50%'},
     {img:'images/mardi-2.png',    quote:"Lâcher les freins au bon moment, tout est là.",        pos:'55% 50%'},
     {img:'images/mardi-3.png',    quote:"L'attaque appartient à celui qui ose.",                pos:'55% 45%'},
     {img:'images/mardi-4.png',    quote:"L'énergie d'une équipe se voit dès le matin.",         pos:'50% 50%'},
+    {img:'images/accueil-vtt.png',      quote:"La pente ne fait peur qu'à ceux qui freinent.",    pos:'48% 45%'},
   ]},
   3:{ tag:'Mercredi', v:[
     {img:'images/mercredi.png',   quote:"Le sommet récompense ceux qui pédalent encore.",       pos:'62% 45%'},
     {img:'images/mercredi-2.png', quote:"Les écarts se creusent quand les autres ralentissent.",pos:'55% 50%'},
     {img:'images/mercredi-3.png', quote:"C'est dans l'effort qu'on prend l'avantage.",          pos:'55% 50%'},
     {img:'images/mercredi-4.png', quote:"On gravit les étages une marche à la fois.",           pos:'50% 45%'},
+    {img:'images/accueil-ski.png',      quote:"On attaque la pente, on ne la subit pas.",        pos:'58% 42%'},
+    {img:'images/accueil-aviron.png',   quote:"À l'unisson, l'équipe file plus vite.",           pos:'55% 48%'},
   ]},
   4:{ tag:'Jeudi', v:[
     {img:'images/jeudi.png',      quote:"Maîtriser le vent vaut mieux que l'attendre.",         pos:'55% 45%'},
     {img:'images/jeudi-2.png',    quote:"Une prise après l'autre, on prend de la hauteur.",     pos:'50% 45%'},
     {img:'images/jeudi-3.png',    quote:"Le sang-froid décide des grands moments.",             pos:'50% 50%'},
     {img:'images/jeudi-4.png',    quote:"Un deal se conclut dans la confiance.",                pos:'50% 50%'},
+    {img:'images/accueil-fusee.png',    quote:"Viser haut, décoller franchement.",              pos:'55% 50%'},
   ]},
   5:{ tag:'Vendredi', v:[
     {img:'images/vendredi.png',   quote:"On ne ralentit jamais avant la ligne.",                pos:'68% 48%'},
     {img:'images/vendredi-2.png', quote:"En haut, on savoure — puis on vise plus haut.",        pos:'50% 40%'},
     {img:'images/vendredi-3.png', quote:"La victoire récompense le dernier effort.",            pos:'60% 48%'},
     {img:'images/vendredi-4.png', quote:"Une victoire, ça se fête en équipe.",                  pos:'50% 45%'},
+    {img:'images/accueil-victoire.png', quote:"La victoire se soulève à plusieurs.",             pos:'55% 40%'},
+    {img:'images/accueil-trophee.png',  quote:"Le trophée récompense les acharnés.",             pos:'58% 45%'},
   ]},
 };
 function paintDayBg() {
@@ -1933,6 +1942,14 @@ window.openPalmares = function(page) {
   // Entrée commercial (lecture) vers la page choisie : 'palmares' (jour) ou 'classement' (semaine).
   STATE.entryPage = page;
   doLoginCommercial();
+};
+
+window.goHomeHero = function() {
+  // Retour à l'accueil immersif (bouton « ‹ Accueil » de l'en-tête). Ne déconnecte pas.
+  document.getElementById('loginOverlay').style.display = 'none';
+  document.getElementById('bottomNav').style.display = 'none';
+  document.getElementById('dayBg').style.display = 'block';
+  document.getElementById('homeHero').style.display = 'flex';
 };
 
 // ── INIT ─────────────────────────────────────────────
