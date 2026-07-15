@@ -551,6 +551,13 @@ textarea { resize:vertical; min-height:64px; }
   .rec-overlay{align-items:center}
   .rec-sheet{max-width:980px;border-radius:24px;max-height:88vh}
   .rec-cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+  /* NAVIGATION EN HAUT (dans l'en-tête) — remplace la barre du bas sur ordi */
+  header{gap:24px}
+  #bottomNav.bottom-nav{position:static;flex:1 1 auto;justify-content:center;gap:6px;background:none;border-top:none;box-shadow:none;padding:0;z-index:auto}
+  #bottomNav .nav-item{flex:0 0 auto;flex-direction:row;padding:8px 14px;border-radius:11px;font-size:13.5px;font-weight:700;gap:0;color:#cfc8da;white-space:nowrap;transition:background .15s,color .15s}
+  #bottomNav .nav-item:hover{color:#fff;background:rgba(255,255,255,.08)}
+  #bottomNav .nav-item.active{color:#fff;background:var(--gradient);box-shadow:0 6px 18px rgba(236,0,140,.35)}
+  .content{padding-bottom:44px}
 }
 </style>
 </head>
@@ -708,6 +715,7 @@ textarea { resize:vertical; min-height:64px; }
     <div class="sync-dot" id="syncDot"></div>
     <div class="logo">Local<span class="p">Perf</span></div>
   </div>
+  <div class="bottom-nav" id="bottomNav" style="display:none"><!-- rempli dynamiquement selon le rôle --></div>
   <div class="user-badge" id="userBadge" onclick="goHomeHero()">‹ Accueil</div>
 </header>
 
@@ -808,11 +816,6 @@ textarea { resize:vertical; min-height:64px; }
     <div class="card-title">DA de semaine — <span id="anneeLabel">2026</span></div>
     <div id="calendrierContent"></div>
   </div>
-</div>
-
-<!-- ══════════════════ BOTTOM NAV ══════════════════ -->
-<div class="bottom-nav" id="bottomNav" style="display:none">
-  <!-- rempli dynamiquement selon le rôle -->
 </div>
 
 <!-- TOAST -->
