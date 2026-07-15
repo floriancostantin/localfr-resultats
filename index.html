@@ -539,6 +539,18 @@ textarea { resize:vertical; min-height:64px; }
   #page-classement.pp-page #classContent{max-width:1040px;margin:0 auto;padding:26px 28px 40px}
   #classContent .wk-rank{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;grid-template-rows:repeat(5,auto);column-gap:34px;padding:6px 22px}
   #classContent .wk-rank .wk-row:nth-child(5){border-bottom:none}
+  /* SAISIE (directeur) — colonne centrée élargie (form lisible, non étiré) */
+  #page-saisie{max-width:680px}
+  /* RÉDIGER LE PALMARÈS (directeur) */
+  #page-palmares-da{max-width:760px}
+  /* AGENDA — semaines en 2 colonnes */
+  #page-calendrier{max-width:1000px}
+  #calendrierContent{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+  #calendrierContent .cal-semaine{margin-bottom:0}
+  /* MODALE RECORDS — centrée + 3 catégories côte à côte */
+  .rec-overlay{align-items:center}
+  .rec-sheet{max-width:980px;border-radius:24px;max-height:88vh}
+  .rec-cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
 }
 </style>
 </head>
@@ -1643,9 +1655,11 @@ window.openRecords = function(){
         <button class="wk-tg parr ${isParr?'on':''}" onclick="setRecMode('parr')">Parrainages</button>
       </div>
       <div class="rec-hint">${isParr?`Top 5 parrains de ${new Date().getFullYear()} · cumul parrainages`:`Les 5 meilleures semaines de ${new Date().getFullYear()} · par contrats`}</div>
-      ${cat('Commerciaux', R.commerciaux, true)}
-      ${cat('Agences', R.agences, false)}
-      ${cat('Régions', R.regions, false)}
+      <div class="rec-cats">
+        ${cat('Commerciaux', R.commerciaux, true)}
+        ${cat('Agences', R.agences, false)}
+        ${cat('Régions', R.regions, false)}
+      </div>
     </div>`;
   ov.onclick=e=>{ if(e.target===ov) closeRecords(); };
   document.body.appendChild(ov);
