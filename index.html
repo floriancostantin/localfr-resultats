@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -251,6 +252,28 @@ textarea { resize:vertical; min-height:64px; }
 #dayBg .daybg-blend{position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,8,13,.96) 4%,rgba(10,8,13,.35) 44%,transparent 74%),linear-gradient(90deg,rgba(10,8,13,.82),transparent 58%)}
 #dayBg .daybg-vig{position:absolute;inset:0;box-shadow:inset 0 0 200px 60px rgba(8,6,11,.85)}
 
+/* ── SPLASH ANIMÉ (écran de garde, à chaque ouverture) ── */
+#lpSplash{position:fixed;inset:0;z-index:2000;overflow:hidden;background:#0a0a0f;font-family:'Nunito',-apple-system,system-ui,sans-serif}
+#lpSplash.out{animation:lpSplashOut 1s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes lpSplashOut{to{opacity:0;transform:scale(1.04);visibility:hidden}}
+#lpSplashImg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.12);animation:lpKen 3.6s ease-out forwards;opacity:0;transition:opacity .5s ease}
+@keyframes lpKen{to{transform:scale(1)}}
+#lpSplash .sp-veil{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,transparent 28%,rgba(8,6,11,.6) 100%),linear-gradient(0deg,rgba(10,8,13,.72),transparent 55%)}
+#lpSplash .sp-center{position:absolute;left:0;right:0;top:53%;transform:translateY(-50%);text-align:center;padding:0 24px}
+#lpSplash .sp-logo{display:inline-block;position:relative;font-size:min(15vw,88px);line-height:1;letter-spacing:-.02em;opacity:0;transform:translateY(18px) scale(.94);filter:blur(8px);animation:lpLogoIn 1.1s .3s cubic-bezier(.16,1,.3,1) forwards}
+#lpSplash .sp-logo .l{font-weight:400;color:#fff}
+#lpSplash .sp-logo .p{font-weight:900;background:linear-gradient(120deg,var(--fuchsia),var(--orange));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+@keyframes lpLogoIn{to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+#lpSplash .sp-logo::after{content:'';position:absolute;top:0;left:-60%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);mix-blend-mode:overlay;opacity:0;animation:lpShine 1.1s 1.15s ease-out forwards}
+@keyframes lpShine{0%{left:-60%;opacity:0}20%{opacity:1}100%{left:130%;opacity:0}}
+#lpSplash .sp-base{margin-top:14px;font-weight:700;font-size:min(4.6vw,22px);color:#e8e9f0;opacity:0;transform:translateY(14px);animation:lpBaseIn .9s .95s cubic-bezier(.16,1,.3,1) forwards}
+#lpSplash .sp-base .a{background:linear-gradient(120deg,var(--fuchsia),var(--orange));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
+@keyframes lpBaseIn{to{opacity:1;transform:translateY(0)}}
+#lpSplash .sp-sparks{position:absolute;inset:0;pointer-events:none}
+#lpSplash .sp-spark{position:absolute;border-radius:50%;background:#ffd08a;box-shadow:0 0 8px 2px rgba(255,170,60,.8);opacity:0;animation:lpRise 2.4s ease-out forwards}
+@keyframes lpRise{0%{opacity:0;transform:translateY(0)}15%{opacity:.9}100%{opacity:0;transform:translateY(-120px)}}
+@media(prefers-reduced-motion:reduce){#lpSplashImg,#lpSplash .sp-logo,#lpSplash .sp-base,#lpSplash .sp-spark{animation-duration:.01s!important}}
+
 #homeHero{position:fixed;inset:0;z-index:600;display:none;font-family:'Poppins',-apple-system,system-ui,sans-serif}
 #homeHero .wm,#homeHero .hh-daytag,#homeHero .hh-chip,#homeHero .hh-quote,#homeHero .hh-h1,#homeHero .hh-enter,#homeHero .hh-stats{font-family:'Poppins',-apple-system,system-ui,sans-serif}
 .hh-topbar{position:absolute;top:calc(var(--safe-top) + 30px);left:56px;right:56px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;z-index:3}
@@ -484,11 +507,38 @@ textarea { resize:vertical; min-height:64px; }
 /* Bandeau « Palmarès d'hier » + écran d'attente illustré (page Palmarès) */
 .pp-stale{background:linear-gradient(135deg,#EC008C,#FAA61A);color:#fff;text-align:center;font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:13px;padding:11px 14px;border-radius:14px;margin-bottom:16px;box-shadow:0 8px 24px rgba(236,0,140,.45)}
 .pp-stale small{display:block;font-size:10px;font-weight:600;letter-spacing:.4px;opacity:.92;text-transform:none;margin-top:3px}
-.pp-wait{position:fixed;inset:0;z-index:50}
-.pp-wait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:0;box-shadow:none}
+/* Écran d'attente palmarès — centré, responsive (mobile + ordi) */
+.pp-waiting{position:fixed;left:0;right:0;top:calc(56px + var(--safe-top));bottom:calc(64px + var(--safe-bottom));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:22px;padding:24px}
+.pp-waiting .pw-orb{position:relative;width:104px;height:104px;display:flex;align-items:center;justify-content:center}
+.pp-waiting .pw-orb::before{content:"";position:absolute;inset:-14px;border-radius:50%;background:var(--gradient);filter:blur(6px);animation:pwPulse 1.9s ease-in-out infinite}
+.pp-waiting .pw-ring{position:absolute;inset:0;border-radius:50%;border:4px solid rgba(236,0,140,.14);border-top-color:var(--fuchsia);border-right-color:var(--orange);animation:pwSpin 1s linear infinite}
+.pp-waiting .pw-dot{width:14px;height:14px;border-radius:50%;background:var(--gradient);box-shadow:0 0 16px rgba(236,0,140,.6)}
+.pp-waiting .pw-title{font-size:24px;font-weight:800;letter-spacing:-.4px;color:var(--text);margin:0;max-width:14ch}
+.pp-waiting .pw-sub{font-size:15px;font-weight:500;line-height:1.55;color:var(--muted);margin:0;max-width:44ch}
+@keyframes pwSpin{to{transform:rotate(360deg)}}
+@keyframes pwPulse{0%,100%{opacity:.10;transform:scale(.92)}50%{opacity:.24;transform:scale(1.08)}}
+@media(min-width:768px){
+  .pp-waiting{gap:30px}
+  .pp-waiting .pw-orb{width:140px;height:140px}
+  .pp-waiting .pw-dot{width:18px;height:18px}
+  .pp-waiting .pw-ring{border-width:5px}
+  .pp-waiting .pw-title{font-size:38px}
+  .pp-waiting .pw-sub{font-size:19px}
+}
 </style>
 </head>
 <body>
+
+<!-- ══════════════════ SPLASH ANIMÉ — ÉCRAN DE GARDE ══════════════════ -->
+<div id="lpSplash">
+  <img id="lpSplashImg" src="" alt="">
+  <div class="sp-veil"></div>
+  <div class="sp-sparks" id="lpSparks"></div>
+  <div class="sp-center">
+    <div class="sp-logo"><span class="l">local</span><span class="p">perf</span></div>
+    <div class="sp-base">La performance, <span class="a">en direct.</span></div>
+  </div>
+</div>
 
 <!-- ══════════════════ ACCUEIL — FOND VISUEL DU JOUR ══════════════════ -->
 <div id="dayBg">
@@ -1325,23 +1375,13 @@ function ppConfetti(){
   (function loop(){ x.clearRect(0,0,W,H); f++; parts.forEach(p=>{ p.y+=p.vy;p.x+=p.vx;p.rot+=p.vr; if(p.y>H+20){p.y=-20;p.x=Math.random()*W;} x.save();x.translate(p.x,p.y);x.rotate(p.rot);x.globalAlpha=Math.max(0,1-f/240);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore(); }); if(f<260)requestAnimationFrame(loop); else c.remove(); })();
 }
 
-// Écran d'attente du palmarès (à partir de 18h, ou si rien à afficher) — illustré.
-// ⚠️ WAIT_IMAGES : à compléter avec les images créées par Florian (images/...).
-// Images de l'écran d'attente, en rotation par jour de la semaine (à déposer dans images/).
-const WAIT_IMAGES = {
-  // Lundi→vendredi. Week-end → placeholder texte.
-  1:'images/attente%20lundi.png',
-  2:'images/attente%20mardi.png',
-  3:'images/attente%20mercredi.png',
-  4:'images/attente%20jeudi.png',
-  5:'images/attente%20vendredi.png',
-};
-// Repli propre si l'image du jour n'est pas (encore) disponible.
-window.waitImgFail = function(img){ const c = img.closest('#palmaresContent'); if(c) c.innerHTML = `<div class="empty"><div class="e-icon">🌙</div><p>Le palmarès du soir arrive…</p></div>`; };
+// Écran d'attente du palmarès (à partir de 18h, ou si rien à afficher) — visuel centré responsive.
 function waitPalmaresScreen() {
-  const src = WAIT_IMAGES[new Date().getDay()];
-  if(src) return `<div class="pp-wait"><img src="${src}" alt="Le palmarès du soir arrive" onerror="waitImgFail(this)"></div>`;
-  return `<div class="empty"><div class="e-icon">🌙</div><p>Le palmarès du soir arrive…<br>Les résultats sont en cours de saisie.</p></div>`;
+  return `<div class="pp-waiting">
+    <div class="pw-orb"><div class="pw-ring"></div><div class="pw-dot"></div></div>
+    <h2 class="pw-title">On récolte les résultats du jour…</h2>
+    <p class="pw-sub">Le palmarès du jour arrive.<br>Les agences finalisent leurs saisies.</p>
+  </div>`;
 }
 
 function renderPalmares(animate) {
@@ -1355,8 +1395,8 @@ function renderPalmares(animate) {
     if(parisHour() < 18 && y && y.totals) { p = y; stale = true; }
     else {
       if(page) page.classList.remove('pp-page');
-      // Écran d'attente : image plein écran, on masque la barre d'onglets.
-      const nav = document.getElementById('bottomNav'); if(nav) nav.style.display='none';
+      // Écran d'attente : simple message, on garde la barre d'onglets visible.
+      const nav = document.getElementById('bottomNav'); if(nav) nav.style.display='flex';
       el.innerHTML = waitPalmaresScreen();
       return;
     }
@@ -1916,7 +1956,12 @@ function paintDayBg() {
   // Chaîne de replis si l'image n'existe pas encore : variante choisie → S1 du même
   // jour → mardi S1 (toujours présente). Garantit qu'un visuel s'affiche toujours.
   const chain = [d, variants[0], DAY_VISUALS[2].v[0]].filter((v,i,a)=> v && a.indexOf(v)===i);
-  const apply = (v) => { img.style.objectPosition = v.pos || '50% 50%'; img.src = v.img; };
+  const sp = document.getElementById('lpSplashImg');
+  const apply = (v) => {
+    img.style.objectPosition = v.pos || '50% 50%'; img.src = v.img;
+    // Le splash affiche exactement la même image du jour (suit aussi la chaîne de repli).
+    if (sp) { sp.style.objectPosition = v.pos || '50% 50%'; sp.onload = () => { sp.style.opacity = '1'; }; sp.src = v.img; }
+  };
   let idx = 0;
   img.onerror = () => { idx++; if(idx < chain.length) apply(chain[idx]); else img.onerror = null; };
   apply(chain[0]);
@@ -1987,9 +2032,27 @@ function renderHomeStats() {
   setTxt('hhBestReg', br && br.contrats>0 ? br.name : '—');
 }
 
+// ── SPLASH ANIMÉ : joué une fois à chaque ouverture, puis fondu vers l'accueil ──
+let lpSplashDone = false;
+function playSplash() {
+  if (lpSplashDone) return; lpSplashDone = true;
+  const sp = document.getElementById('lpSplash'); if (!sp) return;
+  const sk = document.getElementById('lpSparks');
+  if (sk) for (let i = 0; i < 22; i++) {
+    const s = document.createElement('div'); s.className = 'sp-spark';
+    const sz = Math.random() * 4 + 2; s.style.width = s.style.height = sz + 'px';
+    s.style.left = Math.random() * 100 + '%'; s.style.top = (55 + Math.random() * 45) + '%';
+    s.style.animationDelay = (Math.random() * 1.2 + 0.3) + 's'; sk.appendChild(s);
+  }
+  const dismiss = () => { sp.classList.add('out'); setTimeout(() => { sp.style.display = 'none'; }, 1000); };
+  const t = setTimeout(dismiss, 2400);
+  sp.addEventListener('click', () => { clearTimeout(t); dismiss(); }, { once: true }); // tap pour passer
+}
+
 (function init() {
   // Accueil immersif affiché tout de suite (avant même la résolution de l'auth).
   showLogin();
+  playSplash(); // écran de garde animé par-dessus (image du jour), se retire tout seul
   // On attend l'état d'authentification Firebase (session persistée entre les ouvertures).
   onAuthStateChanged(auth, (user) => {
     const role = localStorage.getItem('lp_role');
