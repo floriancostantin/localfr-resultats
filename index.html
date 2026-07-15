@@ -525,6 +525,21 @@ textarea { resize:vertical; min-height:64px; }
   .pp-waiting .pw-title{font-size:38px}
   .pp-waiting .pw-sub{font-size:19px}
 }
+/* ═══ DESKTOP (ordi) — pleine largeur ═══ */
+@media(min-width:900px){
+  /* PALMARÈS JOUR : fond sombre plein écran + contenu centré large */
+  #page-palmares.pp-page{max-width:none;padding-left:0;padding-right:0}
+  #page-palmares.pp-page #palmaresContent{max-width:1040px;margin:0 auto;padding:26px 28px 40px}
+  .pp-eclat-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px}
+  .pp-eclat-wrap .pp-eclat{margin-bottom:0}
+  .pp-reg-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;align-items:start}
+  .pp-reg-wrap .pp-reg{margin-bottom:0}
+  /* PALMARÈS SEMAINE (classement) */
+  #page-classement.pp-page{max-width:none;padding-left:0;padding-right:0}
+  #page-classement.pp-page #classContent{max-width:1040px;margin:0 auto;padding:26px 28px 40px}
+  #classContent .wk-rank{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;grid-template-rows:repeat(5,auto);column-gap:34px;padding:6px 22px}
+  #classContent .wk-rank .wk-row:nth-child(5){border-bottom:none}
+}
 </style>
 </head>
 <body>
@@ -1495,7 +1510,7 @@ function renderPalmares(animate) {
     </div>` : '';
   if(HL.premiers.length||HL.parr.length||HL.doub.length||HL.trip.length||HL.quad.length){
     html += `<div class="pp-sec${ap}"${dl()}>Les coups d'éclat</div>`;
-    html += `<div class="${ap.trim()}"${dl()}>`;
+    html += `<div class="pp-eclat-wrap ${ap.trim()}"${dl()}>`;
     html += eclat('Premiers contrats', HL.premiers, 'gold','🥇');
     html += eclat('Parrainages', HL.parr, 'dia','💎');
     html += eclat('Triplés', HL.trip, 'fire','×3');
@@ -1508,7 +1523,7 @@ function renderPalmares(animate) {
   if(regions.length){
     html += `<div class="pp-sec pp-sec-reg${ap}"${dl()}>Détail par région</div>`;
     const maxR = Math.max(1, ...regions.map(r=>r.contrats));
-    html += `<div class="${ap.trim()}"${dl()}>`;
+    html += `<div class="pp-reg-wrap ${ap.trim()}"${dl()}>`;
     regions.forEach(r=>{
       const rc = rcOf(r.key); const pct = Math.round((r.contrats/maxR)*100);
       html += `<div class="pp-reg" style="--rc:${rc}" data-pct="${pct}">
