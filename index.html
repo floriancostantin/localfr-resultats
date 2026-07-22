@@ -1615,20 +1615,21 @@ function computeRecords(){
   return { agences:top5(agW), commerciaux:top5(comW), regions:top5(regW) };
 }
 
-// Classement parrainages de l'année (instantané depuis le fichier signatures — cumul 2026)
+// Classement parrainages de l'année (cumul 2026 — colonne "Sites" du fichier signatures, hors ADS)
+// MAJ 2026-07-22 depuis "signature parrainages.xlsx" (onglet SIGNATURE année, agences via report). Total 399 sites.
 const PARRAINAGES_RECORDS = {
   commerciaux:[
-    {name:"Marion WROBLEWSKI",agency:"Aix-en-Provence",c:14},
+    {name:"Marion WROBLEWSKI",agency:"Aix-en-Provence",c:15},
     {name:"Alexis CAPIALI",agency:"Corse",c:12},
     {name:"Alexandra N'GUYEN",agency:"Angoulême",c:10},
-    {name:"Pauline LAURENT",agency:"Corse",c:9},
-    {name:"Maëlys HUMMEL",agency:"Nantes",c:9}
+    {name:"Maëlys HUMMEL",agency:"Nantes",c:10},
+    {name:"Mathilde SALLEY",agency:"Toulouse",c:10}
   ],
   agences:[
-    {name:"Aix-en-Provence",c:53},{name:"Toulouse",c:30},{name:"Corse",c:30},{name:"Lille",c:27},{name:"Nice",c:25}
+    {name:"Aix-en-Provence",c:55},{name:"Toulouse",c:36},{name:"Corse",c:30},{name:"Nice",c:29},{name:"Lille",c:28}
   ],
   regions:[
-    {name:"SUD",c:175},{name:"EST",c:104},{name:"OUEST",c:78},{name:"PARIS IDF",c:8}
+    {name:"SUD",c:191},{name:"EST",c:116},{name:"OUEST",c:84},{name:"PARIS IDF",c:8}
   ]
 };
 let recMode='contrats';
