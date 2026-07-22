@@ -5,10 +5,5 @@
   "functions": {
     "source": "functions",
     "runtime": "nodejs20"
-  },
-  "hosting": {
-    "public": ".",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "functions/**", "MAQUETTE.html", "**/*.backup-*"],
-    "rewrites": [{ "source": "**", "destination": "/index.html" }]
   }
 }

@@ -1,4 +1,0 @@
-# Configuration Netlify — site statique servi depuis la racine
-[build]
-  publish = "."
-  command = ""
