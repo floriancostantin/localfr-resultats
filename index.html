@@ -182,6 +182,28 @@ textarea { resize:vertical; min-height:64px; }
 /* PALMARES DA INPUT SECTION */
 .palmares-input-card { background:linear-gradient(135deg,rgba(236,0,140,0.04),rgba(250,166,26,0.04)); border:1.5px solid rgba(236,0,140,0.2); }
 
+/* DÉTAIL NOMINATIF « qui a performé » (page Rédiger) */
+.pdt { margin-top:14px; border-top:1px dashed var(--border); padding-top:14px; }
+.pdt-h { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--dark); margin-bottom:2px; display:flex; align-items:center; gap:6px; }
+.pdt-live { font-size:10px; font-weight:700; color:#039855; background:rgba(3,152,85,.1); padding:2px 7px; border-radius:20px; }
+.pdt-note { font-size:11px; color:var(--muted); margin-bottom:10px; }
+.pdt-row { display:flex; align-items:baseline; gap:8px; padding:5px 0; font-size:13px; line-height:1.4; }
+.pdt-ic { flex:0 0 auto; font-weight:800; font-size:12px; min-width:26px; text-align:center; color:var(--fuchsia); }
+.pdt-lbl { flex:0 0 82px; font-weight:700; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.3px; }
+.pdt-names { flex:1; font-weight:600; color:var(--text); }
+.pdt-ags { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+.pdt-ag { background:#fafafa; border:1px solid var(--border); border-radius:10px; padding:9px 12px; font-size:13px; }
+.pdt-ag > b { color:var(--dark); }
+.pdt-agn { font-weight:800; color:var(--fuchsia); font-size:12px; margin-left:6px; }
+.pdt-agl { color:var(--text); margin-top:3px; font-size:12.5px; line-height:1.5; }
+.pdt-empty { font-size:13px; color:var(--muted); text-align:center; padding:14px 0; }
+
+/* BADGE JOURNÉE VALIDÉE (page Saisie) */
+.sai-valid-badge { display:none; align-items:center; gap:11px; background:linear-gradient(135deg,#12b76a,#039855); color:#fff; padding:12px 16px; border-radius:12px; margin-bottom:12px; box-shadow:0 4px 14px rgba(3,152,85,.28); }
+.sai-valid-badge .svb-ic { font-size:22px; line-height:1; flex:0 0 auto; }
+.sai-valid-badge b { font-size:14.5px; font-weight:800; }
+.sai-valid-badge small { display:block; font-size:12px; font-weight:500; opacity:.9; margin-top:1px; }
+
 /* NOTIF PUSH BTN */
 .btn-push { width:100%; padding:14px; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; border:none; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; }
 .btn-push:active { opacity:.85; }
@@ -278,10 +300,32 @@ textarea { resize:vertical; min-height:64px; }
 #homeHero .wm,#homeHero .hh-daytag,#homeHero .hh-chip,#homeHero .hh-quote,#homeHero .hh-h1,#homeHero .hh-enter,#homeHero .hh-stats{font-family:'Poppins',-apple-system,system-ui,sans-serif}
 .hh-topbar{position:absolute;top:calc(var(--safe-top) + 30px);left:56px;right:56px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;z-index:3}
 .hh-topleft{display:flex;flex-direction:column;gap:16px}
-.hh-best{display:flex;flex-direction:column;gap:6px;font-family:'Poppins',-apple-system,system-ui,sans-serif}
-.hh-best .l{font-size:11px;font-weight:700;letter-spacing:.8px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.7)}
-.hh-best .l b{font-weight:800}
-.hh-best .l em{font-style:normal;color:#c4bdd0;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.hh-best{align-self:flex-start;max-width:min(82vw,300px);display:flex;flex-direction:column;gap:8px;
+  background:linear-gradient(160deg,rgba(34,16,36,.74),rgba(12,10,18,.6));border:1px solid rgba(255,255,255,.16);
+  border-radius:16px;padding:12px 14px 13px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 16px 44px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
+  font-family:'Poppins',-apple-system,system-ui,sans-serif}
+.hh-best-h{font-size:11.5px;font-weight:900;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:7px;color:#fff}
+.hh-best-h .ic{font-size:13px}
+.hh-best-h .tx{background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hh-best-row{display:flex;flex-direction:column;gap:1px;border-top:1px solid rgba(255,255,255,.09);padding-top:7px}
+.hh-best-row .k{font-size:9px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--orange)}
+.hh-best-row b{font-size:14.5px;font-weight:800;color:#fff;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+/* Totaux contrats S-1 + semaine en cours (sous l'encadré Perfs S-1) */
+.hh-week{align-self:flex-start;max-width:min(82vw,300px);display:flex;flex-direction:column;
+  background:linear-gradient(160deg,rgba(26,14,28,.62),rgba(12,10,18,.5));border:1px solid rgba(255,255,255,.13);
+  border-radius:15px;padding:4px 14px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 12px 30px rgba(0,0,0,.38);font-family:'Poppins',-apple-system,system-ui,sans-serif}
+.hh-week-row{display:flex;align-items:center;gap:10px;padding:9px 0}
+.hh-week-row+.hh-week-row{border-top:1px solid rgba(255,255,255,.09)}
+.hh-week-row b{font-size:27px;font-weight:900;line-height:1;letter-spacing:-.5px;min-width:40px;
+  background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hh-week-row .l{display:flex;flex-direction:column;line-height:1.15}
+.hh-week-row .l em{font-style:normal;font-size:12px;font-weight:800;color:#fff}
+.hh-week-row .l span{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#9d95ab}
+.hh-week-row .dot{width:7px;height:7px;border-radius:50%;background:#12b76a;box-shadow:0 0 9px #12b76a;flex:0 0 auto;animation:hhpulse 1.8s ease-in-out infinite}
+.hh-week-row .dot.ph{visibility:hidden;box-shadow:none;background:none;animation:none}
+@keyframes hhpulse{0%,100%{opacity:1}50%{opacity:.35}}
 .hh-daytag{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#fff;background:rgba(12,10,16,.5);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:30px;white-space:nowrap}
 .hh-daytag .gd{width:8px;height:8px;border-radius:50%;background:var(--gradient);box-shadow:0 0 10px var(--fuchsia)}
 .hh-wrap{position:absolute;left:0;right:0;bottom:0;z-index:3;max-width:1180px;margin:0 auto;padding:0 56px calc(var(--safe-bottom) + 64px)}
@@ -299,12 +343,27 @@ textarea { resize:vertical; min-height:64px; }
 .hh-records:active{transform:scale(.96)}
 .hh-records .ic{font-size:30px;line-height:1}
 .hh-records .lb{font-size:13px;font-weight:800;letter-spacing:.3px}
-.hh-da-link{display:inline-block;margin:0 0 30px;padding:5px 0;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.62);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:color .15s}
+.hh-da-link{display:inline-block;margin:0;padding:5px 0;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.62);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:color .15s}
 .hh-da-link:hover{color:#fff}
 .hh-stats{display:flex;gap:40px}
 .hh-stats .s b{display:block;font-size:34px;font-weight:900;background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
 .hh-stats .s span{font-size:11.5px;color:#b3acc0;font-weight:600;letter-spacing:.5px}
 @media(max-width:820px){.hh-topbar{left:24px;right:24px}.hh-wrap{padding:0 24px calc(var(--safe-bottom) + 44px)}.hh-h1{font-size:46px}.hh-chip{right:24px;top:calc(var(--safe-top) + 90px)}.hh-stats{gap:24px}}
+/* iPhone serrés / zoom d'affichage (écrans courts) : encadré Perfs S-1 compact + titre réduit
+   pour ne pas empiéter sur le titre (le titre est ancré en bas et remonte sur les écrans courts). */
+@media(max-height:760px){
+  .hh-best{gap:6px;padding:9px 12px 10px}
+  .hh-best-h{font-size:10.5px;letter-spacing:1.6px}
+  .hh-best-row{padding-top:5px}.hh-best-row .k{font-size:8.5px}.hh-best-row b{font-size:13px}
+  .hh-topleft{gap:10px}
+  .hh-h1{font-size:34px;margin-bottom:14px}
+  .hh-quote{margin-bottom:8px}
+  .hh-wrap{padding-bottom:calc(var(--safe-bottom) + 22px)}
+  .hh-week{padding:2px 13px}
+  .hh-week-row{padding:6px 0;gap:9px}
+  .hh-week-row b{font-size:23px;min-width:34px}
+  .hh-week-row .l em{font-size:11px}
+}
 /* login posé sur le visuel du jour */
 #loginOverlay{background:linear-gradient(180deg,transparent 28%,rgba(8,6,11,.55));backdrop-filter:none}
 
@@ -502,6 +561,27 @@ textarea { resize:vertical; min-height:64px; }
 .tro .bd{min-width:0}
 .tro .t{font-size:13px;font-weight:800;color:#fff;line-height:1.15}
 .tro .a{font-size:11px;font-weight:700;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* COUPS D'ÉCLAT cliquables (Triplés / Doublés / 1ers contrats) */
+.ecl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.ecl-card{position:relative;display:flex;flex-direction:column;align-items:center;padding:16px 8px 13px;border-radius:18px;
+  background:linear-gradient(165deg,rgba(255,255,255,.085),rgba(255,255,255,.028));border:1px solid rgba(255,255,255,.13);
+  font-family:inherit;cursor:pointer;overflow:hidden;transition:transform .15s ease,border-color .15s ease;
+  animation:tro-pop .5s cubic-bezier(.22,1.4,.5,1) backwards;box-shadow:0 12px 30px rgba(0,0,0,.28)}
+.ecl-card:not(.off):active{transform:scale(.95)}
+.ecl-card:not(.off):hover{border-color:rgba(255,255,255,.28)}
+.ecl-card.off{opacity:.4;cursor:default}
+.ecl-ic{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;
+  border:1px solid rgba(255,255,255,.22);background:var(--bgc,linear-gradient(135deg,#EC008C,#FAA61A));box-shadow:0 6px 18px rgba(0,0,0,.32);margin-bottom:10px}
+.ecl-n{font-size:36px;line-height:.85;font-weight:900;color:#fff;letter-spacing:-1.5px}
+.ecl-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:#cabfe0;margin-top:6px;text-align:center;line-height:1.1}
+.ecl-cta{font-size:9.5px;font-weight:800;color:var(--orange);margin-top:9px;text-transform:uppercase;letter-spacing:.3px}
+.ecl-card.off .ecl-cta{color:var(--muted)}
+
+/* Espacement de la page Palmarès semaine */
+#page-classement .pp-hero{margin-top:14px}
+#page-classement .pp-sec{margin-top:40px}
+#page-classement .wk-toggle{margin-top:36px}
 /* Badge rond ×N (doublés/triplés) — remplace les emojis dans les marqueurs inline */
 .mx{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:50%;border:1.5px solid currentColor;font-size:10.5px;font-weight:800;line-height:1;vertical-align:middle}
 /* Bandeau « Palmarès d'hier » + écran d'attente illustré (page Palmarès) */
@@ -591,9 +671,14 @@ textarea { resize:vertical; min-height:64px; }
         <div class="wm-text">Local<span class="p">Perf</span></div>
       </div>
       <div class="hh-best">
-        <div class="l"><b id="hhBestCom">—</b> <em>· meilleur commercial S‑1</em></div>
-        <div class="l"><b id="hhBestAg">—</b> <em>· meilleure agence S‑1</em></div>
-        <div class="l"><b id="hhBestReg">—</b> <em>· meilleure région S‑1</em></div>
+        <div class="hh-best-h"><span class="ic">🏆</span><span class="tx">Perfs S‑1</span></div>
+        <div class="hh-best-row"><span class="k">Meilleur commercial</span><b id="hhBestCom">—</b></div>
+        <div class="hh-best-row"><span class="k">Meilleure agence</span><b id="hhBestAg">—</b></div>
+        <div class="hh-best-row"><span class="k">Meilleure région</span><b id="hhBestReg">—</b></div>
+      </div>
+      <div class="hh-week">
+        <div class="hh-week-row"><span class="dot ph"></span><b id="hhPrevWeek">—</b><div class="l"><em>Contrats</em><span>Semaine dernière</span></div></div>
+        <div class="hh-week-row now"><span class="dot"></span><b id="hhWeekContrats">—</b><div class="l"><em>Contrats</em><span>Cette semaine</span></div></div>
       </div>
     </div>
     <div class="hh-daytag"><span class="gd"></span> <span id="hhDaytag">—</span></div>
@@ -611,10 +696,6 @@ textarea { resize:vertical; min-height:64px; }
         <button class="hh-records" onclick="openRecords()" aria-label="Records de l'année" title="Records de l'année"><span class="ic">🏆</span><span class="lb">Records</span></button>
       </div>
       <button class="hh-da-link" onclick="openDA()">Espace directeur</button>
-      <div class="hh-stats">
-        <div class="s"><b id="hhPrevWeek">—</b><span>CONTRATS · SEMAINE DERNIÈRE</span></div>
-        <div class="s"><b id="hhWeekContrats">—</b><span>CONTRATS · CETTE SEMAINE</span></div>
-      </div>
     </div>
   </div>
 </div>
@@ -737,6 +818,8 @@ textarea { resize:vertical; min-height:64px; }
   <div id="goPalBanner" class="go-pal-banner" style="display:none" onclick="goTo('palmares-da')">
     <span>Tout est saisi — Go Palmarès</span> <b>→</b>
   </div>
+
+  <div id="saisieValidBadge" class="sai-valid-badge"></div>
 
   <div class="stats-grid">
     <div class="stat-box"><div class="stat-val" id="myDaySig">—</div><div class="stat-lbl">Contrats jour</div></div>
@@ -1132,6 +1215,7 @@ function subscribeData() {
     dot.className='sync-dot online';
     if(STATE.currentPage==='classement') renderClassement(false);
     if(STATE.currentPage==='saisie') renderSaisie();
+    if(STATE.currentPage==='palmares-da') checkDASemaine();
     updateGoPalBanner();
   });
 
@@ -1189,6 +1273,22 @@ function renderSaisie() {
     if(todayEntry.commentaire && !document.getElementById('commentaire').value) document.getElementById('commentaire').value = todayEntry.commentaire;
   }
   document.getElementById('saiPerso').textContent = STATE.persos||0;
+
+  // Badge « Journée validée » — indique clairement au DA que sa saisie du jour
+  // est déjà envoyée (et reste modifiable). Recalculé à chaque rendu.
+  const badge = document.getElementById('saisieValidBadge');
+  const validated = !!(todayEntry && todayEntry.ts);
+  if(badge){
+    if(validated){
+      const h = new Date(todayEntry.ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+      badge.innerHTML = `<span class="svb-ic">✓</span><div><b>Journée validée</b><small>Saisie envoyée à ${h} — modifiable puis re-valider</small></div>`;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+  const submitBtn = document.getElementById('submitBtn');
+  if(submitBtn) submitBtn.textContent = validated ? 'Mettre à jour ma saisie ✓' : 'Valider ma saisie ✓';
 
   // Stats jour / semaine (en contrats)
   let weekC=0, weekR=0;
@@ -1325,13 +1425,36 @@ function checkDASemaine() {
   const prev = document.getElementById('palmaresPreview');
   if(prev){
     const nbAg = a.regions.reduce((s,r)=>s+r.agencies.length,0);
+    // Coups d'éclat NOMINATIFS — indispensable pour rédiger les félicitations : le DA
+    // de semaine doit savoir QUI a performé, pas seulement combien.
+    const eclat = [];
+    const row = (ic,lbl,arr) => arr.length ? `<div class="pdt-row"><span class="pdt-ic">${ic}</span><span class="pdt-lbl">${lbl}</span><span class="pdt-names">${arr.map(esc).join(', ')}</span></div>` : '';
+    eclat.push(row('🥇','Premiers', a.premiers));
+    eclat.push(row('💎','Parrainages', a.parrainages));
+    eclat.push(row('×4+','Quadruplés', a.quad));
+    eclat.push(row('×3','Triplés', a.triples));
+    eclat.push(row('×2','Doublés', a.doubles));
+    // Détail par agence (triées par contrats décroissants)
+    const allAg = [];
+    a.regions.forEach(r=>r.agencies.forEach(ag=>{ if((ag.contrats||0)>0 || (ag.ads||0)>0) allAg.push(ag); }));
+    allAg.sort((x,y)=>(y.contrats-x.contrats)||((y.ads||0)-(x.ads||0)));
+    const agHtml = allAg.map(ag=>`<div class="pdt-ag"><b>${esc(ag.agency)}</b><span class="pdt-agn">${ag.contrats}${ag.ads?'+'+ag.ads+' ADS':''}</span><div class="pdt-agl">${(ag.lines||[]).map(comLine).join(', ')||'—'}</div></div>`).join('');
+    const detail = (eclat.join('')||agHtml)
+      ? `<div class="pdt">
+          <div class="pdt-h">Qui a performé aujourd'hui <span class="pdt-live">● en direct</span></div>
+          <div class="pdt-note">Se met à jour automatiquement à chaque saisie d'agence.</div>
+          ${eclat.join('')}
+          ${agHtml?`<div class="pdt-ags">${agHtml}</div>`:''}
+        </div>`
+      : `<div class="pdt"><div class="pdt-empty">Aucune saisie enregistrée pour l'instant.</div></div>`;
     prev.innerHTML = `<div class="pal-kpis">
         <div class="pal-kpi tot"><b>${t.ads?t.contrats+'+'+t.ads:t.contrats}</b><span>Total</span></div>
         <div class="pal-kpi"><b style="color:var(--fuchsia)">${t.conquetes}</b><span>Conquêtes</span></div>
         <div class="pal-kpi"><b style="color:var(--orange)">${t.renouv}</b><span>Renouv</span></div>
         <div class="pal-kpi"><b style="color:#888">${t.ads}</b><span>ADS</span></div>
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${nbAg} agence(s) · <span class="mx">×2</span> ${a.doubles.length} doublé(s) · <span class="mx">×3</span> ${a.triples.length} triplé(s) · 🥇 ${a.premiers.length} · 💎 ${a.parrainages.length}</div>`;
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${nbAg} agence(s) ont saisi · <span class="mx">×2</span> ${a.doubles.length} doublé(s) · <span class="mx">×3</span> ${a.triples.length} triplé(s) · 🥇 ${a.premiers.length} · 💎 ${a.parrainages.length}</div>
+      ${detail}`;
   }
   // Suggestion pré-remplie de la performance collective (les agences en tête) — modifiable
   const perfEl = document.getElementById('palmares-perf');
@@ -1510,7 +1633,7 @@ function renderPalmares(animate) {
 
   // COUPS D'ÉCLAT (reconstruits depuis les régions pour afficher l'agence)
   const HL = {premiers:[], parr:[], trip:[], doub:[], quad:[]};
-  regions.forEach(r=>r.agencies.forEach(a=>a.lines.forEach(c=>{
+  regions.forEach(r=>(r.agencies||[]).forEach(a=>(a.lines||[]).forEach(c=>{
     const it = {name:c.name, ag:a.agency};
     if(c.first) HL.premiers.push(it);
     if(c.parr) HL.parr.push({name:c.parr>1?`${c.name} ×${c.parr}`:c.name, ag:a.agency});
@@ -1545,7 +1668,7 @@ function renderPalmares(animate) {
         <div class="pp-reg-top"><div class="pp-reg-name">${esc(r.label)}</div><div class="pp-reg-score">${r.contrats}${r.ads?` +${r.ads} ADS`:''}</div></div>
         <div class="pp-reg-track"><div class="pp-reg-fill" style="width:${A?0:pct}%"></div></div>`;
       r.agencies.forEach(a=>{
-        html += `<div class="pp-ag"><div class="pp-ag-n">${a.contrats}${a.ads?'+'+a.ads:''}</div><div class="pp-ag-d"><b>${esc(a.agency)}</b> : ${a.lines.map(comLine).join(', ')}${a.persos?`, <span class="mut">Persos ${a.persos}</span>`:''}</div></div>`;
+        html += `<div class="pp-ag"><div class="pp-ag-n">${a.contrats}${a.ads?'+'+a.ads:''}</div><div class="pp-ag-d"><b>${esc(a.agency)}</b> : ${(a.lines||[]).map(comLine).join(', ')}${a.persos?`, <span class="mut">Persos ${a.persos}</span>`:''}</div></div>`;
       });
       html += `</div>`;
     });
@@ -1676,17 +1799,21 @@ function computeTrophies(){
   const w = STATE._wk || aggregateWeek();
   const enFeu = w.agences.filter(a=>a.contrats>=TROPHY.enFeu).sort((a,b)=>b.contrats-a.contrats).map(a=>a.name);
   const parrains = w.agences.filter(a=>a.parr>=TROPHY.parrain).sort((a,b)=>b.parr-a.parr);
-  const trip=[], doub=[], prem=[];
+  const tripM={}, doubM={}, premM={};
+  const add=(m,nm,ag)=>{ const k=nm.toLowerCase()+'|'+(ag||'').toLowerCase(); if(!m[k])m[k]={name:nm,agency:ag||'',count:0}; m[k].count++; };
   const week=getWeekKey();
   Object.entries(STATE.allData).forEach(([key,days])=>Object.entries(days).forEach(([d,v])=>{
     if(getWeekKey(new Date(d))!==week) return;
+    const agency=v.agency||key;
     (Array.isArray(v.commerciaux)?v.commerciaux:[]).forEach(c=>{
       const k=(c.cq||0)+(c.rn||0); const nm=(c.name||'').trim()||'(sans nom)';
-      if(k>=3) trip.push(nm); else if(k===2) doub.push(nm);
-      if(c.first) prem.push(nm);
+      if(k>=3) add(tripM,nm,agency); else if(k===2) add(doubM,nm,agency);
+      if(c.first) add(premM,nm,agency);
     });
   }));
-  return { enFeu, parrains, triples:trip, doubles:doub, premiers:prem };
+  // Tableaux triés par nombre de fois décroissant : [{name, agency, count}]
+  const arr=m=>Object.values(m).sort((a,b)=>b.count-a.count);
+  return { enFeu, parrains, triples:arr(tripM), doubles:arr(doubM), premiers:arr(premM) };
 }
 function troCard(b,i){ return `<div class="tro" style="animation-delay:${(0.05+i*0.05).toFixed(2)}s">
     <div class="ic" style="--bgc:${b.g}">${b.ic}</div>
@@ -1694,20 +1821,69 @@ function troCard(b,i){ return `<div class="tro" style="animation-delay:${(0.05+i
   </div>`; }
 const uniqJoin = arr => [...new Set(arr)].join(' · ');
 
+const totalFois = arr => arr.reduce((s,x)=>s+(x.count||0),0);
+
 function gamifHtml(ap){
   const T = STATE._tro || (STATE._tro = computeTrophies());
   let h = '';
+  // Coups d'éclat cliquables : Triplés / Doublés / 1ers contrats (→ détail noms + agences)
+  const ecl = [
+    {type:'trip',emo:'×3',lbl:'Triplés',    n:totalFois(T.triples),  g:TRO_G.fuchsia},
+    {type:'doub',emo:'×2',lbl:'Doublés',    n:totalFois(T.doubles),  g:TRO_G.fuchsia},
+    {type:'prem',emo:'🥇',lbl:'1ers contrats',n:totalFois(T.premiers),g:TRO_G.gold},
+  ];
+  const hasEcl = ecl.some(e=>e.n>0);
+  // Trophées "agence" (En feu) restent en cartes classiques
   const cards=[];
-  if(T.enFeu.length)   cards.push({ic:'🚀',t:`En feu · ${TROPHY.enFeu}+ contrats`,a:uniqJoin(T.enFeu),g:TRO_G.fire});
-  if(T.triples.length) cards.push({ic:'×3',t:`Triplés ×${T.triples.length}`,a:uniqJoin(T.triples),g:TRO_G.fuchsia});
-  if(T.doubles.length) cards.push({ic:'×2',t:`Doublés ×${T.doubles.length}`,a:uniqJoin(T.doubles),g:TRO_G.fuchsia});
-  if(T.premiers.length)cards.push({ic:'🥇',t:`1ers contrats ×${T.premiers.length}`,a:uniqJoin(T.premiers),g:TRO_G.gold});
-  if(cards.length){
+  if(T.enFeu.length) cards.push({ic:'🚀',t:`En feu · ${TROPHY.enFeu}+ contrats`,a:uniqJoin(T.enFeu),g:TRO_G.fire});
+
+  if(hasEcl || cards.length){
     h += `<div class="pp-sec${ap}">Trophées de la semaine</div>`;
-    h += `<div class="tro-grid${ap}">` + cards.map((b,i)=>troCard(b,i)).join('') + `</div>`;
+    if(hasEcl){
+      h += `<div class="ecl-grid${ap}">` + ecl.map((e,i)=>{
+        const off = e.n===0;
+        return `<button class="ecl-card${off?' off':''}" style="animation-delay:${(0.05+i*0.06).toFixed(2)}s"${off?' disabled':` onclick="openEclat('${e.type}')"`}>
+            <div class="ecl-ic" style="--bgc:${e.g}">${e.emo}</div>
+            <div class="ecl-n">${e.n}</div>
+            <div class="ecl-lbl">${e.lbl}</div>
+            <div class="ecl-cta">${off?'—':'Voir les noms ›'}</div>
+          </button>`;
+      }).join('') + `</div>`;
+    }
+    if(cards.length){
+      h += `<div class="tro-grid${ap}">` + cards.map((b,i)=>troCard(b,i)).join('') + `</div>`;
+    }
   }
   return h;
 }
+
+// Détail d'un coup d'éclat (triplés / doublés / 1ers) : noms + agences de la semaine
+window.openEclat = function(type){
+  const T = STATE._tro || (STATE._tro = computeTrophies());
+  const CFG = {
+    trip:{arr:T.triples, title:'Triplés',           emo:'×3', g:TRO_G.fuchsia, hint:'3 contrats signés dans la même journée'},
+    doub:{arr:T.doubles, title:'Doublés',           emo:'×2', g:TRO_G.fuchsia, hint:'2 contrats signés dans la même journée'},
+    prem:{arr:T.premiers,title:'Premiers contrats', emo:'🥇', g:TRO_G.gold,    hint:'La toute première signature d\'un commercial'},
+  };
+  const cfg = CFG[type]; if(!cfg) return;
+  const med = {0:'🥇',1:'🥈',2:'🥉'};
+  const rows = cfg.arr.map((x,i)=>`<div class="rec-row">
+      <div class="rec-pos ${i<3?'t'+(i+1):''}">${i<3?med[i]:i+1}</div>
+      <div class="rec-main"><div class="rec-nm">${esc(x.name)}${x.agency?` <span>${esc(x.agency)}</span>`:''}</div></div>
+      ${x.count>1?`<div class="rec-score" style="background:${cfg.g};-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">${x.count}<small>fois</small></div>`:''}
+    </div>`).join('');
+  const old=document.getElementById('eclOverlay'); if(old) old.remove();
+  const ov=document.createElement('div'); ov.id='eclOverlay'; ov.className='rec-overlay';
+  ov.innerHTML=`<div class="rec-sheet">
+      <div class="rec-top"><div class="rec-title" style="background:${cfg.g};-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">${cfg.emo} ${cfg.title}</div><button class="rec-close" onclick="closeEclat()">✕</button></div>
+      <div class="rec-hint">${cfg.hint} · semaine du ${getWeekBounds()}</div>
+      <div class="rec-cats"><div class="rec-cat"><div class="rec-list">${rows||'<div class="rec-empty">Personne cette semaine.</div>'}</div></div></div>
+    </div>`;
+  ov.onclick=e=>{ if(e.target===ov) closeEclat(); };
+  document.body.appendChild(ov);
+  requestAnimationFrame(()=>ov.classList.add('show'));
+};
+window.closeEclat = function(){ const ov=document.getElementById('eclOverlay'); if(ov){ ov.classList.remove('show'); setTimeout(()=>ov.remove(),250); } };
 
 // ── CLASSEMENT SEMAINE ────────────────────────────────
 // Agrège toutes les saisies de la SEMAINE en cours → commerciaux / agences / régions
